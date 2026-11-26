@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Portal Operasional Manager — KDKMP Cianjur</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-light: #2563eb;
+      --success: #059669;
+      --warning: #d97706;
+      --purple: #6d28d9;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #cbd5e1;
+    }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 50px; }
+
+    header {
+      background: linear-gradient(135deg, #0f172a, #1e3a8a);
+      color: #fff;
+      padding: 14px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+    .header-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .header-title { font-size: 15px; font-weight: 800; margin: 0; }
+    .header-sub { font-size: 12px; color: #cbd5e1; margin-top: 2px; }
+    .badge-status {
+      font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap;
+    }
+    .status-live { background: #065f46; border: 1px solid #34d399; color: #ecfdf5; }
+    .status-sandbox { background: #92400e; border: 1px solid #fbbf24; color: #fef3c7; }
+
+    .nav-tabs {
+      display: flex; background: #fff; border-bottom: 1px solid var(--border);
+      position: sticky; top: 56px; z-index: 40;
+    }
+    .nav-btn {
+      flex: 1; padding: 12px 4px; border: none; background: none; font-size: 12px;
+      font-weight: 700; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent;
+    }
+    .nav-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #eff6ff; }
+
+    .container { max-width: 740px; margin: 0 auto; padding: 14px; }
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .card {
+      background: var(--card); border-radius: 12px; padding: 16px;
+      border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 14px;
+    }
+    .card-title {
+      font-size: 14px; font-weight: 700; margin: 0 0 12px 0; color: var(--primary);
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    @media (max-width: 640px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+    label { display: block; font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 4px; }
+    input, select, textarea {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+      font-size: 14px; background: #fff; color: var(--text);
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+    }
+
+    .manager-badge-box {
+      margin-top: 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
+      padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    }
+
+    .report-type-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+    .type-pill {
+      padding: 12px 8px; border: 2px solid var(--border); border-radius: 10px; text-align: center;
+      cursor: pointer; font-weight: 700; font-size: 13px; background: #f8fafc; transition: 0.15s;
+    }
+    .type-pill.active-in { border-color: var(--primary-light); background: #eff6ff; color: var(--primary); }
+    .type-pill.active-stock { border-color: var(--success); background: #ecfdf5; color: #065f46; }
+
+    .chip-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; }
+    .chip {
+      padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border);
+      background: #fff; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer;
+    }
+    .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .item-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 10px 0; border-bottom: 1px solid #f1f5f9;
+    }
+    .item-row:last-child { border-bottom: none; }
+    .item-info { flex: 1; }
+    .item-name { font-size: 13px; font-weight: 700; }
+    .item-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .stok-ref {
+      display: inline-block; background: #fef3c7; color: #92400e; font-weight: 700;
+      padding: 2px 7px; border-radius: 6px; font-size: 11px; margin-top: 3px;
+    }
+
+    .qty-control { display: flex; align-items: center; gap: 6px; }
+    .btn-step {
+      width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border);
+      background: #f8fafc; font-size: 18px; font-weight: 700; cursor: pointer;
+    }
+    .qty-input { width: 74px; text-align: center; font-weight: 700; font-size: 15px; padding: 7px 4px; }
+    .qty-input.has-value { background: #eff6ff; border-color: var(--primary-light); color: var(--primary); }
+
+    /* Photo Upload Box */
+    .photo-box {
+      border: 2px dashed #cbd5e1; border-radius: 10px; padding: 12px; text-align: center;
+      background: #f8fafc; margin-top: 6px;
+    }
+    .photo-preview {
+      max-width: 100%; max-height: 180px; border-radius: 8px; margin-top: 8px;
+      display: none; border: 1px solid #cbd5e1;
+    }
+    .photo-info { font-size: 11px; color: #059669; font-weight: 600; margin-top: 4px; }
+
+    .rp-hint { font-size: 12px; font-weight: 700; color: var(--primary); margin-top: 4px; }
+    .diff-box {
+      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px;
+      display: flex; justify-content: space-between; align-items: center; margin-top: 10px;
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 13px 16px; border-radius: 10px; border: none; font-size: 14px; font-weight: 700;
+      cursor: pointer; width: 100%; transition: 0.15s;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-purple { background: var(--purple); color: #fff; }
+    .btn-outline { background: #fff; color: var(--primary); border: 1px solid var(--primary); }
+    .btn-sm { padding: 6px 12px; font-size: 12px; width: auto; border-radius: 8px; }
+
+    .wa-card {
+      background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; padding: 12px; margin-top: 14px;
+    }
+    .wa-item-box {
+      background: #fff; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px; margin-top: 10px;
+    }
+    .wa-item-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .wa-preview {
+      width: 100%; min-height: 115px; font-family: monospace; font-size: 12px;
+      border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; background: #f8fafc;
+    }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
+    th { background: #f8fafc; font-weight: 700; }
+    .tag { padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .tag-wait { background: #fef3c7; color: #92400e; }
+    .tag-ok { background: #dcfce7; color: #166534; }
+    .tag-info { background: #dbeafe; color: #1e40af; }
+
+    .toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: #0f172a; color: #fff; padding: 10px 18px; border-radius: 999px;
+      font-size: 13px; font-weight: 600; z-index: 100; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div>
+      <h1 class="header-title">PORTAL MANAGER KDKMP CIANJUR</h1>
+      <div class="header-sub" id="activeGeraiLabel">Memuat identitas gerai...</div>
+    </div>
+    <span id="connBadge" class="badge-status status-sandbox">Sandbox Lokal</span>
+  </div>
+</header>
+
+<!-- IDENTITAS GERAI TERKUNCI -->
+<div class="container" style="padding-bottom:0;">
+  <div class="card" style="margin-bottom:8px;">
+    <div class="card-title">
+      <span>Identitas Gerai (Terkunci di Perangkat)</span>
+      <button class="btn btn-outline btn-sm" onclick="saveProfile(true)">Kunci Gerai</button>
+    </div>
+    <div class="grid-2">
+      <div>
+        <label>Kecamatan</label>
+        <select id="selKecamatan" onchange="onKecamatanChange()"></select>
+      </div>
+      <div>
+        <label>Nama KDKMP</label>
+        <select id="selKdkmp" onchange="saveProfile(true)"></select>
+      </div>
+    </div>
+    <div class="manager-badge-box">
+      <span style="font-size:12px; color:#64748b; font-weight:600;">Manager Terdaftar (Database ASR):</span>
+      <strong id="dispManager" style="font-size:13px; color:#0f172a;">-</strong>
+    </div>
+  </div>
+</div>
+
+<!-- NAVIGASI 3 MODUL OPERASIONAL MANAGER -->
+<nav class="nav-tabs">
+  <button class="nav-btn active" onclick="switchTab('tab-stok', this)">1. Stok & Barang</button>
+  <button class="nav-btn" onclick="switchTab('tab-omset', this)">2. Omset & Struk</button>
+  <button class="nav-btn" onclick="switchTab('tab-po', this)">3. Rencana PO</button>
+</nav>
+
+<div class="container">
+
+  <!-- ==================== TAB 1: STOK & PENERIMAAN BARANG ==================== -->
+  <section id="tab-stok" class="section active">
+    <div class="card">
+      <div class="card-title">Jenis Laporan Barang</div>
+      <div class="report-type-group">
+        <div id="pillIn" class="type-pill active-in" onclick="setReportType('PENERIMAAN')">
+          + BARANG MASUK (DO)
+        </div>
+        <div id="pillStock" class="type-pill" onclick="setReportType('STOK_SISA')">
+          = STOK SISA HARIAN
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div>
+          <label>Tanggal Laporan</label>
+          <input type="date" id="inpTanggal" />
+        </div>
+        <div id="wrapSupplier">
+          <label>Supplier / Sumber</label>
+          <select id="inpSupplier">
+            <option value="Perum Bulog (SPHP)">Perum Bulog (SPHP)</option>
+            <option value="Agen Pertamina (LPG 3kg)">Agen Pertamina (LPG 3kg)</option>
+            <option value="Distributor Pupuk Subsidi">Distributor Pupuk Subsidi</option>
+            <option value="Distributor Minyakita">Distributor Minyakita</option>
+            <option value="ID FOOD / RNI">ID FOOD / RNI</option>
+            <option value="Supplier Lainnya">Supplier Lainnya</option>
+          </select>
+        </div>
+        <div id="wrapNoDo">
+          <label>Nomor Surat Jalan / DO</label>
+          <input type="text" id="inpNoDo" placeholder="Contoh: DO-2026-8812" />
+        </div>
+      </div>
+
+      <div id="wrapFotoDo" style="margin-top:10px;">
+        <label>Foto Surat Jalan / DO (Opsional — Terkompresi Otomatis)</label>
+        <div class="photo-box">
+          <input type="file" accept="image/*" capture="environment" onchange="handleImageUpload(this, 'fotoDo', 'prevFotoDo', 'infoFotoDo')" />
+          <div id="infoFotoDo" class="photo-info"></div>
+          <img id="prevFotoDo" class="photo-preview" alt="Preview Surat Jalan" />
+        </div>
+      </div>
+
+      <div style="margin-top:10px;">
+        <label>Catatan Lapangan (Opsional)</label>
+        <input type="text" id="inpCatatan" placeholder="Contoh: Bongkar pagi kemasan aman" />
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>Input Jumlah Barang</span>
+        <span id="itemCountBadge" style="font-size:12px; color:#059669;">0 item diisi</span>
+      </div>
+
+      <div class="chip-bar" id="categoryChips"></div>
+      <div style="margin-bottom:8px;">
+        <input type="text" id="searchBarang" placeholder="Cari cepat barang (SPHP, Gas, Urea, Minyakita, ID FOOD)..." oninput="renderItemList()" />
+      </div>
+
+      <div id="itemListContainer"></div>
+
+      <details style="margin-top:12px; background:#f8fafc; padding:10px; border-radius:8px; border:1px dashed #cbd5e1;">
+        <summary style="font-size:12px; font-weight:700; color:#334155; cursor:pointer;">+ Tambah Item Baru (Jika Belum Ada di Daftar)</summary>
+        <div class="grid-3" style="margin-top:8px;">
+          <select id="customCat">
+            <option value="Produk ID FOOD">Produk ID FOOD</option>
+            <option value="Beras SPHP">Beras SPHP</option>
+            <option value="Gas LPG 3kg">Gas LPG 3kg</option>
+            <option value="Pupuk Subsidi">Pupuk Subsidi</option>
+            <option value="Minyakita">Minyakita</option>
+            <option value="Komoditas Lain">Komoditas Lain</option>
+          </select>
+          <input type="text" id="customName" placeholder="Nama barang baru" />
+          <div style="display:flex; gap:6px;">
+            <input type="text" id="customUnit" placeholder="Satuan" style="width:60%;" />
+            <button class="btn btn-outline btn-sm" onclick="addCustomItem()" style="width:40%;">Tambah</button>
+          </div>
+        </div>
+      </details>
+
+      <div style="margin-top:16px;">
+        <button id="btnSubmitStok" class="btn btn-primary" onclick="submitStokReport()">
+          Kirim Laporan Barang ke Pusat ASR
+        </button>
+      </div>
+
+      <div id="waResultBox" class="wa-card" style="display:none;">
+        <div style="font-size:13px; font-weight:700; color:#166534;">
+          Terkirim! Salin format di bawah sesuai grup WA masing-masing:
+        </div>
+        <div id="waCardsContainer"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TAB 2: SETOR OMSET & BUKTI FOTO ==================== -->
+  <section id="tab-omset" class="section">
+    <div class="card">
+      <div class="card-title">Setor Omset Close Shift & Bukti Transfer</div>
+      <div class="grid-3">
+        <div>
+          <label>Tanggal Operasional</label>
+          <input type="date" id="omsetTanggal" />
+        </div>
+        <div>
+          <label>Shift Operasional</label>
+          <select id="omsetShift">
+            <option value="Full Day / Tutup Gerai">Full Day / Tutup Gerai</option>
+            <option value="Shift 1 (Pagi - Siang)">Shift 1 (Pagi - Siang)</option>
+            <option value="Shift 2 (Siang - Malam)">Shift 2 (Siang - Malam)</option>
+          </select>
+        </div>
+        <div>
+          <label>Rekening Tujuan / Bank</label>
+          <select id="omsetBank">
+            <option value="BRI KDKMP / ASR">BRI KDKMP / ASR</option>
+            <option value="BNI KDKMP / ASR">BNI KDKMP / ASR</option>
+            <option value="Mandiri KDKMP / ASR">Mandiri KDKMP / ASR</option>
+            <option value="BJB KDKMP / ASR">BJB KDKMP / ASR</option>
+            <option value="Setor Tunai / Lainnya">Setor Tunai / Lainnya</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:12px;">
+        <div>
+          <label>Total Omset di Struk Close Shift (Rp)</label>
+          <input type="number" min="0" inputmode="numeric" id="inpOmsetTotal" placeholder="Contoh: 4550000" oninput="calcOmsetDiff()" />
+          <div id="hintOmsetTotal" class="rp-hint">Rp 0</div>
+        </div>
+        <div>
+          <label>Nominal Dana Ditransfer (Rp)</label>
+          <input type="number" min="0" inputmode="numeric" id="inpOmsetTransfer" placeholder="Contoh: 4550000" oninput="calcOmsetDiff()" />
+          <div id="hintOmsetTransfer" class="rp-hint">Rp 0</div>
+        </div>
+      </div>
+
+      <div class="diff-box">
+        <span style="font-size:12px; font-weight:600; color:#334155;">Selisih (Tunai Ditahan / Modal Kasir):</span>
+        <strong id="dispSelisihOmset" style="font-size:14px; color:#0f172a;">Rp 0</strong>
+      </div>
+
+      <div class="grid-2" style="margin-top:12px;">
+        <div>
+          <label>1. Foto Struk Close Shift (Wajib)</label>
+          <div class="photo-box">
+            <input type="file" accept="image/*" capture="environment" onchange="handleImageUpload(this, 'fotoStruk', 'prevFotoStruk', 'infoFotoStruk')" />
+            <div id="infoFotoStruk" class="photo-info"></div>
+            <img id="prevFotoStruk" class="photo-preview" alt="Preview Struk Close Shift" />
+          </div>
+        </div>
+        <div>
+          <label>2. Foto Bukti Transfer Omset (Wajib)</label>
+          <div class="photo-box">
+            <input type="file" accept="image/*" capture="environment" onchange="handleImageUpload(this, 'fotoTransfer', 'prevFotoTransfer', 'infoFotoTransfer')" />
+            <div id="infoFotoTransfer" class="photo-info"></div>
+            <img id="prevFotoTransfer" class="photo-preview" alt="Preview Bukti Transfer" />
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <label>Catatan Setoran (Opsional)</label>
+        <input type="text" id="omsetCatatan" placeholder="Contoh: Rp 200.000 ditahan untuk uang kembalian besok" />
+      </div>
+
+      <div style="margin-top:16px;">
+        <button id="btnSubmitOmset" class="btn btn-success" onclick="submitOmsetReport()">
+          Upload Bukti & Kirim Laporan Omset
+        </button>
+      </div>
+
+      <div id="waOmsetBox" class="wa-card" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <strong style="font-size:12px; color:#166534;">Teks Laporan Grup WA Setoran Omset:</strong>
+          <button class="btn btn-success btn-sm" onclick="copyBox('waOmsetTxt')">Salin Teks Setoran</button>
+        </div>
+        <textarea id="waOmsetTxt" class="wa-preview" readonly></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TAB 3: PERENCANAAN PO ==================== -->
+  <section id="tab-po" class="section">
+    <div class="card">
+      <div class="card-title">Pengajuan Perencanaan PO Barang</div>
+      <div class="grid-2" style="margin-bottom:10px;">
+        <div>
+          <label>Target Tanggal Pengiriman / Kebutuhan</label>
+          <input type="date" id="poTanggal" />
+        </div>
+        <div>
+          <label>Catatan Pengajuan PO (Opsional)</label>
+          <input type="text" id="poCatatan" placeholder="Contoh: Prioritas akhir pekan / stok menipis" />
+        </div>
+      </div>
+
+      <div id="poItemListContainer"></div>
+
+      <div style="margin-top:16px;">
+        <button id="btnSubmitPo" class="btn btn-purple" onclick="submitPoReport()">
+          Kirim Pengajuan PO ke ASR
+        </button>
+      </div>
+
+      <div id="waPoBox" class="wa-card" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <strong style="font-size:12px; color:#166534;">Teks Pengajuan PO untuk Grup WA:</strong>
+          <button class="btn btn-success btn-sm" onclick="copyBox('waPoTxt')">Salin Teks PO</button>
+        </div>
+        <textarea id="waPoTxt" class="wa-preview" readonly></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Riwayat & Status PO Gerai Ini</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tgl Kirim</th>
+              <th>Barang</th>
+              <th>Jumlah PO</th>
+              <th>Status ASR</th>
+            </tr>
+          </thead>
+          <tbody id="tblMyPoBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+  // =========================================================================
+  // KONFIGURASI BACKEND: Tempel URL Web App Google Apps Script (/exec) di sini
+  // =========================================================================
+  const SCRIPT_URL = "";
+
+  const DEFAULT_KDKMP = [
+    { Kecamatan: "Cibeber", Nama_KDKMP: "KDKMP Selagedang", Nama_Manager: "Abdurrahman Hidayatullah" },
+    { Kecamatan: "Cibeber", Nama_KDKMP: "KDKMP Cihaur", Nama_Manager: "Manager Cihaur" },
+    { Kecamatan: "Cibeber", Nama_KDKMP: "KDKMP Kanoman", Nama_Manager: "Manager Kanoman" },
+    { Kecamatan: "Karangtengah", Nama_KDKMP: "KDKMP Sabandar", Nama_Manager: "Manager Sabandar" },
+    { Kecamatan: "Ciranjang", Nama_KDKMP: "KDKMP Ciranjang", Nama_Manager: "Manager Ciranjang" },
+    { Kecamatan: "Cipanas", Nama_KDKMP: "KDKMP Cipanas", Nama_Manager: "Manager Cipanas" }
+  ];
+
+  const DEFAULT_BARANG = [
+    { Kode_Barang: "SPHP-01", Kategori: "Beras SPHP", Nama_Barang: "Beras SPHP Bulog (5 Kg)", Satuan: "Sak" },
+    { Kode_Barang: "GAS-01", Kategori: "Gas LPG 3kg", Nama_Barang: "Tabung Gas LPG 3 Kg", Satuan: "Tabung" },
+    { Kode_Barang: "PPK-01", Kategori: "Pupuk Subsidi", Nama_Barang: "Pupuk Urea Subsidi (50 Kg)", Satuan: "Zak" },
+    { Kode_Barang: "PPK-02", Kategori: "Pupuk Subsidi", Nama_Barang: "Pupuk NPK Phonska (50 Kg)", Satuan: "Zak" },
+    { Kode_Barang: "MYK-01", Kategori: "Minyakita", Nama_Barang: "Minyakita Pouch / Botol 1L", Satuan: "Liter" },
+    { Kode_Barang: "IDF-01", Kategori: "Produk ID FOOD", Nama_Barang: "Gula Pasir Kristal Putih 1 Kg", Satuan: "Kg" },
+    { Kode_Barang: "IDF-02", Kategori: "Produk ID FOOD", Nama_Barang: "Minyak Goreng ID FOOD 1L", Satuan: "Liter" },
+    { Kode_Barang: "IDF-03", Kategori: "Produk ID FOOD", Nama_Barang: "Tepung Terigu ID FOOD 1 Kg", Satuan: "Kg" },
+    { Kode_Barang: "IDF-04", Kategori: "Produk ID FOOD", Nama_Barang: "Daging Kerbau / Ayam Beku", Satuan: "Kg" }
+  ];
+
+  let state = {
+    profile: JSON.parse(localStorage.getItem("kdkmp_profile") || "null") || {
+      kecamatan: "Cibeber",
+      nama_kdkmp: "KDKMP Selagedang",
+      manager: "Abdurrahman Hidayatullah"
+    },
+    reportType: "PENERIMAAN",
+    selectedCategory: "ALL",
+    quantities: {},
+    poQuantities: {},
+    photos: { fotoDo: "", fotoStruk: "", fotoTransfer: "" },
+    masterKdkmp: JSON.parse(localStorage.getItem("kdkmp_master_gerai") || "null") || DEFAULT_KDKMP,
+    masterBarang: JSON.parse(localStorage.getItem("kdkmp_master_barang") || "null") || DEFAULT_BARANG,
+    rekapStok: JSON.parse(localStorage.getItem("kdkmp_rekap_stok") || "[]"),
+    poList: JSON.parse(localStorage.getItem("kdkmp_po_list") || "[]")
+  };
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const today = new Date().toISOString().slice(0, 10);
+    document.getElementById("inpTanggal").value = today;
+    document.getElementById("omsetTanggal").value = today;
+
+    const tomorrow = new Date(Date.now() + 86400000 * 2).toISOString().slice(0, 10);
+    document.getElementById("poTanggal").value = tomorrow;
+
+    const badge = document.getElementById("connBadge");
+    if (SCRIPT_URL) {
+      badge.textContent = "Terhubung Pusat ASR";
+      badge.className = "badge-status status-live";
+    }
+
+    populateSelectors();
+    renderCategoryChips();
+    renderItemList();
+    renderPoItemList();
+    renderMyPoTable();
+
+    if (SCRIPT_URL) {
+      await syncFromServer();
+    }
+  });
+
+  async function syncFromServer() {
+    try {
+      const res = await fetch(SCRIPT_URL);
+      const data = await res.json();
+      if (data.status === "success") {
+        if (data.master_kdkmp && data.master_kdkmp.length) {
+          state.masterKdkmp = data.master_kdkmp;
+          localStorage.setItem("kdkmp_master_gerai", JSON.stringify(state.masterKdkmp));
+        }
+        if (data.master_barang && data.master_barang.length) {
+          state.masterBarang = data.master_barang;
+          localStorage.setItem("kdkmp_master_barang", JSON.stringify(state.masterBarang));
+        }
+        state.rekapStok = data.rekap_stok || [];
+        state.poList = data.po_list || [];
+        localStorage.setItem("kdkmp_rekap_stok", JSON.stringify(state.rekapStok));
+        localStorage.setItem("kdkmp_po_list", JSON.stringify(state.poList));
+
+        populateSelectors();
+        renderCategoryChips();
+        renderItemList();
+        renderPoItemList();
+        renderMyPoTable();
+      }
+    } catch (e) {
+      console.warn("Memakai cache lokal:", e);
+    }
+  }
+
+  function showToast(msg) {
+    const el = document.getElementById("toast");
+    el.textContent = msg;
+    el.style.display = "block";
+    setTimeout(() => { el.style.display = "none"; }, 2800);
+  }
+
+  function formatRp(num) {
+    return "Rp " + (Number(num) || 0).toLocaleString("id-ID");
+  }
+
+  function switchTab(tabId, btn) {
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById(tabId).classList.add("active");
+    btn.classList.add("active");
+    if (tabId === "tab-po") {
+      renderPoItemList();
+      renderMyPoTable();
+    }
+  }
+
+  // ==================== IDENTITAS GERAI ====================
+  function populateSelectors() {
+    const kecList = [...new Set(state.masterKdkmp.map(x => x.Kecamatan))].sort();
+    const selKec = document.getElementById("selKecamatan");
+    selKec.innerHTML = kecList.map(k => `<option value="${k}">${k}</option>`).join("");
+    if (kecList.includes(state.profile.kecamatan)) selKec.value = state.profile.kecamatan;
+    onKecamatanChange(true);
+  }
+
+  function onKecamatanChange(isInit = false) {
+    const kec = document.getElementById("selKecamatan").value;
+    const geraiList = state.masterKdkmp.filter(x => x.Kecamatan === kec);
+    const selKdkmp = document.getElementById("selKdkmp");
+    selKdkmp.innerHTML = geraiList.map(g => `<option value="${g.Nama_KDKMP}">${g.Nama_KDKMP}</option>`).join("");
+
+    if (isInit && geraiList.some(g => g.Nama_KDKMP === state.profile.nama_kdkmp)) {
+      selKdkmp.value = state.profile.nama_kdkmp;
+    }
+    saveProfile(!isInit);
+  }
+
+  function saveProfile(notify = false) {
+    const kec = document.getElementById("selKecamatan").value;
+    const kdkmp = document.getElementById("selKdkmp").value;
+    const found = state.masterKdkmp.find(g => g.Kecamatan === kec && g.Nama_KDKMP === kdkmp);
+    const mgrName = found && found.Nama_Manager ? found.Nama_Manager : "Belum Terdaftar di Master ASR";
+
+    state.profile = { kecamatan: kec, nama_kdkmp: kdkmp, manager: mgrName };
+    localStorage.setItem("kdkmp_profile", JSON.stringify(state.profile));
+
+    document.getElementById("dispManager").textContent = mgrName;
+    document.getElementById("activeGeraiLabel").textContent =
+      `${kdkmp} (Kec. ${kec}) • ${mgrName}`;
+
+    renderPoItemList();
+    renderMyPoTable();
+    if (notify) showToast("Gerai terkunci: " + kdkmp);
+  }
+
+  // ==================== KOMPRESI GAMBAR OTOMATIS DI HP ====================
+  function handleImageUpload(inputEl, stateKey, previewId, infoId) {
+    const file = inputEl.files && inputEl.files[0];
+    if (!file) return;
+
+    const infoEl = document.getElementById(infoId);
+    const prevEl = document.getElementById(previewId);
+    infoEl.textContent = "Mengompresi gambar...";
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement("canvas");
+        const maxWidth = 900;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.72);
+        state.photos[stateKey] = compressedDataUrl;
+
+        const approxKb = Math.round((compressedDataUrl.length * 3) / 4 / 1024);
+        infoEl.textContent = `Siap upload (${approxKb} KB)`;
+        prevEl.src = compressedDataUrl;
+        prevEl.style.display = "inline-block";
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ==================== MODUL 1: STOK & BARANG MASUK ====================
+  function setReportType(type) {
+    state.reportType = type;
+    document.getElementById("pillIn").className = type === "PENERIMAAN" ? "type-pill active-in" : "type-pill";
+    document.getElementById("pillStock").className = type === "STOK_SISA" ? "type-pill active-stock" : "type-pill";
+    document.getElementById("wrapSupplier").style.display = type === "PENERIMAAN" ? "block" : "none";
+    document.getElementById("wrapNoDo").style.display = type === "PENERIMAAN" ? "block" : "none";
+    document.getElementById("wrapFotoDo").style.display = type === "PENERIMAAN" ? "block" : "none";
+  }
+
+  function renderCategoryChips() {
+    const cats = ["ALL", ...new Set(state.masterBarang.map(b => b.Kategori))];
+    document.getElementById("categoryChips").innerHTML = cats.map(c => {
+      const label = c === "ALL" ? "Semua Komoditas" : c;
+      const active = state.selectedCategory === c ? "active" : "";
+      return `<button class="chip ${active}" onclick="selectCategory('${c}')">${label}</button>`;
+    }).join("");
+  }
+
+  function selectCategory(cat) {
+    state.selectedCategory = cat;
+    renderCategoryChips();
+    renderItemList();
+  }
+
+  function renderItemList() {
+    const query = document.getElementById("searchBarang").value.toLowerCase();
+    const filtered = state.masterBarang.filter(b => {
+      const matchCat = state.selectedCategory === "ALL" || b.Kategori === state.selectedCategory;
+      const matchSearch = b.Nama_Barang.toLowerCase().includes(query) || b.Kategori.toLowerCase().includes(query);
+      return matchCat && matchSearch;
+    });
+
+    const container = document.getElementById("itemListContainer");
+    if (filtered.length === 0) {
+      container.innerHTML = `<p style="font-size:13px; color:#64748b; text-align:center;">Barang tidak ditemukan.</p>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(b => {
+      const val = state.quantities[b.Kode_Barang] !== undefined ? state.quantities[b.Kode_Barang] : "";
+      const hasValClass = val !== "" && Number(val) >= 0 ? "has-value" : "";
+      return `
+        <div class="item-row">
+          <div class="item-info">
+            <div class="item-name">${b.Nama_Barang}</div>
+            <div class="item-meta">${b.Kategori} • Satuan: ${b.Satuan}</div>
+          </div>
+          <div class="qty-control">
+            <button class="btn-step" onclick="stepQty('${b.Kode_Barang}', -1)">-</button>
+            <input type="number" min="0" inputmode="numeric" class="qty-input ${hasValClass}"
+              id="qty_${b.Kode_Barang}" value="${val}" placeholder="0"
+              oninput="updateQty('${b.Kode_Barang}', this.value)" />
+            <button class="btn-step" onclick="stepQty('${b.Kode_Barang}', 1)">+</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+    updateFilledCount();
+  }
+
+  function stepQty(code, delta) {
+    const curr = Number(state.quantities[code] || 0);
+    const next = Math.max(0, curr + delta);
+    state.quantities[code] = next;
+    const inp = document.getElementById("qty_" + code);
+    if (inp) { inp.value = next; inp.classList.add("has-value"); }
+    updateFilledCount();
+  }
+
+  function updateQty(code, rawVal) {
+    if (rawVal === "") delete state.quantities[code];
+    else state.quantities[code] = Math.max(0, Number(rawVal));
+    const inp = document.getElementById("qty_" + code);
+    if (inp) inp.classList.toggle("has-value", rawVal !== "");
+    updateFilledCount();
+  }
+
+  function updateFilledCount() {
+    const count = Object.keys(state.quantities).filter(k => state.quantities[k] !== "" && state.quantities[k] !== undefined).length;
+    document.getElementById("itemCountBadge").textContent = `${count} item diisi`;
+  }
+
+  function addCustomItem() {
+    const cat = document.getElementById("customCat").value;
+    const name = document.getElementById("customName").value.trim();
+    const unit = document.getElementById("customUnit").value.trim() || "Pcs";
+    if (!name) return showToast("Isi nama barang dulu!");
+    state.masterBarang.push({ Kode_Barang: "CST-" + Date.now().toString().slice(-5), Kategori: cat, Nama_Barang: name, Satuan: unit });
+    localStorage.setItem("kdkmp_master_barang", JSON.stringify(state.masterBarang));
+    document.getElementById("customName").value = "";
+    document.getElementById("customUnit").value = "";
+    renderCategoryChips();
+    renderItemList();
+    renderPoItemList();
+    showToast("Item baru ditambahkan: " + name);
+  }
+
+  async function submitStokReport() {
+    const itemsToSend = [];
+    for (const [code, qty] of Object.entries(state.quantities)) {
+      if (qty === "" || qty === undefined) continue;
+      if (state.reportType === "PENERIMAAN" && Number(qty) <= 0) continue;
+      const master = state.masterBarang.find(b => b.Kode_Barang === code);
+      if (master) {
+        itemsToSend.push({
+          kode_barang: master.Kode_Barang,
+          kategori: master.Kategori,
+          nama_barang: master.Nama_Barang,
+          satuan: master.Satuan,
+          jumlah: Number(qty)
+        });
+      }
+    }
+
+    if (itemsToSend.length === 0) return showToast("Isi minimal 1 jumlah barang!");
+
+    const payload = {
+      action: "STOK_LOG",
+      tanggal: document.getElementById("inpTanggal").value,
+      kecamatan: state.profile.kecamatan,
+      nama_kdkmp: state.profile.nama_kdkmp,
+      manager: state.profile.manager,
+      jenis_laporan: state.reportType,
+      supplier: state.reportType === "PENERIMAAN" ? document.getElementById("inpSupplier").value : "-",
+      no_do: state.reportType === "PENERIMAAN" ? (document.getElementById("inpNoDo").value.trim() || "-") : "-",
+      catatan: document.getElementById("inpCatatan").value.trim(),
+      foto_do_base64: state.reportType === "PENERIMAAN" ? state.photos.fotoDo : "",
+      items: itemsToSend
+    };
+
+    const btn = document.getElementById("btnSubmitStok");
+    btn.disabled = true;
+    btn.textContent = "Mengirim ke Pusat ASR...";
+
+    try {
+      let linkFoto = "-";
+      if (SCRIPT_URL) {
+        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+        const json = await res.json();
+        if (json.status !== "success") throw new Error(json.message || "Gagal simpan ke server");
+        linkFoto = json.link_foto_do || "-";
+        await syncFromServer();
+        showToast("Berhasil tersimpan ke Google Sheets ASR!");
+      } else {
+        saveStokLocally(payload);
+        if (payload.foto_do_base64) linkFoto = "(Tersimpan di Mode Sandbox Lokal)";
+        showToast(`Tersimpan di Sandbox Lokal (${itemsToSend.length} item)`);
+      }
+
+      renderPerGroupWaOutputs(payload, linkFoto);
+      state.quantities = {};
+      state.photos.fotoDo = "";
+      document.getElementById("inpNoDo").value = "";
+      document.getElementById("inpCatatan").value = "";
+      document.getElementById("prevFotoDo").style.display = "none";
+      document.getElementById("infoFotoDo").textContent = "";
+      renderItemList();
+    } catch (err) {
+      alert("Gagal kirim: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Kirim Laporan Barang ke Pusat ASR";
+    }
+  }
+
+  function saveStokLocally(payload) {
+    const logs = JSON.parse(localStorage.getItem("kdkmp_recent_logs") || "[]");
+    const nowStr = new Date().toLocaleString("id-ID");
+
+    payload.items.forEach(item => {
+      logs.unshift({
+        Waktu_Input: nowStr, Tanggal: payload.tanggal, Kecamatan: payload.kecamatan,
+        Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager, Jenis_Laporan: payload.jenis_laporan,
+        Kategori: item.kategori, Supplier: payload.supplier, No_DO: payload.no_do,
+        Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan,
+        Jumlah: item.jumlah, Link_Foto_DO: payload.foto_do_base64 ? "Sandbox_Foto_DO" : "-"
+      });
+      const idx = state.rekapStok.findIndex(s => s.Nama_KDKMP === payload.nama_kdkmp && s.Kode_Barang === item.kode_barang);
+      if (idx >= 0) {
+        const prev = Number(state.rekapStok[idx].Stok_Akhir) || 0;
+        state.rekapStok[idx].Stok_Akhir = payload.jenis_laporan === "PENERIMAAN" ? (prev + item.jumlah) : item.jumlah;
+        state.rekapStok[idx].Update_Terakhir = nowStr;
+      } else {
+        state.rekapStok.push({
+          Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Kategori: item.kategori,
+          Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan,
+          Stok_Akhir: item.jumlah, Update_Terakhir: nowStr
+        });
+      }
+    });
+    localStorage.setItem("kdkmp_recent_logs", JSON.stringify(logs.slice(0, 250)));
+    localStorage.setItem("kdkmp_rekap_stok", JSON.stringify(state.rekapStok));
+  }
+
+  function renderPerGroupWaOutputs(payload, linkFotoDo) {
+    const jenisText = payload.jenis_laporan === "PENERIMAAN" ? "PENERIMAAN BARANG" : "STOK SISA HARIAN";
+    const grouped = {};
+    payload.items.forEach(it => {
+      if (!grouped[it.kategori]) grouped[it.kategori] = [];
+      grouped[it.kategori].push(it);
+    });
+
+    const container = document.getElementById("waCardsContainer");
+    let html = "";
+    let idx = 0;
+
+    for (const [kat, list] of Object.entries(grouped)) {
+      idx++;
+      const lines = list.map(i => `• ${i.nama_barang}: *${i.jumlah} ${i.satuan}*`).join("\n");
+      let extra = payload.jenis_laporan === "PENERIMAAN"
+        ? `Supplier: ${payload.supplier}\nNo. DO: ${payload.no_do}\n`
+        : "";
+      if (linkFotoDo && linkFotoDo !== "-") extra += `Foto DO: ${linkFotoDo}\n`;
+      if (payload.catatan) extra += `Catatan: ${payload.catatan}\n`;
+
+      const msg = `*LAPORAN ${jenisText} - ${kat.toUpperCase()}*\n` +
+        `Gerai: *${payload.nama_kdkmp}*\n` +
+        `Kecamatan: ${payload.kecamatan}\n` +
+        `Tanggal: ${payload.tanggal}\n` +
+        `Manager: ${payload.manager}\n` +
+        `${extra}\n${lines}`;
+
+      html += `
+        <div class="wa-item-box">
+          <div class="wa-item-head">
+            <strong style="font-size:12px; color:#0f172a;">Grup WA: ${kat}</strong>
+            <button class="btn btn-success btn-sm" onclick="copyBox('waTxt_${idx}')">Salin untuk Grup ${kat}</button>
+          </div>
+          <textarea id="waTxt_${idx}" class="wa-preview" readonly>${msg}</textarea>
+        </div>
+      `;
+    }
+
+    container.innerHTML = html;
+    document.getElementById("waResultBox").style.display = "block";
+    document.getElementById("waResultBox").scrollIntoView({ behavior: "smooth" });
+  }
+
+  // ==================== MODUL 2: SETOR OMSET & BUKTI FOTO ====================
+  function calcOmsetDiff() {
+    const omset = Number(document.getElementById("inpOmsetTotal").value) || 0;
+    const tf = Number(document.getElementById("inpOmsetTransfer").value) || 0;
+    document.getElementById("hintOmsetTotal").textContent = formatRp(omset);
+    document.getElementById("hintOmsetTransfer").textContent = formatRp(tf);
+    document.getElementById("dispSelisihOmset").textContent = formatRp(omset - tf);
+  }
+
+  async function submitOmsetReport() {
+    const omset = Number(document.getElementById("inpOmsetTotal").value) || 0;
+    const tf = Number(document.getElementById("inpOmsetTransfer").value) || 0;
+
+    if (omset <= 0 && tf <= 0) return showToast("Isi nominal omset atau transfer terlebih dahulu!");
+    if (!state.photos.fotoStruk || !state.photos.fotoTransfer) {
+      return showToast("Wajib lampirkan Foto Struk Close Shift dan Foto Bukti Transfer!");
+    }
+
+    const payload = {
+      action: "SETOR_OMSET",
+      tanggal: document.getElementById("omsetTanggal").value,
+      shift: document.getElementById("omsetShift").value,
+      kecamatan: state.profile.kecamatan,
+      nama_kdkmp: state.profile.nama_kdkmp,
+      manager: state.profile.manager,
+      nominal_omset: omset,
+      nominal_transfer: tf,
+      metode_rekening: document.getElementById("omsetBank").value,
+      foto_struk_base64: state.photos.fotoStruk,
+      foto_transfer_base64: state.photos.fotoTransfer,
+      catatan: document.getElementById("omsetCatatan").value.trim()
+    };
+
+    const btn = document.getElementById("btnSubmitOmset");
+    btn.disabled = true;
+    btn.textContent = "Mengunggah Foto ke Google Drive ASR...";
+
+    try {
+      let linkStruk = "(Tersimpan Lokal)";
+      let linkTf = "(Tersimpan Lokal)";
+
+      if (SCRIPT_URL) {
+        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+        const json = await res.json();
+        if (json.status !== "success") throw new Error(json.message || "Gagal upload setoran");
+        linkStruk = json.link_struk;
+        linkTf = json.link_transfer;
+        showToast("Bukti foto & laporan omset tersimpan ke Drive ASR!");
+      } else {
+        const omsetLogs = JSON.parse(localStorage.getItem("kdkmp_omset_logs") || "[]");
+        omsetLogs.unshift({
+          Waktu_Input: new Date().toLocaleString("id-ID"),
+          Tanggal: payload.tanggal, Shift: payload.shift, Kecamatan: payload.kecamatan,
+          Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager,
+          Nominal_Omset: omset, Nominal_Transfer: tf, Selisih_Tunai: omset - tf,
+          Metode_Rekening: payload.metode_rekening,
+          Link_Struk_CloseShift: payload.foto_struk_base64,
+          Link_Bukti_Transfer: payload.foto_transfer_base64,
+          Catatan: payload.catatan
+        });
+        localStorage.setItem("kdkmp_omset_logs", JSON.stringify(omsetLogs.slice(0, 200)));
+        showToast("Laporan omset & foto tersimpan di Sandbox Lokal!");
+      }
+
+      const waMsg = `*LAPORAN SETOR OMSET & CLOSE SHIFT*\n` +
+        `Gerai: *${payload.nama_kdkmp}*\n` +
+        `Kecamatan: ${payload.kecamatan}\n` +
+        `Tanggal: ${payload.tanggal} (${payload.shift})\n` +
+        `Manager: ${payload.manager}\n\n` +
+        `Total Omset Struk: *${formatRp(omset)}*\n` +
+        `Nominal Ditransfer: *${formatRp(tf)}*\n` +
+        `Selisih / Tunai Ditahan: ${formatRp(omset - tf)}\n` +
+        `Rekening Tujuan: ${payload.metode_rekening}\n` +
+        `Struk Close Shift: ${linkStruk}\n` +
+        `Bukti Transfer: ${linkTf}` +
+        (payload.catatan ? `\nCatatan: ${payload.catatan}` : "");
+
+      document.getElementById("waOmsetTxt").value = waMsg;
+      document.getElementById("waOmsetBox").style.display = "block";
+      document.getElementById("waOmsetBox").scrollIntoView({ behavior: "smooth" });
+
+      // Reset form foto
+      state.photos.fotoStruk = "";
+      state.photos.fotoTransfer = "";
+      document.getElementById("prevFotoStruk").style.display = "none";
+      document.getElementById("prevFotoTransfer").style.display = "none";
+      document.getElementById("infoFotoStruk").textContent = "";
+      document.getElementById("infoFotoTransfer").textContent = "";
+      document.getElementById("inpOmsetTotal").value = "";
+      document.getElementById("inpOmsetTransfer").value = "";
+      document.getElementById("omsetCatatan").value = "";
+      calcOmsetDiff();
+    } catch (err) {
+      alert("Gagal upload setoran: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Upload Bukti & Kirim Laporan Omset";
+    }
+  }
+
+  // ==================== MODUL 3: PERENCANAAN PO ====================
+  function renderPoItemList() {
+    const container = document.getElementById("poItemListContainer");
+    container.innerHTML = state.masterBarang.map(b => {
+      const stokRec = state.rekapStok.find(
+        s => s.Nama_KDKMP === state.profile.nama_kdkmp && s.Kode_Barang === b.Kode_Barang
+      );
+      const currStok = stokRec ? Number(stokRec.Stok_Akhir) : 0;
+      const val = state.poQuantities[b.Kode_Barang] !== undefined ? state.poQuantities[b.Kode_Barang] : "";
+
+      return `
+        <div class="item-row">
+          <div class="item-info">
+            <div class="item-name">${b.Nama_Barang}</div>
+            <div class="item-meta">${b.Kategori} • Satuan: ${b.Satuan}</div>
+            <span class="stok-ref">Sisa Stok Terakhir: ${currStok} ${b.Satuan}</span>
+          </div>
+          <div class="qty-control">
+            <input type="number" min="0" inputmode="numeric" class="qty-input ${val > 0 ? 'has-value' : ''}"
+              value="${val}" placeholder="PO"
+              oninput="updatePoQty('${b.Kode_Barang}', this.value)" />
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function updatePoQty(code, rawVal) {
+    if (rawVal === "" || Number(rawVal) <= 0) delete state.poQuantities[code];
+    else state.poQuantities[code] = Number(rawVal);
+  }
+
+  async function submitPoReport() {
+    const itemsToOrder = [];
+    for (const [code, qty] of Object.entries(state.poQuantities)) {
+      if (!qty || qty <= 0) continue;
+      const master = state.masterBarang.find(b => b.Kode_Barang === code);
+      const stokRec = state.rekapStok.find(
+        s => s.Nama_KDKMP === state.profile.nama_kdkmp && s.Kode_Barang === code
+      );
+      if (master) {
+        itemsToOrder.push({
+          kode_barang: master.Kode_Barang,
+          kategori: master.Kategori,
+          nama_barang: master.Nama_Barang,
+          satuan: master.Satuan,
+          stok_saat_ini: stokRec ? Number(stokRec.Stok_Akhir) : 0,
+          jumlah_po: Number(qty)
+        });
+      }
+    }
+
+    if (itemsToOrder.length === 0) return showToast("Isi minimal 1 jumlah pesanan PO!");
+
+    const payload = {
+      action: "AJUKAN_PO",
+      tanggal_kebutuhan: document.getElementById("poTanggal").value,
+      kecamatan: state.profile.kecamatan,
+      nama_kdkmp: state.profile.nama_kdkmp,
+      manager: state.profile.manager,
+      catatan: document.getElementById("poCatatan").value.trim(),
+      items: itemsToOrder
+    };
+
+    const btn = document.getElementById("btnSubmitPo");
+    btn.disabled = true;
+    btn.textContent = "Mengirim Pengajuan PO...";
+
+    try {
+      if (SCRIPT_URL) {
+        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+        const json = await res.json();
+        if (json.status !== "success") throw new Error(json.message || "Gagal kirim PO");
+        await syncFromServer();
+        showToast("Pengajuan PO berhasil dikirim ke ASR!");
+      } else {
+        const nowStr = new Date().toLocaleString("id-ID");
+        itemsToOrder.forEach((it, idx) => {
+          state.poList.unshift({
+            ID_PO: "PO-" + Date.now() + "-" + idx,
+            Waktu_Pengajuan: nowStr,
+            Tanggal_Kebutuhan: payload.tanggal_kebutuhan,
+            Kecamatan: payload.kecamatan,
+            Nama_KDKMP: payload.nama_kdkmp,
+            Manager: payload.manager,
+            Kategori: it.kategori,
+            Kode_Barang: it.kode_barang,
+            Nama_Barang: it.nama_barang,
+            Satuan: it.satuan,
+            Stok_Saat_Pengajuan: it.stok_saat_ini,
+            Jumlah_PO: it.jumlah_po,
+            Status_PO: "Diajukan",
+            Catatan: payload.catatan
+          });
+        });
+        localStorage.setItem("kdkmp_po_list", JSON.stringify(state.poList));
+        renderMyPoTable();
+        showToast("Pengajuan PO tersimpan di Sandbox Lokal!");
+      }
+
+      const lines = itemsToOrder.map(i => `• ${i.nama_barang}: *${i.jumlah_po} ${i.satuan}* (Sisa stok: ${i.stok_saat_ini})`).join("\n");
+      const waPo = `*PENGAJUAN PERENCANAAN PO KDKMP*\n` +
+        `Gerai: *${payload.nama_kdkmp}*\n` +
+        `Kecamatan: ${payload.kecamatan}\n` +
+        `Target Kirim: ${payload.tanggal_kebutuhan}\n` +
+        `Manager: ${payload.manager}\n\n` +
+        `${lines}` +
+        (payload.catatan ? `\n\nCatatan: ${payload.catatan}` : "");
+
+      document.getElementById("waPoTxt").value = waPo;
+      document.getElementById("waPoBox").style.display = "block";
+      state.poQuantities = {};
+      document.getElementById("poCatatan").value = "";
+      renderPoItemList();
+    } catch (err) {
+      alert("Gagal kirim PO: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Kirim Pengajuan PO ke ASR";
+    }
+  }
+
+  function renderMyPoTable() {
+    const myPos = state.poList.filter(p => p.Nama_KDKMP === state.profile.nama_kdkmp).slice(0, 20);
+    const tbody = document.getElementById("tblMyPoBody");
+    if (myPos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">Belum ada riwayat PO untuk gerai ini.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = myPos.map(p => {
+      const st = p.Status_PO || "Diajukan";
+      const cls = st === "Selesai" || st === "Disetujui ASR" ? "tag-ok" : (st === "DO Terbit" ? "tag-info" : "tag-wait");
+      return `
+        <tr>
+          <td>${String(p.Tanggal_Kebutuhan).slice(0, 10)}</td>
+          <td><strong>${p.Nama_Barang}</strong></td>
+          <td>${p.Jumlah_PO} ${p.Satuan}</td>
+          <td><span class="tag ${cls}">${st}</span></td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  function copyBox(elId) {
+    const el = document.getElementById(elId);
+    el.select();
+    navigator.clipboard.writeText(el.value);
+    showToast("Teks tersalin! Tinggal paste ke grup WA.");
+  }
+</script>
+</body>
+</html>
