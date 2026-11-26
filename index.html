@@ -82,6 +82,9 @@
     input:focus, textarea:focus {
       outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,235,0.14);
     }
+    input[readonly].scan-locked {
+      background: #f8fafc; color: #0f172a; font-weight: 800; border-color: #94a3b8;
+    }
 
     /* ==================== 1-TAP PILLS & CHIPS ==================== */
     .mode-3-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
@@ -152,7 +155,7 @@
     .qty-input { width: 68px !important; text-align: center; font-weight: 800; font-size: 15px !important; padding: 7px 4px !important; }
     .qty-input.has-value { background: #eff6ff; border-color: var(--primary-light); color: var(--primary); }
 
-    /* ==================== PHOTO SCANNER BOXES ==================== */
+    /* ==================== PHOTO SCANNER & MATCHING BOXES ==================== */
     .photo-box {
       border: 2px dashed #94a3b8; border-radius: 10px; padding: 10px; text-align: center;
       background: #f8fafc;
@@ -172,14 +175,38 @@
     }
     .photo-info { font-size: 11px; color: #059669; font-weight: 700; margin-top: 5px; }
     .ocr-box {
-      margin-top: 6px; padding: 7px 9px; border-radius: 8px; font-size: 11px;
-      text-align: left; display: none; line-height: 1.4;
+      margin-top: 6px; padding: 8px 10px; border-radius: 8px; font-size: 11.5px;
+      text-align: left; display: none; line-height: 1.45;
     }
     .ocr-scanning { background: #eff6ff; border: 1px solid #93c5fd; color: #1e40af; }
     .ocr-ok { background: #dcfce7; border: 1px solid #86efac; color: #166534; }
     .ocr-warn { background: #fef3c7; border: 1px solid #fcd34d; color: #92400e; }
 
-    /* ==================== MODALS (GERAI PICKER & CAMERA) ==================== */
+    .nominal-header-row {
+      display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 5px;
+    }
+    .nominal-header-row label { margin-bottom: 0; }
+    .btn-koreksi {
+      background: #fffbeb; color: #b45309; border: 1px solid #f59e0b;
+      border-radius: 6px; padding: 3px 8px; font-size: 10.5px; font-weight: 800; cursor: pointer;
+    }
+    .btn-koreksi.is-editing {
+      background: #dc2626; color: #fff; border-color: #dc2626;
+    }
+
+    .match-status-box {
+      border-radius: 10px; padding: 11px 13px; margin-top: 12px;
+      font-size: 12.5px; font-weight: 700; line-height: 1.45;
+      border: 1.5px solid #cbd5e1; background: #f8fafc; color: #334155;
+    }
+    .match-ok {
+      background: #dcfce7; border-color: #22c55e; color: #14532d;
+    }
+    .match-err {
+      background: #fee2e2; border-color: #ef4444; color: #7f1d1d;
+    }
+
+    /* ==================== MODALS (GERAI, CAMERA, & SUKSES) ==================== */
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(15, 23, 42, 0.72); z-index: 9990;
       display: none; align-items: flex-end; justify-content: center;
@@ -202,6 +229,33 @@
     }
     .gerai-option:hover, .gerai-option.selected { background: #eff6ff; border-color: var(--primary-light); }
 
+    /* SUCCESS CONFIRMATION MODAL */
+    #successModal {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.78); z-index: 10050;
+      display: none; align-items: center; justify-content: center; padding: 16px;
+    }
+    .success-card {
+      background: #fff; width: 100%; max-width: 420px; border-radius: 18px;
+      padding: 24px 20px; text-align: center; box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+      animation: popIn 0.18s ease-out;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .success-icon {
+      width: 60px; height: 60px; border-radius: 999px; background: #dcfce7; color: #059669;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 32px; font-weight: 900; margin-bottom: 12px; border: 2px solid #34d399;
+    }
+    .success-title { font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; }
+    .success-sub { font-size: 13px; color: #475569; margin: 0 0 14px 0; line-height: 1.45; }
+    .success-detail-box {
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;
+      padding: 10px 12px; text-align: left; font-size: 12px; color: #334155;
+      margin-bottom: 16px; line-height: 1.5;
+    }
+
     #cameraModal {
       position: fixed; inset: 0; background: #000; z-index: 9999;
       display: none; flex-direction: column; justify-content: space-between;
@@ -215,7 +269,7 @@
     }
     #camVideo { width: 100%; height: 100%; object-fit: cover; }
     .cam-guide {
-      position: absolute; width: 84%; height: 68%; border: 2.5px dashed #34d399;
+      position: absolute; width: 86%; height: 74%; border: 2.5px dashed #34d399;
       border-radius: 14px; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45); pointer-events: none;
       display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px;
     }
@@ -243,7 +297,9 @@
       cursor: pointer; transition: 0.15s;
     }
     .btn-primary { background: var(--primary); color: #fff; }
-    .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
+    .btn-primary:disabled, .btn-success:disabled, .btn-teal:disabled, .btn-purple:disabled {
+      background: #94a3b8 !important; cursor: not-allowed; opacity: 0.75;
+    }
     .btn-success { background: var(--success); color: #fff; }
     .btn-teal { background: #0f766e; color: #fff; }
     .btn-purple { background: var(--purple); color: #fff; }
@@ -252,18 +308,6 @@
     .btn-xs { padding: 4px 8px; font-size: 11px; border-radius: 6px; }
 
     .rp-hint { font-size: 12px; font-weight: 800; color: var(--primary); margin-top: 4px; }
-    .diff-box {
-      background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 9px 12px;
-      display: flex; justify-content: space-between; align-items: center; margin-top: 10px;
-    }
-
-    .wa-card { background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; padding: 12px; margin-top: 12px; }
-    .wa-item-box { background: #fff; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px; margin-top: 10px; }
-    .wa-item-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .wa-preview {
-      width: 100%; min-height: 110px; font-family: monospace; font-size: 12px;
-      border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; background: #f8fafc;
-    }
 
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
@@ -277,7 +321,7 @@
     .toast {
       position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
       background: #0f172a; color: #fff; padding: 10px 18px; border-radius: 999px;
-      font-size: 13px; font-weight: 700; z-index: 10000; display: none; box-shadow: 0 6px 18px rgba(0,0,0,0.28);
+      font-size: 13px; font-weight: 700; z-index: 10060; display: none; box-shadow: 0 6px 18px rgba(0,0,0,0.28);
     }
   </style>
 </head>
@@ -296,6 +340,19 @@
     <button type="button" class="btn-switch-gerai" onclick="openGeraiModal()">Ganti Gerai</button>
   </div>
 </header>
+
+<!-- MODAL NOTIFIKASI BERHASIL SIMPAN -->
+<div id="successModal" onclick="if(event.target===this) closeSuccessModal()">
+  <div class="success-card">
+    <div class="success-icon">✓</div>
+    <h3 class="success-title" id="successModalTitle">Data Berhasil Disimpan!</h3>
+    <p class="success-sub" id="successModalSub">Laporan telah masuk ke sistem pusat ASR Cianjur.</p>
+    <div class="success-detail-box" id="successModalDetail"></div>
+    <button type="button" class="btn btn-success" style="width:100%; font-size:14px;" onclick="closeSuccessModal()">
+      OK, Mengerti
+    </button>
+  </div>
+</div>
 
 <!-- MODAL PEMILIH GERAI INSTAN -->
 <div id="geraiModal" class="modal-overlay" onclick="if(event.target===this) closeGeraiModal()">
@@ -327,7 +384,7 @@
   <div class="cam-viewport">
     <video id="camVideo" autoplay playsinline></video>
     <div class="cam-guide" id="camGuideBox">
-      <span id="camGuideText">Posisikan area tanggal di dalam bingkai hijau</span>
+      <span id="camGuideText">Posisikan seluruh struk / bukti di dalam bingkai hijau</span>
     </div>
   </div>
   <div class="cam-footer">
@@ -344,7 +401,7 @@
 <nav class="nav-tabs">
   <button class="nav-btn active" onclick="switchTab('tab-masuk', this)">1. Barang Masuk</button>
   <button class="nav-btn" onclick="switchTab('tab-sisa', this)">2. Stok Sisa</button>
-  <button class="nav-btn" onclick="switchTab('tab-omset', this)">3. Omset & Struk</button>
+  <button class="nav-btn" onclick="switchTab('tab-omset', this)">3. Laporan Sales</button>
   <button class="nav-btn" onclick="switchTab('tab-po', this)">4. Rencana PO</button>
 </nav>
 
@@ -375,7 +432,7 @@
       </div>
 
       <div style="margin-top:10px;">
-        <label>Foto Surat Jalan / DO (Opsional — Tanpa Scan Tanggal Otomatis)</label>
+        <label>Foto Surat Jalan / DO (Opsional)</label>
         <div class="photo-box">
           <div class="photo-btn-row">
             <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoDo', true, false)">Foto Surat Jalan</button>
@@ -404,13 +461,6 @@
       </div>
 
       <div id="masukItemListContainer"></div>
-
-      <div id="waMasukResultBox" class="wa-card" style="display:none;">
-        <div style="font-size:13px; font-weight:700; color:#166534;">
-          Terkirim ke Antrean POS ASR! Salin format di bawah sesuai grup WA:
-        </div>
-        <div id="waMasukCardsContainer"></div>
-      </div>
     </div>
   </section>
 
@@ -446,20 +496,17 @@
       </div>
 
       <div id="sisaItemListContainer"></div>
-
-      <div id="waSisaResultBox" class="wa-card" style="display:none;">
-        <div style="font-size:13px; font-weight:700; color:#166534;">
-          Laporan Stok Sisa Terkirim! Salin format di bawah sesuai grup WA:
-        </div>
-        <div id="waSisaCardsContainer"></div>
-      </div>
     </div>
   </section>
 
-  <!-- ==================== TAB 3: SETOR OMSET & BUKTI FOTO ==================== -->
+  <!-- ==================== TAB 3: LAPORAN SALES (AUTO-SCAN + PENCOCOKAN + KOREKSI) ==================== -->
   <section id="tab-omset" class="section">
     <div class="card">
-      <div class="card-title">Mode Laporan Omset & Transfer</div>
+      <div class="card-title">
+        <span>Laporan Sales & Setoran</span>
+        <span style="font-size:11px; color:#059669;">Auto-Scan Struk & Bukti Transfer</span>
+      </div>
+
       <div class="mode-3-group">
         <div id="modeOmsetFull" class="type-pill active-stock" onclick="setOmsetMode('FULL')">
           1. Closeshift + Setor Hari H
@@ -489,27 +536,10 @@
         <div class="bank-grid" id="bankPills"></div>
       </div>
 
-      <div class="grid-2" style="margin-top:12px;">
-        <div id="wrapInputOmsetTotal">
-          <label>Total Omset di Struk Closeshift (Rp)</label>
-          <input type="number" min="0" inputmode="numeric" id="inpOmsetTotal" placeholder="Contoh: 4550000" oninput="calcOmsetDiff()" />
-          <div id="hintOmsetTotal" class="rp-hint">Rp 0</div>
-        </div>
-        <div id="wrapInputOmsetTransfer">
-          <label>Nominal Dana Ditransfer (Rp)</label>
-          <input type="number" min="0" inputmode="numeric" id="inpOmsetTransfer" placeholder="Contoh: 4550000" oninput="calcOmsetDiff()" />
-          <div id="hintOmsetTransfer" class="rp-hint">Rp 0</div>
-        </div>
-      </div>
-
-      <div class="diff-box" id="wrapSelisihOmset">
-        <span style="font-size:12px; font-weight:600; color:#334155;">Selisih (Tunai Ditahan / Modal Kasir):</span>
-        <strong id="dispSelisihOmset" style="font-size:14px; color:#0f172a;">Rp 0</strong>
-      </div>
-
+      <!-- SCANNER FOTO STRUK CLOSESHIFT & BUKTI TRANSFER -->
       <div class="grid-2" style="margin-top:12px;">
         <div id="wrapBoxStruk">
-          <label>1. Struk Closeshift</label>
+          <label>1. Scan Foto Struk Closeshift</label>
           <div class="photo-box">
             <div class="photo-btn-row">
               <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoStruk', true, true)">Scan Struk Closeshift</button>
@@ -522,7 +552,7 @@
         </div>
 
         <div id="wrapBoxTransfer">
-          <label>2. Bukti Transfer / Setor</label>
+          <label>2. Scan Foto Bukti Transfer</label>
           <div class="photo-box">
             <div class="photo-btn-row">
               <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoTransfer', true, true)">Scan Bukti Setor</button>
@@ -535,17 +565,39 @@
         </div>
       </div>
 
-      <div style="margin-top:12px;">
-        <label>Catatan / Alasan Kendala Transfer (Opsional)</label>
-        <input type="text" id="omsetCatatan" placeholder="Contoh: Agen BRILink tutup malam, transfer besok pagi" />
+      <!-- HASIL NOMINAL OTOMATIS + TOMBOL KOREKSI MANUAL -->
+      <div class="grid-2" style="margin-top:12px;">
+        <div id="wrapInputOmsetTotal">
+          <div class="nominal-header-row">
+            <label>Omset Sales Struk (Tanpa Kas Awal)</label>
+            <button type="button" id="btnKoreksiOmset" class="btn-koreksi" onclick="toggleManualCorrection('omset')">
+              Koreksi Nominal
+            </button>
+          </div>
+          <input type="number" min="0" inputmode="numeric" id="inpOmsetTotal" class="scan-locked" readonly placeholder="Otomatis dari scan struk" oninput="evaluateSalesMatch()" />
+          <div id="hintOmsetTotal" class="rp-hint">Rp 0</div>
+        </div>
+
+        <div id="wrapInputOmsetTransfer">
+          <div class="nominal-header-row">
+            <label>Nominal Transfer Bersih (Dikurangi Admin)</label>
+            <button type="button" id="btnKoreksiTransfer" class="btn-koreksi" onclick="toggleManualCorrection('transfer')">
+              Koreksi Nominal
+            </button>
+          </div>
+          <input type="number" min="0" inputmode="numeric" id="inpOmsetTransfer" class="scan-locked" readonly placeholder="Otomatis dari bukti TF" oninput="evaluateSalesMatch()" />
+          <div id="hintOmsetTransfer" class="rp-hint">Rp 0</div>
+        </div>
       </div>
 
-      <div id="waOmsetBox" class="wa-card" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <strong style="font-size:12px; color:#166534;">Teks Laporan Grup WA Setoran Omset:</strong>
-          <button type="button" class="btn btn-success btn-sm" onclick="copyBox('waOmsetTxt')">Salin Teks Setoran</button>
-        </div>
-        <textarea id="waOmsetTxt" class="wa-preview" readonly></textarea>
+      <!-- STATUS PENCOCOKAN STRUK VS TRANSFER -->
+      <div id="salesMatchBox" class="match-status-box">
+        Silakan scan foto Struk Closeshift dan Bukti Transfer untuk mencocokkan nominal sales.
+      </div>
+
+      <div style="margin-top:12px;">
+        <label>Catatan / Alasan Koreksi atau Kendala Transfer (Opsional)</label>
+        <input type="text" id="omsetCatatan" placeholder="Contoh: Koreksi angka buram pada struk / transfer H+1" />
       </div>
     </div>
   </section>
@@ -566,14 +618,6 @@
       </div>
 
       <div id="poItemListContainer"></div>
-
-      <div id="waPoBox" class="wa-card" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <strong style="font-size:12px; color:#166534;">Teks Pengajuan PO untuk Grup WA:</strong>
-          <button type="button" class="btn btn-success btn-sm" onclick="copyBox('waPoTxt')">Salin Teks PO</button>
-        </div>
-        <textarea id="waPoTxt" class="wa-preview" readonly></textarea>
-      </div>
     </div>
 
     <div class="card">
@@ -636,7 +680,6 @@
 
   const SHIFT_LIST = ["Full Day / Tutup Gerai", "Shift 1 (Pagi)", "Shift 2 (Malam)"];
 
-  // HANYA 2 REKENING RESMI ATAS NAMA PT AGRINAS PANGAN NUSANTARA
   const BANK_LIST = [
     "BRI — PT AGRINAS PANGAN NUSANTARA",
     "BNI — PT AGRINAS PANGAN NUSANTARA"
@@ -678,6 +721,7 @@
     poQuantities: {},
     photos: { fotoDo: "", fotoStruk: "", fotoTransfer: "" },
     ocrDates: { fotoStruk: "", fotoTransfer: "" },
+    ocrCorrected: { omset: false, transfer: false },
     activePhotoTarget: "fotoStruk",
     activeRunOcr: true,
     camStream: null,
@@ -721,16 +765,42 @@
     renderSisaItemList();
     renderPoItemList();
     renderMyPoTable();
-    updateFloatingBar();
+    evaluateSalesMatch();
 
     if (SCRIPT_URL) {
-      await syncFromServer();
+      syncFromServer();
     }
   });
 
+  // ==================== KOMUNIKASI BACKEND TAHAN BANTING (iOS & ANDROID) ====================
+  async function postToBackend(payload) {
+    const options = {
+      method: "POST",
+      mode: "cors",
+      redirect: "follow",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    };
+
+    let lastErr = null;
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const res = await fetch(SCRIPT_URL, options);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        if (json.status !== "success") throw new Error(json.message || "Gagal memproses data di server.");
+        return json;
+      } catch (err) {
+        lastErr = err;
+        if (attempt < 2) await new Promise(r => setTimeout(r, 700));
+      }
+    }
+    throw lastErr || new Error("Koneksi ke server pusat terputus.");
+  }
+
   async function syncFromServer() {
     try {
-      const res = await fetch(SCRIPT_URL);
+      const res = await fetch(SCRIPT_URL, { redirect: "follow" });
       const data = await res.json();
       if (data.status === "success") {
         if (data.master_kdkmp && data.master_kdkmp.length) {
@@ -764,6 +834,18 @@
     } catch (e) {
       console.warn("Memakai cache lokal:", e);
     }
+  }
+
+  // ==================== NOTIFIKASI POP-UP BERHASIL ====================
+  function showSuccessConfirmation(title, subtitle, detailLines) {
+    document.getElementById("successModalTitle").textContent = title;
+    document.getElementById("successModalSub").textContent = subtitle;
+    document.getElementById("successModalDetail").innerHTML = detailLines.join("<br>");
+    document.getElementById("successModal").style.display = "flex";
+  }
+
+  function closeSuccessModal() {
+    document.getElementById("successModal").style.display = "none";
   }
 
   function showToast(msg) {
@@ -856,7 +938,7 @@
     closeGeraiModal();
     renderPoItemList();
     renderMyPoTable();
-    showToast("Gerai terkunci: " + kdkmp);
+    showToast("Gerai aktif: " + kdkmp);
   }
 
   // ==================== RENDER 1-TAP PILLS ====================
@@ -904,25 +986,29 @@
       valEl.textContent = `${count} item diterima`;
       btnEl.className = "btn btn-primary";
       btnEl.textContent = "Kirim Barang Masuk (DO)";
+      btnEl.disabled = false;
     } else if (state.activeTab === "tab-sisa") {
       const count = Object.keys(state.quantitiesSisa).filter(k => state.quantitiesSisa[k] !== "" && state.quantitiesSisa[k] !== undefined).length;
       lblEl.textContent = "Stok Sisa Harian";
       valEl.textContent = `${count} item diaudit`;
       btnEl.className = "btn btn-teal";
       btnEl.textContent = "Kirim Stok Sisa Harian";
+      btnEl.disabled = false;
     } else if (state.activeTab === "tab-omset") {
       const omset = Number(document.getElementById("inpOmsetTotal").value) || 0;
       const tf = Number(document.getElementById("inpOmsetTransfer").value) || 0;
-      lblEl.textContent = state.omsetMode === "SUSUL_TF" ? "Susul Bukti Setor" : "Nominal Omset Struk";
+      lblEl.textContent = state.omsetMode === "SUSUL_TF" ? "Susul Bukti Setor" : "Laporan Sales";
       valEl.textContent = state.omsetMode === "SUSUL_TF" ? formatRp(tf) : formatRp(omset);
       btnEl.className = "btn btn-success";
-      btnEl.textContent = "Kirim Laporan Omset";
+      btnEl.textContent = "Upload Laporan Sales";
+      btnEl.disabled = !isSalesReadyToUpload();
     } else if (state.activeTab === "tab-po") {
       const poCount = Object.keys(state.poQuantities).filter(k => Number(state.poQuantities[k]) > 0).length;
       lblEl.textContent = "Perencanaan PO";
       valEl.textContent = `${poCount} barang dipilih`;
       btnEl.className = "btn btn-purple";
       btnEl.textContent = "Kirim Pengajuan PO";
+      btnEl.disabled = false;
     }
   }
 
@@ -933,7 +1019,7 @@
     else if (state.activeTab === "tab-po") submitPoReport();
   }
 
-  // ==================== KAMERA / GALERI (OCR OPSIONAL HANYA UNTUK STRUK & BUKTI SETOR) ====================
+  // ==================== KAMERA / GALERI & SMART OCR SALES ====================
   async function triggerPhotoCapture(targetKey, useCamera, runOcr) {
     state.activePhotoTarget = targetKey;
     state.activeRunOcr = Boolean(runOcr);
@@ -956,14 +1042,14 @@
         video.srcObject = stream;
         const titleMap = {
           fotoStruk: "Scan Struk Closeshift",
-          fotoTransfer: "Scan Bukti Setor",
+          fotoTransfer: "Scan Bukti Transfer",
           fotoDo: "Foto Surat Jalan / DO"
         };
         document.getElementById("camModalTitle").textContent = titleMap[targetKey] || "Kamera Dokumen";
         document.getElementById("camGuideText").textContent = runOcr
-          ? "Posisikan area tanggal di dalam bingkai hijau"
+          ? "Pastikan seluruh tulisan & angka nominal terlihat jelas di dalam bingkai"
           : "Posisikan lembar Surat Jalan / DO di dalam bingkai";
-        document.getElementById("btnCamCapture").textContent = runOcr ? "Jepret & Scan Tanggal" : "Jepret Foto DO";
+        document.getElementById("btnCamCapture").textContent = runOcr ? "Jepret & Baca Nominal" : "Jepret Foto DO";
         document.getElementById("cameraModal").style.display = "flex";
         return;
       } catch (err) {
@@ -1016,12 +1102,12 @@
     const infoEl = document.getElementById(ui.info);
     const prevEl = document.getElementById(ui.prev);
 
-    infoEl.textContent = runOcr ? "Memproses foto & memindai tanggal..." : "Memproses foto surat jalan...";
+    infoEl.textContent = runOcr ? "Memproses foto & memindai nominal..." : "Memproses foto surat jalan...";
 
     const img = new Image();
     img.onload = function() {
       const uploadCanvas = document.createElement("canvas");
-      const maxUploadW = 950;
+      const maxUploadW = 850;
       let uW = img.width;
       let uH = img.height;
       if (uW > maxUploadW) {
@@ -1032,7 +1118,7 @@
       uploadCanvas.height = uH;
       uploadCanvas.getContext("2d").drawImage(img, 0, 0, uW, uH);
 
-      const compressedDataUrl = uploadCanvas.toDataURL("image/jpeg", 0.76);
+      const compressedDataUrl = uploadCanvas.toDataURL("image/jpeg", 0.72);
       state.photos[targetKey] = compressedDataUrl;
 
       const approxKb = Math.round((compressedDataUrl.length * 3) / 4 / 1024);
@@ -1040,9 +1126,11 @@
       prevEl.src = compressedDataUrl;
       prevEl.style.display = "inline-block";
 
+      evaluateSalesMatch();
+
       if (runOcr && ui.ocr) {
         const ocrCanvas = buildHighContrastCanvas(img);
-        runDateOcrScan(ocrCanvas, targetKey, ui.ocr);
+        runSalesOcrScan(ocrCanvas, targetKey, ui.ocr);
       }
     };
     img.src = dataUrl;
@@ -1050,7 +1138,7 @@
 
   function buildHighContrastCanvas(img) {
     const canvas = document.createElement("canvas");
-    const targetW = Math.min(1400, Math.max(900, img.width));
+    const targetW = Math.min(1500, Math.max(1000, img.width));
     const scale = targetW / img.width;
     canvas.width = targetW;
     canvas.height = Math.round(img.height * scale);
@@ -1062,40 +1150,205 @@
     const d = imgData.data;
     for (let i = 0; i < d.length; i += 4) {
       const gray = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
-      const contrasted = Math.min(255, Math.max(0, (gray - 128) * 1.45 + 128));
+      const contrasted = Math.min(255, Math.max(0, (gray - 128) * 1.55 + 128));
       d[i] = d[i + 1] = d[i + 2] = contrasted;
     }
     ctx.putImageData(imgData, 0, 0);
     return canvas;
   }
 
-  async function runDateOcrScan(canvas, targetKey, ocrBoxId) {
+  async function runSalesOcrScan(canvas, targetKey, ocrBoxId) {
     const ocrEl = document.getElementById(ocrBoxId);
     ocrEl.className = "ocr-box ocr-scanning";
     ocrEl.style.display = "block";
-    ocrEl.textContent = "Membaca tanggal pada bukti secara otomatis...";
+    ocrEl.textContent = targetKey === "fotoStruk"
+      ? "Membaca nominal omset (di antara Kas Awal & Total)..."
+      : "Membaca nominal transfer & mengurangi biaya admin...";
 
     if (typeof Tesseract === "undefined") {
       ocrEl.className = "ocr-box ocr-warn";
-      ocrEl.textContent = "Mode offline — pastikan tanggal laporan di atas sesuai foto.";
+      ocrEl.innerHTML = `Pemindai offline — ketuk <strong>Koreksi Nominal</strong> untuk mengisi angka sesuai foto.`;
       return;
     }
 
     try {
       const result = await Tesseract.recognize(canvas, "eng");
       const rawText = (result && result.data && result.data.text) ? result.data.text : "";
-      const detectedYMD = extractDateFromReceiptText(rawText);
-      state.ocrDates[targetKey] = detectedYMD || "";
-      renderOcrStatusBadge(targetKey, ocrBoxId);
+
+      const detectedDate = extractDateFromReceiptText(rawText);
+      if (detectedDate) state.ocrDates[targetKey] = detectedDate;
+
+      if (targetKey === "fotoStruk") {
+        const parsed = extractSalesFromCloseShift(rawText);
+        if (parsed.omsetSales > 0) {
+          const inp = document.getElementById("inpOmsetTotal");
+          inp.value = parsed.omsetSales;
+          lockInputAfterScan("omset");
+
+          let breakdownHtml = `<strong>Omset Sales Terbaca: ${formatRp(parsed.omsetSales)}</strong>`;
+          if (parsed.kasAwal > 0 || parsed.grandTotal > 0) {
+            breakdownHtml += `<br><span style="font-size:11px;">(Kas Awal: ${formatRp(parsed.kasAwal)} • Total Bawah: ${formatRp(parsed.grandTotal)})</span>`;
+          }
+          if (detectedDate) {
+            breakdownHtml += `<br><span style="font-size:11px;">Tanggal Struk: ${detectedDate.split("-").reverse().join("/")}</span>`;
+          }
+          ocrEl.className = "ocr-box ocr-ok";
+          ocrEl.innerHTML = breakdownHtml;
+        } else {
+          ocrEl.className = "ocr-box ocr-warn";
+          ocrEl.innerHTML = `Nominal omset belum terbaca otomatis. Ketuk <strong>Koreksi Nominal</strong> di bawah untuk mengisi sesuai foto struk.`;
+        }
+      } else if (targetKey === "fotoTransfer") {
+        const parsedTf = extractTransferFromReceipt(rawText);
+        if (parsedTf.netTransfer > 0) {
+          const inp = document.getElementById("inpOmsetTransfer");
+          inp.value = parsedTf.netTransfer;
+          lockInputAfterScan("transfer");
+
+          let tfHtml = `<strong>Nominal Transfer Bersih: ${formatRp(parsedTf.netTransfer)}</strong>`;
+          if (parsedTf.biayaAdmin > 0) {
+            tfHtml += `<br><span style="font-size:11px;">(Tertera: ${formatRp(parsedTf.grossAmount)} − Biaya Admin: ${formatRp(parsedTf.biayaAdmin)})</span>`;
+          }
+          if (detectedDate) {
+            tfHtml += `<br><span style="font-size:11px;">Tanggal Bukti: ${detectedDate.split("-").reverse().join("/")}</span>`;
+          }
+          ocrEl.className = "ocr-box ocr-ok";
+          ocrEl.innerHTML = tfHtml;
+        } else {
+          ocrEl.className = "ocr-box ocr-warn";
+          ocrEl.innerHTML = `Nominal transfer belum terbaca otomatis. Ketuk <strong>Koreksi Nominal</strong> di bawah untuk mengisi sesuai bukti transfer.`;
+        }
+      }
+
+      evaluateSalesMatch();
     } catch (err) {
       ocrEl.className = "ocr-box ocr-warn";
-      ocrEl.textContent = "Tanggal tidak terbaca otomatis. Pastikan tanggal laporan di atas benar.";
+      ocrEl.innerHTML = `Gagal memindai foto. Ketuk <strong>Koreksi Nominal</strong> untuk mengisi manual.`;
     }
+  }
+
+  // ==================== EKSTRAKSI ANGKA UANG & LOGIKA STRUK CLOSESHIFT ====================
+  function parseMoneyTokensFromLine(line) {
+    // Normalisasi karakter OCR yang sering tertukar di sekitar angka
+    const cleaned = line
+      .replace(/Rp\.?/gi, " ")
+      .replace(/IDR/gi, " ")
+      .replace(/[Oo](?=\d{2,3})/g, "0");
+
+    // Tangkap format ribuan Indonesia (contoh: 4.550.000 atau 4,550,000) atau digit utuh >= 4 digit
+    const regex = /\b\d{1,3}(?:[.,]\d{3})+(?:[.,]\d{2})?\b|\b\d{4,9}\b/g;
+    const matches = cleaned.match(regex) || [];
+    const nums = [];
+
+    matches.forEach(m => {
+      // Buang desimal sen di akhir seperti ,00 atau .00
+      let noCents = m.replace(/[.,]00$/, "");
+      const digitsOnly = noCents.replace(/[.,]/g, "");
+      const val = Number(digitsOnly);
+      if (val >= 500 && val <= 900000000) {
+        nums.push(val);
+      }
+    });
+    return nums;
+  }
+
+  function extractSalesFromCloseShift(rawText) {
+    const lines = String(rawText || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    let kasAwal = 0;
+    let idxKasAwal = -1;
+    let grandTotal = 0;
+    let idxGrandTotal = lines.length;
+    let middleExplicitSales = 0;
+    const lineItems = [];
+
+    lines.forEach((line, idx) => {
+      const nums = parseMoneyTokensFromLine(line);
+      const maxNum = nums.length ? Math.max(...nums) : 0;
+      lineItems.push({ idx, line, nums, maxNum });
+
+      if (/kas\s*awal|modal\s*awal|saldo\s*awal|opening/i.test(line) && maxNum > 0) {
+        kasAwal = maxNum;
+        idxKasAwal = idx;
+      } else if (/grand\s*total|total\s*akhir|total\s*keseluruhan|total\s*kas|total\s*setor|^total\b/i.test(line) && maxNum > 0) {
+        grandTotal = maxNum;
+        idxGrandTotal = idx;
+      } else if (/omset|total\s*penjualan|penjualan|total\s*sales|net\s*sales|sales\b|pendapatan/i.test(line) && maxNum > 0) {
+        middleExplicitSales = maxNum;
+      }
+    });
+
+    // 1. Prioritaskan baris dengan label Penjualan / Omset yang berada di antara Kas Awal dan Total Bawah
+    const betweenLines = lineItems.filter(it =>
+      it.maxNum > 0 &&
+      it.idx > idxKasAwal &&
+      it.idx < idxGrandTotal &&
+      !/kas\s*awal|modal\s*awal|saldo\s*awal|tunai\s*fisik|selisih/i.test(it.line)
+    );
+
+    let omsetSales = 0;
+    if (middleExplicitSales > 0) {
+      omsetSales = middleExplicitSales;
+    } else if (betweenLines.length > 0) {
+      // Jika ada beberapa baris angka di tengah, cari yang cocok dengan (grandTotal - kasAwal) atau ambil nilai tengah utama
+      if (grandTotal > kasAwal && kasAwal > 0) {
+        const expected = grandTotal - kasAwal;
+        const exactBetween = betweenLines.find(b => b.maxNum === expected);
+        omsetSales = exactBetween ? exactBetween.maxNum : betweenLines[betweenLines.length - 1].maxNum;
+      } else {
+        omsetSales = betweenLines[betweenLines.length - 1].maxNum;
+      }
+    } else if (grandTotal > kasAwal && kasAwal > 0) {
+      // Fallback otomatis jika baris tengah terpotong: Total Bawah - Kas Awal
+      omsetSales = grandTotal - kasAwal;
+    } else if (grandTotal > 0) {
+      omsetSales = grandTotal;
+    }
+
+    return { kasAwal, omsetSales, grandTotal };
+  }
+
+  function extractTransferFromReceipt(rawText) {
+    const lines = String(rawText || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    let nominalTransfer = 0;
+    let biayaAdmin = 0;
+    let totalDebet = 0;
+    const allNums = [];
+
+    lines.forEach(line => {
+      const nums = parseMoneyTokensFromLine(line);
+      const maxNum = nums.length ? Math.max(...nums) : 0;
+      if (maxNum > 0) allNums.push(maxNum);
+
+      if (/biaya\s*admin|admin(\s*bank)?|biaya\s*transaksi|biaya\s*layanan|fee\b/i.test(line)) {
+        if (/gratis|free|\b0\b/i.test(line) && maxNum === 0) {
+          biayaAdmin = 0;
+        } else if (maxNum > 0 && maxNum <= 50000) {
+          biayaAdmin = maxNum;
+        }
+      } else if (/nominal(\s*transfer)?|jumlah(\s*transfer)?|amount|nilai\s*transfer/i.test(line) && !/total/i.test(line) && maxNum > 0) {
+        nominalTransfer = maxNum;
+      } else if (/total(\s*debet|\s*bayar|\s*transaksi|\s*pembayaran)?/i.test(line) && maxNum > 0) {
+        totalDebet = maxNum;
+      }
+    });
+
+    let grossAmount = nominalTransfer || totalDebet || (allNums.length ? Math.max(...allNums) : 0);
+    let netTransfer = grossAmount;
+
+    if (nominalTransfer > 0 && totalDebet > nominalTransfer && biayaAdmin > 0 && (totalDebet - nominalTransfer === biayaAdmin)) {
+      // Struk menampilkan Nominal Bersih (mis. 4.500.000), Admin (2.500), dan Total Debet (4.502.500)
+      grossAmount = totalDebet;
+      netTransfer = nominalTransfer;
+    } else if (grossAmount > biayaAdmin && biayaAdmin > 0) {
+      // Nominal yang terpampang sudah termasuk biaya admin -> kurangi biaya admin
+      netTransfer = grossAmount - biayaAdmin;
+    }
+
+    return { grossAmount, biayaAdmin, netTransfer };
   }
 
   function extractDateFromReceiptText(rawText) {
     if (!rawText) return null;
-
     const MONTH_MAP = {
       jan: "01", januari: "01", january: "01",
       feb: "02", februari: "02", february: "02",
@@ -1110,36 +1363,26 @@
       nov: "11", nop: "11", november: "11", nopember: "11",
       des: "12", desember: "12", dec: "12", december: "12"
     };
-
     const clean = rawText.replace(/\s+/g, " ");
-
-    const mNameRegex = /\b(\d{1,2})[\s\/\-\.]+(jan(?:uari|uary)?|feb(?:ruari|ruary)?|mar(?:et|ch)?|apr(?:il)?|mei|may|jun(?:i|e)?|jul(?:i|y)?|agu(?:stus)?|ags|aug(?:ust)?|sep(?:t|tember)?|okt(?:ober)?|oct(?:ober)?|no[vp](?:ember)?|des(?:ember)?|dec(?:ember)?)[\s\/\-\.,]+(\d{2,4})\b/i;
-    const m1 = clean.match(mNameRegex);
+    const m1 = clean.match(/\b(\d{1,2})[\s\/\-\.]+(jan(?:uari|uary)?|feb(?:ruari|ruary)?|mar(?:et|ch)?|apr(?:il)?|mei|may|jun(?:i|e)?|jul(?:i|y)?|agu(?:stus)?|ags|aug(?:ust)?|sep(?:t|tember)?|okt(?:ober)?|oct(?:ober)?|no[vp](?:ember)?|des(?:ember)?|dec(?:ember)?)[\s\/\-\.,]+(\d{2,4})\b/i);
     if (m1) {
       const dd = m1[1].padStart(2, "0");
       const mm = MONTH_MAP[m1[2].toLowerCase()];
       const yyyy = m1[3].length === 2 ? "20" + m1[3] : m1[3];
       if (isValidDateParts(yyyy, mm, dd)) return `${yyyy}-${mm}-${dd}`;
     }
-
-    const isoRegex = /\b(20\d{2})[\-\/\.](\d{1,2})[\-\/\.](\d{1,2})\b/;
-    const m2 = clean.match(isoRegex);
+    const m2 = clean.match(/\b(20\d{2})[\-\/\.](\d{1,2})[\-\/\.](\d{1,2})\b/);
     if (m2) {
-      const yyyy = m2[1];
-      const mm = m2[2].padStart(2, "0");
-      const dd = m2[3].padStart(2, "0");
+      const yyyy = m2[1], mm = m2[2].padStart(2, "0"), dd = m2[3].padStart(2, "0");
       if (isValidDateParts(yyyy, mm, dd)) return `${yyyy}-${mm}-${dd}`;
     }
-
     const numRegex = /\b(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})\b/g;
     let match;
     while ((match = numRegex.exec(clean)) !== null) {
-      const dd = match[1].padStart(2, "0");
-      const mm = match[2].padStart(2, "0");
+      const dd = match[1].padStart(2, "0"), mm = match[2].padStart(2, "0");
       const yyyy = match[3].length === 2 ? "20" + match[3] : match[3];
       if (isValidDateParts(yyyy, mm, dd)) return `${yyyy}-${mm}-${dd}`;
     }
-
     return null;
   }
 
@@ -1148,43 +1391,171 @@
     return y >= 2024 && y <= 2032 && m >= 1 && m <= 12 && d >= 1 && d <= 31;
   }
 
-  function renderOcrStatusBadge(targetKey, ocrBoxId) {
-    const ocrEl = document.getElementById(ocrBoxId);
-    const detected = state.ocrDates[targetKey];
-    if (!detected) {
-      ocrEl.className = "ocr-box ocr-warn";
-      ocrEl.innerHTML = `Tanggal tidak terbaca otomatis — cek manual tanggal di atas.`;
-      return;
-    }
-
-    const selectedDate = document.getElementById("omsetTanggal").value;
-    const formattedID = detected.split("-").reverse().join("/");
-
-    if (detected === selectedDate) {
-      ocrEl.className = "ocr-box ocr-ok";
-      ocrEl.innerHTML = `<strong>Tanggal Terbaca: ${formattedID}</strong> (Cocok dengan tanggal laporan)`;
-    } else {
-      ocrEl.className = "ocr-box ocr-warn";
-      ocrEl.innerHTML = `
-        <strong>Tanggal di Bukti: ${formattedID}</strong> (Tanggal laporan: ${selectedDate.split("-").reverse().join("/")})
-        <div style="margin-top:4px;">
-          <button type="button" class="btn btn-primary btn-xs" onclick="applyDetectedDate('${detected}')">
-            Samakan ke ${formattedID}
-          </button>
-        </div>
-      `;
-    }
-  }
-
-  function applyDetectedDate(ymd) {
-    document.getElementById("omsetTanggal").value = ymd;
-    recheckOmsetDates();
-    showToast("Tanggal disesuaikan ke " + ymd.split("-").reverse().join("/"));
-  }
-
   function recheckOmsetDates() {
-    if (state.ocrDates.fotoStruk) renderOcrStatusBadge("fotoStruk", "ocrFotoStruk");
-    if (state.ocrDates.fotoTransfer) renderOcrStatusBadge("fotoTransfer", "ocrFotoTransfer");
+    evaluateSalesMatch();
+  }
+
+  // ==================== KOREKSI MANUAL & PENCOCOKAN STRICT SALES ====================
+  function lockInputAfterScan(field) {
+    if (field === "omset") {
+      state.ocrCorrected.omset = false;
+      const inp = document.getElementById("inpOmsetTotal");
+      const btn = document.getElementById("btnKoreksiOmset");
+      inp.readOnly = true;
+      inp.classList.add("scan-locked");
+      btn.classList.remove("is-editing");
+      btn.textContent = "Koreksi Nominal";
+    } else if (field === "transfer") {
+      state.ocrCorrected.transfer = false;
+      const inp = document.getElementById("inpOmsetTransfer");
+      const btn = document.getElementById("btnKoreksiTransfer");
+      inp.readOnly = true;
+      inp.classList.add("scan-locked");
+      btn.classList.remove("is-editing");
+      btn.textContent = "Koreksi Nominal";
+    }
+  }
+
+  function toggleManualCorrection(field) {
+    if (field === "omset") {
+      const inp = document.getElementById("inpOmsetTotal");
+      const btn = document.getElementById("btnKoreksiOmset");
+      if (inp.readOnly) {
+        inp.readOnly = false;
+        inp.classList.remove("scan-locked");
+        btn.classList.add("is-editing");
+        btn.textContent = "Selesai Koreksi";
+        state.ocrCorrected.omset = true;
+        inp.focus();
+        inp.select();
+      } else {
+        inp.readOnly = true;
+        inp.classList.add("scan-locked");
+        btn.classList.remove("is-editing");
+        btn.textContent = "Koreksi Nominal";
+      }
+    } else if (field === "transfer") {
+      const inp = document.getElementById("inpOmsetTransfer");
+      const btn = document.getElementById("btnKoreksiTransfer");
+      if (inp.readOnly) {
+        inp.readOnly = false;
+        inp.classList.remove("scan-locked");
+        btn.classList.add("is-editing");
+        btn.textContent = "Selesai Koreksi";
+        state.ocrCorrected.transfer = true;
+        inp.focus();
+        inp.select();
+      } else {
+        inp.readOnly = true;
+        inp.classList.add("scan-locked");
+        btn.classList.remove("is-editing");
+        btn.textContent = "Koreksi Nominal";
+      }
+    }
+    evaluateSalesMatch();
+  }
+
+  function setOmsetMode(mode) {
+    state.omsetMode = mode;
+    document.getElementById("modeOmsetFull").className = mode === "FULL" ? "type-pill active-stock" : "type-pill";
+    document.getElementById("modeOmsetTunda").className = mode === "TUNDA_TF" ? "type-pill active-warn" : "type-pill";
+    document.getElementById("modeOmsetSusul").className = mode === "SUSUL_TF" ? "type-pill active-in" : "type-pill";
+
+    const lblTgl = document.getElementById("lblOmsetTanggal");
+    const wrapOmset = document.getElementById("wrapInputOmsetTotal");
+    const wrapTf = document.getElementById("wrapInputOmsetTransfer");
+    const wrapStruk = document.getElementById("wrapBoxStruk");
+    const wrapBoxTf = document.getElementById("wrapBoxTransfer");
+    const wrapBank = document.getElementById("wrapOmsetBank");
+
+    if (mode === "FULL") {
+      lblTgl.textContent = "Tanggal Operasional (Hari H)";
+      wrapOmset.style.display = "block";
+      wrapTf.style.display = "block";
+      wrapStruk.style.display = "block";
+      wrapBoxTf.style.display = "block";
+      wrapBank.style.display = "block";
+    } else if (mode === "TUNDA_TF") {
+      lblTgl.textContent = "Tanggal Closeshift (Hari H)";
+      wrapOmset.style.display = "block";
+      wrapTf.style.display = "none";
+      wrapStruk.style.display = "block";
+      wrapBoxTf.style.display = "none";
+      wrapBank.style.display = "none";
+      document.getElementById("inpOmsetTransfer").value = "";
+    } else if (mode === "SUSUL_TF") {
+      lblTgl.textContent = "Tanggal Omset yang Dilunasi (Kemarin)";
+      wrapOmset.style.display = "none";
+      wrapTf.style.display = "block";
+      wrapStruk.style.display = "none";
+      wrapBoxTf.style.display = "block";
+      wrapBank.style.display = "block";
+      document.getElementById("inpOmsetTotal").value = "";
+    }
+    evaluateSalesMatch();
+  }
+
+  function isSalesReadyToUpload() {
+    const mode = state.omsetMode;
+    const omset = Number(document.getElementById("inpOmsetTotal").value) || 0;
+    const tf = Number(document.getElementById("inpOmsetTransfer").value) || 0;
+
+    if (mode === "FULL") {
+      return Boolean(state.photos.fotoStruk && state.photos.fotoTransfer && omset > 0 && tf > 0 && omset === tf);
+    } else if (mode === "TUNDA_TF") {
+      return Boolean(state.photos.fotoStruk && omset > 0);
+    } else if (mode === "SUSUL_TF") {
+      return Boolean(state.photos.fotoTransfer && tf > 0);
+    }
+    return false;
+  }
+
+  function evaluateSalesMatch() {
+    const mode = state.omsetMode;
+    const omset = Number(document.getElementById("inpOmsetTotal").value) || 0;
+    const tf = Number(document.getElementById("inpOmsetTransfer").value) || 0;
+
+    document.getElementById("hintOmsetTotal").textContent = formatRp(omset) + (state.ocrCorrected.omset ? " (Dikoreksi)" : "");
+    document.getElementById("hintOmsetTransfer").textContent = formatRp(tf) + (state.ocrCorrected.transfer ? " (Dikoreksi)" : "");
+
+    const box = document.getElementById("salesMatchBox");
+
+    if (mode === "FULL") {
+      if (!state.photos.fotoStruk || !state.photos.fotoTransfer) {
+        box.className = "match-status-box";
+        box.innerHTML = "Lengkapi <strong>Foto Struk Closeshift</strong> dan <strong>Foto Bukti Transfer</strong> untuk mencocokkan nominal.";
+      } else if (omset <= 0 || tf <= 0) {
+        box.className = "match-status-box match-err";
+        box.innerHTML = "Nominal belum terisi. Gunakan tombol <strong>Koreksi Nominal</strong> jika hasil pindai kosong.";
+      } else if (omset === tf) {
+        box.className = "match-status-box match-ok";
+        box.innerHTML = `✓ NOMINAL SESUAI (${formatRp(omset)} = ${formatRp(tf)}) — Laporan Sales siap diupload.`;
+      } else {
+        const diff = Math.abs(omset - tf);
+        box.className = "match-status-box match-err";
+        box.innerHTML = `✕ BELUM SESUAI (Selisih ${formatRp(diff)}) — Struk (${formatRp(omset)}) dan Transfer (${formatRp(tf)}) harus sama sebelum diupload.`;
+      }
+    } else if (mode === "TUNDA_TF") {
+      if (state.photos.fotoStruk && omset > 0) {
+        box.className = "match-status-box match-ok";
+        box.innerHTML = `✓ Struk Closeshift siap dilaporkan (${formatRp(omset)}) — Transfer menyusul H+1.`;
+      } else {
+        box.className = "match-status-box";
+        box.innerHTML = "Scan foto Struk Closeshift terlebih dahulu untuk mengaktifkan tombol upload.";
+      }
+    } else if (mode === "SUSUL_TF") {
+      if (state.photos.fotoTransfer && tf > 0) {
+        box.className = "match-status-box match-ok";
+        box.innerHTML = `✓ Bukti Transfer Susulan siap diupload (${formatRp(tf)}).`;
+      } else {
+        box.className = "match-status-box";
+        box.innerHTML = "Scan foto Bukti Transfer terlebih dahulu untuk mengaktifkan tombol upload.";
+      }
+    }
+
+    if (state.activeTab === "tab-omset") {
+      updateFloatingBar();
+    }
   }
 
   // ==================== TAB 1: BARANG MASUK (DO) ====================
@@ -1273,7 +1644,7 @@
   function updateMasukCount() {
     const count = Object.keys(state.quantitiesMasuk).filter(k => Number(state.quantitiesMasuk[k]) > 0).length;
     document.getElementById("masukCountBadge").textContent = `${count} item diisi`;
-    updateFloatingBar();
+    if (state.activeTab === "tab-masuk") updateFloatingBar();
   }
 
   async function submitBarangMasuk() {
@@ -1309,24 +1680,26 @@
 
     const btn = document.getElementById("floatSubmitBtn");
     btn.disabled = true;
-    btn.textContent = "Mengirim DO...";
+    btn.textContent = "Menyimpan DO...";
 
     try {
-      let linkFoto = "-";
       if (SCRIPT_URL) {
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-        const json = await res.json();
-        if (json.status !== "success") throw new Error(json.message || "Gagal simpan barang masuk");
-        linkFoto = json.link_foto_do || "-";
-        await syncFromServer();
-        showToast("Barang Masuk (DO) masuk antrean input POS ASR!");
-      } else {
-        saveMasukLocally(payload);
-        if (payload.foto_do_base64) linkFoto = "(Tersimpan di Mode Sandbox Lokal)";
-        showToast(`Barang Masuk tersimpan (${itemsToSend.length} item)`);
+        await postToBackend(payload);
       }
+      saveMasukLocally(payload);
 
-      renderPerGroupWaCards("waMasukCardsContainer", "waMasukResultBox", "PENERIMAAN BARANG (DO)", payload, linkFoto, true);
+      const summaryList = itemsToSend.map(i => `• ${i.nama_barang}: <strong>+${i.jumlah} ${i.satuan}</strong>`);
+      showSuccessConfirmation(
+        "Barang Masuk (DO) Tersimpan!",
+        "Data penerimaan barang telah masuk ke antrean input mesin POS pusat ASR.",
+        [
+          `<strong>Gerai:</strong> ${payload.nama_kdkmp}`,
+          `<strong>Tanggal Terima:</strong> ${payload.tanggal}`,
+          `<strong>Supplier / No. DO:</strong> ${payload.supplier} (${payload.no_do})`,
+          ...summaryList
+        ]
+      );
+
       state.quantitiesMasuk = {};
       state.photos.fotoDo = "";
       document.getElementById("masukNoDo").value = "";
@@ -1335,7 +1708,7 @@
       document.getElementById("infoFotoDo").textContent = "";
       renderMasukItemList();
     } catch (err) {
-      alert("Gagal kirim: " + err.message);
+      alert("Gagal menyimpan Barang Masuk: " + err.message);
     } finally {
       btn.disabled = false;
       updateFloatingBar();
@@ -1449,7 +1822,7 @@
   function updateSisaCount() {
     const count = Object.keys(state.quantitiesSisa).filter(k => state.quantitiesSisa[k] !== "" && state.quantitiesSisa[k] !== undefined).length;
     document.getElementById("sisaCountBadge").textContent = `${count} item diisi`;
-    updateFloatingBar();
+    if (state.activeTab === "tab-sisa") updateFloatingBar();
   }
 
   async function submitStokSisa() {
@@ -1482,179 +1855,82 @@
 
     const btn = document.getElementById("floatSubmitBtn");
     btn.disabled = true;
-    btn.textContent = "Mengirim Stok Sisa...";
+    btn.textContent = "Menyimpan Stok Sisa...";
 
     try {
       if (SCRIPT_URL) {
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-        const json = await res.json();
-        if (json.status !== "success") throw new Error(json.message || "Gagal simpan stok sisa");
-        await syncFromServer();
-        showToast("Laporan Stok Sisa Harian tersimpan ke ASR!");
-      } else {
-        const logs = JSON.parse(localStorage.getItem("kdkmp_stok_sisa_logs") || "[]");
-        const nowStr = new Date().toLocaleString("id-ID");
-        payload.items.forEach(item => {
-          logs.unshift({
-            Waktu_Input: nowStr, Tanggal: payload.tanggal, Kecamatan: payload.kecamatan,
-            Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager, Kategori: item.kategori,
-            Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan,
-            Jumlah: item.jumlah, Catatan: payload.catatan
-          });
-          const rIdx = state.rekapStok.findIndex(s => s.Nama_KDKMP === payload.nama_kdkmp && s.Kode_Barang === item.kode_barang);
-          if (rIdx >= 0) {
-            state.rekapStok[rIdx].Stok_Akhir = item.jumlah;
-            state.rekapStok[rIdx].Update_Terakhir = nowStr;
-          } else {
-            state.rekapStok.push({
-              Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Kategori: item.kategori,
-              Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan,
-              Stok_Akhir: item.jumlah, Update_Terakhir: nowStr
-            });
-          }
-        });
-        localStorage.setItem("kdkmp_stok_sisa_logs", JSON.stringify(logs.slice(0, 250)));
-        localStorage.setItem("kdkmp_rekap_stok", JSON.stringify(state.rekapStok));
-        showToast(`Stok Sisa tersimpan (${itemsToSend.length} item)`);
+        await postToBackend(payload);
       }
 
-      renderPerGroupWaCards("waSisaCardsContainer", "waSisaResultBox", "STOK SISA HARIAN", payload, "-", false);
+      const logs = JSON.parse(localStorage.getItem("kdkmp_stok_sisa_logs") || "[]");
+      const nowStr = new Date().toLocaleString("id-ID");
+      payload.items.forEach(item => {
+        logs.unshift({
+          Waktu_Input: nowStr, Tanggal: payload.tanggal, Kecamatan: payload.kecamatan,
+          Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager, Kategori: item.kategori,
+          Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan,
+          Jumlah: item.jumlah, Catatan: payload.catatan
+        });
+        const rIdx = state.rekapStok.findIndex(s => s.Nama_KDKMP === payload.nama_kdkmp && s.Kode_Barang === item.kode_barang);
+        if (rIdx >= 0) {
+          state.rekapStok[rIdx].Stok_Akhir = item.jumlah;
+          state.rekapStok[rIdx].Update_Terakhir = nowStr;
+        } else {
+          state.rekapStok.push({
+            Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Kategori: item.kategori,
+            Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan,
+            Stok_Akhir: item.jumlah, Update_Terakhir: nowStr
+          });
+        }
+      });
+      localStorage.setItem("kdkmp_stok_sisa_logs", JSON.stringify(logs.slice(0, 250)));
+      localStorage.setItem("kdkmp_rekap_stok", JSON.stringify(state.rekapStok));
+
+      const summaryList = itemsToSend.map(i => `• ${i.nama_barang}: <strong>${i.jumlah} ${i.satuan}</strong>`);
+      showSuccessConfirmation(
+        "Stok Sisa Harian Tersimpan!",
+        "Laporan audit fisik tutup gerai telah tercatat di sistem ASR.",
+        [
+          `<strong>Gerai:</strong> ${payload.nama_kdkmp}`,
+          `<strong>Tanggal Stok Sisa:</strong> ${payload.tanggal}`,
+          ...summaryList
+        ]
+      );
+
       state.quantitiesSisa = {};
       document.getElementById("sisaCatatan").value = "";
       renderSisaItemList();
     } catch (err) {
-      alert("Gagal kirim: " + err.message);
+      alert("Gagal menyimpan Stok Sisa: " + err.message);
     } finally {
       btn.disabled = false;
       updateFloatingBar();
     }
   }
 
-  function renderPerGroupWaCards(containerId, boxId, titleHeader, payload, linkFotoDo, isIncoming) {
-    const grouped = {};
-    payload.items.forEach(it => {
-      if (!grouped[it.kategori]) grouped[it.kategori] = [];
-      grouped[it.kategori].push(it);
-    });
-
-    const container = document.getElementById(containerId);
-    let html = "";
-    let idx = 0;
-
-    for (const [kat, list] of Object.entries(grouped)) {
-      idx++;
-      const uid = `${containerId}_${idx}`;
-      const lines = list.map(i => `• ${i.nama_barang}: *${i.jumlah} ${i.satuan}*`).join("\n");
-      let extra = isIncoming ? `Supplier: ${payload.supplier}\nNo. DO: ${payload.no_do}\n` : "";
-      if (isIncoming && linkFotoDo && linkFotoDo !== "-") extra += `Foto DO: ${linkFotoDo}\n`;
-      if (payload.catatan) extra += `Catatan: ${payload.catatan}\n`;
-
-      const msg = `*LAPORAN ${titleHeader} - ${kat.toUpperCase()}*\n` +
-        `Gerai: *${payload.nama_kdkmp}*\n` +
-        `Kecamatan: ${payload.kecamatan}\n` +
-        `Tanggal: ${payload.tanggal}\n` +
-        `Manager: ${payload.manager}\n` +
-        `${extra}\n${lines}`;
-
-      html += `
-        <div class="wa-item-box">
-          <div class="wa-item-head">
-            <strong style="font-size:12px; color:#0f172a;">Grup WA: ${kat}</strong>
-            <button type="button" class="btn btn-success btn-sm" onclick="copyBox('${uid}')">Salin untuk Grup ${kat}</button>
-          </div>
-          <textarea id="${uid}" class="wa-preview" readonly>${msg}</textarea>
-        </div>
-      `;
-    }
-
-    container.innerHTML = html;
-    document.getElementById(boxId).style.display = "block";
-    document.getElementById(boxId).scrollIntoView({ behavior: "smooth" });
-  }
-
-  // ==================== TAB 3: SETOR OMSET & BUKTI FOTO ====================
-  function setOmsetMode(mode) {
-    state.omsetMode = mode;
-    document.getElementById("modeOmsetFull").className = mode === "FULL" ? "type-pill active-stock" : "type-pill";
-    document.getElementById("modeOmsetTunda").className = mode === "TUNDA_TF" ? "type-pill active-warn" : "type-pill";
-    document.getElementById("modeOmsetSusul").className = mode === "SUSUL_TF" ? "type-pill active-in" : "type-pill";
-
-    const lblTgl = document.getElementById("lblOmsetTanggal");
-    const wrapOmset = document.getElementById("wrapInputOmsetTotal");
-    const wrapTf = document.getElementById("wrapInputOmsetTransfer");
-    const wrapSelisih = document.getElementById("wrapSelisihOmset");
-    const wrapStruk = document.getElementById("wrapBoxStruk");
-    const wrapBoxTf = document.getElementById("wrapBoxTransfer");
-    const wrapBank = document.getElementById("wrapOmsetBank");
-
-    if (mode === "FULL") {
-      lblTgl.textContent = "Tanggal Operasional (Hari H)";
-      wrapOmset.style.display = "block";
-      wrapTf.style.display = "block";
-      wrapSelisih.style.display = "flex";
-      wrapStruk.style.display = "block";
-      wrapBoxTf.style.display = "block";
-      wrapBank.style.display = "block";
-    } else if (mode === "TUNDA_TF") {
-      lblTgl.textContent = "Tanggal Closeshift (Hari H)";
-      wrapOmset.style.display = "block";
-      wrapTf.style.display = "none";
-      wrapSelisih.style.display = "none";
-      wrapStruk.style.display = "block";
-      wrapBoxTf.style.display = "none";
-      wrapBank.style.display = "none";
-      document.getElementById("inpOmsetTransfer").value = "0";
-    } else if (mode === "SUSUL_TF") {
-      lblTgl.textContent = "Tanggal Omset yang Dilunasi (Kemarin)";
-      wrapOmset.style.display = "none";
-      wrapTf.style.display = "block";
-      wrapSelisih.style.display = "none";
-      wrapStruk.style.display = "none";
-      wrapBoxTf.style.display = "block";
-      wrapBank.style.display = "block";
-      document.getElementById("inpOmsetTotal").value = "0";
-    }
-    calcOmsetDiff();
-  }
-
-  function calcOmsetDiff() {
-    const omset = Number(document.getElementById("inpOmsetTotal").value) || 0;
-    const tf = Number(document.getElementById("inpOmsetTransfer").value) || 0;
-    document.getElementById("hintOmsetTotal").textContent = formatRp(omset);
-    document.getElementById("hintOmsetTransfer").textContent = formatRp(tf);
-    document.getElementById("dispSelisihOmset").textContent = formatRp(omset - tf);
-    updateFloatingBar();
-  }
-
+  // ==================== TAB 3: SUBMIT LAPORAN SALES ====================
   async function submitOmsetReport() {
+    if (!isSalesReadyToUpload()) {
+      return showToast("Pastikan foto lengkap dan nominal struk & transfer sudah sesuai!");
+    }
+
     const mode = state.omsetMode;
     const omset = mode === "SUSUL_TF" ? 0 : (Number(document.getElementById("inpOmsetTotal").value) || 0);
     const tf = mode === "TUNDA_TF" ? 0 : (Number(document.getElementById("inpOmsetTransfer").value) || 0);
 
-    if (mode === "FULL") {
-      if (omset <= 0 && tf <= 0) return showToast("Isi nominal omset dan transfer!");
-      if (!state.photos.fotoStruk || !state.photos.fotoTransfer) {
-        return showToast("Wajib Scan Struk Closeshift dan Scan Bukti Setor!");
-      }
-    } else if (mode === "TUNDA_TF") {
-      if (omset <= 0) return showToast("Isi total omset pada struk closeshift!");
-      if (!state.photos.fotoStruk) return showToast("Wajib Scan Struk Closeshift!");
-    } else if (mode === "SUSUL_TF") {
-      if (tf <= 0) return showToast("Isi nominal dana yang ditransfer!");
-      if (!state.photos.fotoTransfer) return showToast("Wajib Scan Bukti Setor!");
-    }
-
     const modeTags = {
-      FULL: "[LUNAS HARI H]",
-      TUNDA_TF: "[CLOSESHIFT - TRANSFER MENYUSUL H+1]",
-      SUSUL_TF: "[PELUNASAN TRANSFER SUSULAN]"
+      FULL: "[SALES SESUAI & LUNAS]",
+      TUNDA_TF: "[CLOSESHIFT - TF MENYUSUL H+1]",
+      SUSUL_TF: "[PELUNASAN TF SUSULAN]"
     };
-    const ocrTags = [];
-    if (state.ocrDates.fotoStruk) ocrTags.push(`Scan Struk: ${state.ocrDates.fotoStruk}`);
-    if (state.ocrDates.fotoTransfer) ocrTags.push(`Scan Setor: ${state.ocrDates.fotoTransfer}`);
+    const auditTags = [];
+    if (state.ocrCorrected.omset) auditTags.push("Koreksi Manual Struk");
+    if (state.ocrCorrected.transfer) auditTags.push("Koreksi Manual Transfer");
+    if (state.ocrDates.fotoStruk) auditTags.push(`Tgl Struk: ${state.ocrDates.fotoStruk}`);
+    if (state.ocrDates.fotoTransfer) auditTags.push(`Tgl TF: ${state.ocrDates.fotoTransfer}`);
 
     const userNote = document.getElementById("omsetCatatan").value.trim();
-    const combinedNote = [modeTags[mode], ocrTags.join(", "), userNote].filter(Boolean).join(" • ");
+    const combinedNote = [modeTags[mode], auditTags.join(", "), userNote].filter(Boolean).join(" • ");
 
     const payload = {
       action: "SETOR_OMSET",
@@ -1674,53 +1950,41 @@
 
     const btn = document.getElementById("floatSubmitBtn");
     btn.disabled = true;
-    btn.textContent = "Mengunggah...";
+    btn.textContent = "Mengunggah Laporan...";
 
     try {
-      let linkStruk = mode === "SUSUL_TF" ? "(Sudah dilaporkan saat Closeshift)" : "(Tersimpan Lokal)";
-      let linkTf = mode === "TUNDA_TF" ? "(Menyusul H+1)" : "(Tersimpan Lokal)";
-
       if (SCRIPT_URL) {
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-        const json = await res.json();
-        if (json.status !== "success") throw new Error(json.message || "Gagal upload setoran");
-        if (json.link_struk && json.link_struk !== "-") linkStruk = json.link_struk;
-        if (json.link_transfer && json.link_transfer !== "-") linkTf = json.link_transfer;
-        showToast("Bukti & laporan omset tersimpan ke Drive ASR!");
-      } else {
-        const omsetLogs = JSON.parse(localStorage.getItem("kdkmp_omset_logs") || "[]");
-        omsetLogs.unshift({
-          Waktu_Input: new Date().toLocaleString("id-ID"),
-          Tanggal: payload.tanggal, Shift: payload.shift, Kecamatan: payload.kecamatan,
-          Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager,
-          Nominal_Omset: omset, Nominal_Transfer: tf, Selisih_Tunai: omset - tf,
-          Metode_Rekening: payload.metode_rekening,
-          Link_Struk_CloseShift: payload.foto_struk_base64 || "-",
-          Link_Bukti_Transfer: payload.foto_transfer_base64 || "-",
-          Catatan: payload.catatan
-        });
-        localStorage.setItem("kdkmp_omset_logs", JSON.stringify(omsetLogs.slice(0, 200)));
-        showToast("Tersimpan di Sandbox Lokal!");
+        await postToBackend(payload);
       }
 
-      const judulWa = mode === "TUNDA_TF"
-        ? "LAPORAN CLOSESHIFT (TRANSFER MENYUSUL H+1)"
-        : (mode === "SUSUL_TF" ? "PELUNASAN BUKTI SETOR OMSET SUSULAN" : "LAPORAN SETOR OMSET & CLOSESHIFT");
+      const omsetLogs = JSON.parse(localStorage.getItem("kdkmp_omset_logs") || "[]");
+      omsetLogs.unshift({
+        Waktu_Input: new Date().toLocaleString("id-ID"),
+        Tanggal: payload.tanggal, Shift: payload.shift, Kecamatan: payload.kecamatan,
+        Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager,
+        Nominal_Omset: omset, Nominal_Transfer: tf, Selisih_Tunai: mode === "FULL" ? (omset - tf) : 0,
+        Metode_Rekening: payload.metode_rekening,
+        Link_Struk_CloseShift: payload.foto_struk_base64 || "-",
+        Link_Bukti_Transfer: payload.foto_transfer_base64 || "-",
+        Catatan: payload.catatan
+      });
+      localStorage.setItem("kdkmp_omset_logs", JSON.stringify(omsetLogs.slice(0, 200)));
 
-      const waMsg = `*${judulWa}*\n` +
-        `Gerai: *${payload.nama_kdkmp}*\n` +
-        `Kecamatan: ${payload.kecamatan}\n` +
-        `Tanggal Omset: ${payload.tanggal} (${payload.shift})\n` +
-        `Manager: ${payload.manager}\n\n` +
-        (mode !== "SUSUL_TF" ? `Total Omset Struk: *${formatRp(omset)}*\n` : "") +
-        (mode !== "TUNDA_TF" ? `Nominal Ditransfer: *${formatRp(tf)}*\nRekening Tujuan: ${payload.metode_rekening}\n` : "Status Transfer: *Menyusul H+1*\n") +
-        (mode !== "SUSUL_TF" ? `Struk Closeshift: ${linkStruk}\n` : "") +
-        (mode !== "TUNDA_TF" ? `Bukti Setor: ${linkTf}\n` : "") +
-        (userNote ? `Catatan: ${userNote}` : "");
+      const detailLines = [
+        `<strong>Gerai:</strong> ${payload.nama_kdkmp}`,
+        `<strong>Tanggal / Shift:</strong> ${payload.tanggal} (${payload.shift})`
+      ];
+      if (mode !== "SUSUL_TF") detailLines.push(`<strong>Omset Sales Struk:</strong> ${formatRp(omset)}`);
+      if (mode !== "TUNDA_TF") {
+        detailLines.push(`<strong>Nominal Transfer:</strong> ${formatRp(tf)}`);
+        detailLines.push(`<strong>Rekening Tujuan:</strong> ${payload.metode_rekening}`);
+      }
 
-      document.getElementById("waOmsetTxt").value = waMsg.trim();
-      document.getElementById("waOmsetBox").style.display = "block";
-      document.getElementById("waOmsetBox").scrollIntoView({ behavior: "smooth" });
+      showSuccessConfirmation(
+        "Laporan Sales Berhasil Diupload!",
+        "Bukti foto dan nominal sales telah tersimpan ke pusat ASR Cianjur.",
+        detailLines
+      );
 
       state.photos.fotoStruk = "";
       state.photos.fotoTransfer = "";
@@ -1734,191 +1998,3 @@
       document.getElementById("ocrFotoTransfer").style.display = "none";
       document.getElementById("inpOmsetTotal").value = "";
       document.getElementById("inpOmsetTransfer").value = "";
-      document.getElementById("omsetCatatan").value = "";
-      calcOmsetDiff();
-    } catch (err) {
-      alert("Gagal upload setoran: " + err.message);
-    } finally {
-      btn.disabled = false;
-      updateFloatingBar();
-    }
-  }
-
-  // ==================== TAB 4: PERENCANAAN PO ====================
-  function renderPoItemList() {
-    const container = document.getElementById("poItemListContainer");
-    container.innerHTML = state.masterBarang.map(b => {
-      const stokRec = state.rekapStok.find(
-        s => s.Nama_KDKMP === state.profile.nama_kdkmp && s.Kode_Barang === b.Kode_Barang
-      );
-      const currStok = stokRec ? Number(stokRec.Stok_Akhir) : 0;
-      const val = state.poQuantities[b.Kode_Barang] !== undefined ? state.poQuantities[b.Kode_Barang] : "";
-
-      return `
-        <div class="item-row">
-          <div class="item-info">
-            <div class="item-name">${b.Nama_Barang}</div>
-            <div class="item-meta">${b.Kategori} • Satuan: ${b.Satuan}</div>
-            <span class="stok-ref">Sisa Stok: ${currStok} ${b.Satuan}</span>
-            <div class="quick-add-row">
-              <button type="button" class="btn-qadd" onclick="stepPoQty('${b.Kode_Barang}', 10)">+10</button>
-              <button type="button" class="btn-qadd" onclick="stepPoQty('${b.Kode_Barang}', 50)">+50</button>
-              <button type="button" class="btn-qadd" onclick="stepPoQty('${b.Kode_Barang}', 100)">+100</button>
-            </div>
-          </div>
-          <div class="qty-control">
-            <button type="button" class="btn-step" onclick="stepPoQty('${b.Kode_Barang}', -1)">-</button>
-            <input type="number" min="0" inputmode="numeric" class="qty-input ${val > 0 ? 'has-value' : ''}"
-              id="poqty_${b.Kode_Barang}" value="${val}" placeholder="0"
-              oninput="updatePoQty('${b.Kode_Barang}', this.value)" />
-            <button type="button" class="btn-step" onclick="stepPoQty('${b.Kode_Barang}', 1)">+</button>
-          </div>
-        </div>
-      `;
-    }).join("");
-    updateFloatingBar();
-  }
-
-  function stepPoQty(code, delta) {
-    const curr = Number(state.poQuantities[code] || 0);
-    const next = Math.max(0, curr + delta);
-    if (next <= 0) delete state.poQuantities[code];
-    else state.poQuantities[code] = next;
-
-    const inp = document.getElementById("poqty_" + code);
-    if (inp) {
-      inp.value = next > 0 ? next : "";
-      inp.classList.toggle("has-value", next > 0);
-    }
-    updateFloatingBar();
-  }
-
-  function updatePoQty(code, rawVal) {
-    if (rawVal === "" || Number(rawVal) <= 0) delete state.poQuantities[code];
-    else state.poQuantities[code] = Number(rawVal);
-    const inp = document.getElementById("poqty_" + code);
-    if (inp) inp.classList.toggle("has-value", Number(rawVal) > 0);
-    updateFloatingBar();
-  }
-
-  async function submitPoReport() {
-    const itemsToOrder = [];
-    for (const [code, qty] of Object.entries(state.poQuantities)) {
-      if (!qty || qty <= 0) continue;
-      const master = state.masterBarang.find(b => b.Kode_Barang === code);
-      const stokRec = state.rekapStok.find(
-        s => s.Nama_KDKMP === state.profile.nama_kdkmp && s.Kode_Barang === code
-      );
-      if (master) {
-        itemsToOrder.push({
-          kode_barang: master.Kode_Barang,
-          kategori: master.Kategori,
-          nama_barang: master.Nama_Barang,
-          satuan: master.Satuan,
-          stok_saat_ini: stokRec ? Number(stokRec.Stok_Akhir) : 0,
-          jumlah_po: Number(qty)
-        });
-      }
-    }
-
-    if (itemsToOrder.length === 0) return showToast("Isi minimal 1 jumlah pesanan PO!");
-
-    const payload = {
-      action: "AJUKAN_PO",
-      tanggal_kebutuhan: document.getElementById("poTanggal").value,
-      kecamatan: state.profile.kecamatan,
-      nama_kdkmp: state.profile.nama_kdkmp,
-      manager: state.profile.manager,
-      catatan: document.getElementById("poCatatan").value.trim(),
-      items: itemsToOrder
-    };
-
-    const btn = document.getElementById("floatSubmitBtn");
-    btn.disabled = true;
-    btn.textContent = "Mengirim PO...";
-
-    try {
-      if (SCRIPT_URL) {
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-        const json = await res.json();
-        if (json.status !== "success") throw new Error(json.message || "Gagal kirim PO");
-        await syncFromServer();
-        showToast("Pengajuan PO berhasil dikirim ke ASR!");
-      } else {
-        const nowStr = new Date().toLocaleString("id-ID");
-        itemsToOrder.forEach((it, idx) => {
-          state.poList.unshift({
-            ID_PO: "PO-" + Date.now() + "-" + idx,
-            Waktu_Pengajuan: nowStr,
-            Tanggal_Kebutuhan: payload.tanggal_kebutuhan,
-            Kecamatan: payload.kecamatan,
-            Nama_KDKMP: payload.nama_kdkmp,
-            Manager: payload.manager,
-            Kategori: it.kategori,
-            Kode_Barang: it.kode_barang,
-            Nama_Barang: it.nama_barang,
-            Satuan: it.satuan,
-            Stok_Saat_Pengajuan: it.stok_saat_ini,
-            Jumlah_PO: it.jumlah_po,
-            Status_PO: "Diajukan",
-            Catatan: payload.catatan
-          });
-        });
-        localStorage.setItem("kdkmp_po_list", JSON.stringify(state.poList));
-        renderMyPoTable();
-        showToast("Pengajuan PO tersimpan di Sandbox Lokal!");
-      }
-
-      const lines = itemsToOrder.map(i => `• ${i.nama_barang}: *${i.jumlah_po} ${i.satuan}* (Sisa stok: ${i.stok_saat_ini})`).join("\n");
-      const waPo = `*PENGAJUAN PERENCANAAN PO KDKMP*\n` +
-        `Gerai: *${payload.nama_kdkmp}*\n` +
-        `Kecamatan: ${payload.kecamatan}\n` +
-        `Target Kirim: ${payload.tanggal_kebutuhan}\n` +
-        `Manager: ${payload.manager}\n\n` +
-        `${lines}` +
-        (payload.catatan ? `\n\nCatatan: ${payload.catatan}` : "");
-
-      document.getElementById("waPoTxt").value = waPo;
-      document.getElementById("waPoBox").style.display = "block";
-      document.getElementById("waPoBox").scrollIntoView({ behavior: "smooth" });
-      state.poQuantities = {};
-      document.getElementById("poCatatan").value = "";
-      renderPoItemList();
-    } catch (err) {
-      alert("Gagal kirim PO: " + err.message);
-    } finally {
-      btn.disabled = false;
-      updateFloatingBar();
-    }
-  }
-
-  function renderMyPoTable() {
-    const myPos = state.poList.filter(p => p.Nama_KDKMP === state.profile.nama_kdkmp).slice(0, 20);
-    const tbody = document.getElementById("tblMyPoBody");
-    if (myPos.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">Belum ada riwayat PO untuk gerai ini.</td></tr>`;
-      return;
-    }
-    tbody.innerHTML = myPos.map(p => {
-      const st = p.Status_PO || "Diajukan";
-      const cls = st === "Selesai" || st === "Disetujui ASR" ? "tag-ok" : (st === "DO Terbit" ? "tag-info" : "tag-wait");
-      return `
-        <tr>
-          <td>${String(p.Tanggal_Kebutuhan).slice(0, 10)}</td>
-          <td><strong>${p.Nama_Barang}</strong></td>
-          <td>${p.Jumlah_PO} ${p.Satuan}</td>
-          <td><span class="tag ${cls}">${st}</span></td>
-        </tr>
-      `;
-    }).join("");
-  }
-
-  function copyBox(elId) {
-    const el = document.getElementById(elId);
-    el.select();
-    navigator.clipboard.writeText(el.value);
-    showToast("Teks tersalin! Tinggal paste ke grup WA.");
-  }
-</script>
-</body>
-</html>
