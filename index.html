@@ -4,11 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Portal Operasional Manager — KDKMP Cianjur</title>
+  <!-- Mesin OCR ringan untuk membaca tanggal struk & m-banking/ATM -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
     :root {
       --primary: #1e3a8a;
       --primary-light: #2563eb;
       --success: #059669;
+      --danger: #dc2626;
       --warning: #d97706;
       --purple: #6d28d9;
       --bg: #f1f5f9;
@@ -22,19 +25,13 @@
 
     header {
       background: linear-gradient(135deg, #0f172a, #1e3a8a);
-      color: #fff;
-      padding: 14px 16px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
+      color: #fff; padding: 14px 16px; position: sticky; top: 0; z-index: 50;
       box-shadow: 0 2px 8px rgba(0,0,0,0.18);
     }
     .header-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
     .header-title { font-size: 15px; font-weight: 800; margin: 0; }
     .header-sub { font-size: 12px; color: #cbd5e1; margin-top: 2px; }
-    .badge-status {
-      font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap;
-    }
+    .badge-status { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
     .status-live { background: #065f46; border: 1px solid #34d399; color: #ecfdf5; }
     .status-sandbox { background: #92400e; border: 1px solid #fbbf24; color: #fef3c7; }
 
@@ -74,18 +71,37 @@
       outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
     }
 
+    /* Quick Search Autocomplete Gerai */
+    .quick-search-wrap { position: relative; margin-bottom: 10px; }
+    .quick-search-input { background: #f8fafc; border: 1.5px solid #93c5fd; font-weight: 600; }
+    .search-dropdown {
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+      background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.16); max-height: 230px;
+      overflow-y: auto; z-index: 60; display: none;
+    }
+    .search-item { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
+    .search-item:last-child { border-bottom: none; }
+    .search-item:hover { background: #eff6ff; }
+    .search-item-title { font-size: 13px; font-weight: 700; color: #0f172a; }
+    .search-item-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
+
     .manager-badge-box {
       margin-top: 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
       padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px;
     }
 
     .report-type-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+    .mode-3-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+    @media (max-width: 560px) { .mode-3-group { grid-template-columns: 1fr; } }
+
     .type-pill {
-      padding: 12px 8px; border: 2px solid var(--border); border-radius: 10px; text-align: center;
-      cursor: pointer; font-weight: 700; font-size: 13px; background: #f8fafc; transition: 0.15s;
+      padding: 11px 8px; border: 2px solid var(--border); border-radius: 10px; text-align: center;
+      cursor: pointer; font-weight: 700; font-size: 12px; background: #f8fafc; transition: 0.15s;
     }
     .type-pill.active-in { border-color: var(--primary-light); background: #eff6ff; color: var(--primary); }
     .type-pill.active-stock { border-color: var(--success); background: #ecfdf5; color: #065f46; }
+    .type-pill.active-warn { border-color: var(--warning); background: #fffbeb; color: #92400e; }
 
     .chip-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; }
     .chip {
@@ -115,16 +131,57 @@
     .qty-input { width: 74px; text-align: center; font-weight: 700; font-size: 15px; padding: 7px 4px; }
     .qty-input.has-value { background: #eff6ff; border-color: var(--primary-light); color: var(--primary); }
 
-    /* Photo Upload Box */
+    /* Dual Photo & OCR Scanner Box */
     .photo-box {
-      border: 2px dashed #cbd5e1; border-radius: 10px; padding: 12px; text-align: center;
-      background: #f8fafc; margin-top: 6px;
+      border: 2px dashed #94a3b8; border-radius: 10px; padding: 12px; text-align: center;
+      background: #f8fafc; margin-top: 4px;
+    }
+    .photo-btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn-cam {
+      background: #1e3a8a; color: #fff; border: none; border-radius: 8px; padding: 10px 8px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .btn-gal {
+      background: #fff; color: #0f172a; border: 1.5px solid #94a3b8; border-radius: 8px; padding: 10px 8px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
     }
     .photo-preview {
-      max-width: 100%; max-height: 180px; border-radius: 8px; margin-top: 8px;
+      max-width: 100%; max-height: 190px; border-radius: 8px; margin-top: 10px;
       display: none; border: 1px solid #cbd5e1;
     }
-    .photo-info { font-size: 11px; color: #059669; font-weight: 600; margin-top: 4px; }
+    .photo-info { font-size: 11px; color: #059669; font-weight: 700; margin-top: 6px; }
+    .ocr-box {
+      margin-top: 8px; padding: 8px 10px; border-radius: 8px; font-size: 12px;
+      text-align: left; display: none; line-height: 1.4;
+    }
+    .ocr-scanning { background: #eff6ff; border: 1px solid #93c5fd; color: #1e40af; }
+    .ocr-ok { background: #dcfce7; border: 1px solid #86efac; color: #166534; }
+    .ocr-warn { background: #fef3c7; border: 1px solid #fcd34d; color: #92400e; }
+
+    /* Live Camera Scanner Modal */
+    #cameraModal {
+      position: fixed; inset: 0; background: #000; z-index: 9999;
+      display: none; flex-direction: column; justify-content: space-between;
+    }
+    .cam-header {
+      padding: 14px 16px; background: rgba(15, 23, 42, 0.85); color: #fff;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .cam-viewport {
+      position: relative; flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    #camVideo { width: 100%; height: 100%; object-fit: cover; }
+    .cam-guide {
+      position: absolute; width: 84%; height: 68%; border: 2.5px dashed #34d399;
+      border-radius: 14px; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45); pointer-events: none;
+      display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px;
+    }
+    .cam-guide span {
+      background: rgba(0,0,0,0.7); color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 999px;
+    }
+    .cam-footer {
+      padding: 16px; background: rgba(15, 23, 42, 0.92); display: flex; justify-content: center; gap: 12px;
+    }
 
     .rp-hint { font-size: 12px; font-weight: 700; color: var(--primary); margin-top: 4px; }
     .diff-box {
@@ -143,13 +200,10 @@
     .btn-purple { background: var(--purple); color: #fff; }
     .btn-outline { background: #fff; color: var(--primary); border: 1px solid var(--primary); }
     .btn-sm { padding: 6px 12px; font-size: 12px; width: auto; border-radius: 8px; }
+    .btn-xs { padding: 4px 8px; font-size: 11px; width: auto; border-radius: 6px; }
 
-    .wa-card {
-      background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; padding: 12px; margin-top: 14px;
-    }
-    .wa-item-box {
-      background: #fff; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px; margin-top: 10px;
-    }
+    .wa-card { background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; padding: 12px; margin-top: 14px; }
+    .wa-item-box { background: #fff; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px; margin-top: 10px; }
     .wa-item-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
     .wa-preview {
       width: 100%; min-height: 115px; font-family: monospace; font-size: 12px;
@@ -184,13 +238,51 @@
   </div>
 </header>
 
-<!-- IDENTITAS GERAI TERKUNCI -->
+<!-- MODAL KAMERA LANGSUNG & SCANNER -->
+<div id="cameraModal">
+  <div class="cam-header">
+    <strong id="camModalTitle" style="font-size:14px;">Kamera Scan Dokumen</strong>
+    <button class="btn btn-sm" style="background:#dc2626; color:#fff;" onclick="closeCameraModal()">Tutup</button>
+  </div>
+  <div class="cam-viewport">
+    <video id="camVideo" autoplay playsinline></video>
+    <div class="cam-guide">
+      <span>Posisikan area tanggal struk/bukti di dalam bingkai</span>
+    </div>
+  </div>
+  <div class="cam-footer">
+    <button class="btn btn-success" style="max-width:280px; font-size:15px;" onclick="captureFromCamera()">
+      Jepret & Scan Tanggal
+    </button>
+  </div>
+</div>
+
+<!-- INPUT FILE TERSEMBUNYI UNTUK GALERI & FALLBACK KAMERA -->
+<input type="file" id="hiddenGalInput" accept="image/*" style="display:none;" onchange="onFileSelected(this)" />
+<input type="file" id="hiddenCamFallback" accept="image/*" capture="environment" style="display:none;" onchange="onFileSelected(this)" />
+
+<!-- IDENTITAS GERAI TERKUNCI + PENCARIAN CEPAT -->
 <div class="container" style="padding-bottom:0;">
   <div class="card" style="margin-bottom:8px;">
     <div class="card-title">
       <span>Identitas Gerai (Terkunci di Perangkat)</span>
       <button class="btn btn-outline btn-sm" onclick="saveProfile(true)">Kunci Gerai</button>
     </div>
+
+    <div class="quick-search-wrap" id="quickSearchWrap">
+      <label>Cari Cepat Gerai (Ketik Nama Desa / KDKMP)</label>
+      <input
+        type="text"
+        id="inpQuickGerai"
+        class="quick-search-input"
+        placeholder="Ketik 2-3 huruf nama desa (misal: Selagedang)..."
+        autocomplete="off"
+        oninput="onQuickGeraiSearch(this.value)"
+        onfocus="onQuickGeraiSearch(this.value)"
+      />
+      <div id="geraiSearchResults" class="search-dropdown"></div>
+    </div>
+
     <div class="grid-2">
       <div>
         <label>Kecamatan</label>
@@ -253,10 +345,14 @@
       </div>
 
       <div id="wrapFotoDo" style="margin-top:10px;">
-        <label>Foto Surat Jalan / DO (Opsional — Terkompresi Otomatis)</label>
+        <label>Foto Surat Jalan / DO (Opsional — Kamera Langsung atau Galeri)</label>
         <div class="photo-box">
-          <input type="file" accept="image/*" capture="environment" onchange="handleImageUpload(this, 'fotoDo', 'prevFotoDo', 'infoFotoDo')" />
+          <div class="photo-btn-row">
+            <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoDo', true)">Kamera / Scan DO</button>
+            <button type="button" class="btn-gal" onclick="triggerPhotoCapture('fotoDo', false)">Pilih dari Galeri</button>
+          </div>
           <div id="infoFotoDo" class="photo-info"></div>
+          <div id="ocrFotoDo" class="ocr-box"></div>
           <img id="prevFotoDo" class="photo-preview" alt="Preview Surat Jalan" />
         </div>
       </div>
@@ -317,11 +413,23 @@
   <!-- ==================== TAB 2: SETOR OMSET & BUKTI FOTO ==================== -->
   <section id="tab-omset" class="section">
     <div class="card">
-      <div class="card-title">Setor Omset Close Shift & Bukti Transfer</div>
+      <div class="card-title">Mode Laporan Omset & Transfer</div>
+      <div class="mode-3-group">
+        <div id="modeOmsetFull" class="type-pill active-stock" onclick="setOmsetMode('FULL')">
+          1. Close Shift + Transfer Hari H
+        </div>
+        <div id="modeOmsetTunda" class="type-pill" onclick="setOmsetMode('TUNDA_TF')">
+          2. Close Shift Dulu (TF Menyusul)
+        </div>
+        <div id="modeOmsetSusul" class="type-pill" onclick="setOmsetMode('SUSUL_TF')">
+          3. Susul Bukti Transfer (H+1)
+        </div>
+      </div>
+
       <div class="grid-3">
         <div>
-          <label>Tanggal Operasional</label>
-          <input type="date" id="omsetTanggal" />
+          <label id="lblOmsetTanggal">Tanggal Omset / Operasional</label>
+          <input type="date" id="omsetTanggal" onchange="recheckOmsetDates()" />
         </div>
         <div>
           <label>Shift Operasional</label>
@@ -331,7 +439,7 @@
             <option value="Shift 2 (Siang - Malam)">Shift 2 (Siang - Malam)</option>
           </select>
         </div>
-        <div>
+        <div id="wrapOmsetBank">
           <label>Rekening Tujuan / Bank</label>
           <select id="omsetBank">
             <option value="BRI KDKMP / ASR">BRI KDKMP / ASR</option>
@@ -344,45 +452,56 @@
       </div>
 
       <div class="grid-2" style="margin-top:12px;">
-        <div>
+        <div id="wrapInputOmsetTotal">
           <label>Total Omset di Struk Close Shift (Rp)</label>
           <input type="number" min="0" inputmode="numeric" id="inpOmsetTotal" placeholder="Contoh: 4550000" oninput="calcOmsetDiff()" />
           <div id="hintOmsetTotal" class="rp-hint">Rp 0</div>
         </div>
-        <div>
+        <div id="wrapInputOmsetTransfer">
           <label>Nominal Dana Ditransfer (Rp)</label>
           <input type="number" min="0" inputmode="numeric" id="inpOmsetTransfer" placeholder="Contoh: 4550000" oninput="calcOmsetDiff()" />
           <div id="hintOmsetTransfer" class="rp-hint">Rp 0</div>
         </div>
       </div>
 
-      <div class="diff-box">
-        <span style="font-size:12px; font-weight:600; color:#334155;">Selisih (Tunai Ditahan / Modal Kasir):</span>
+      <div class="diff-box" id="wrapSelisihOmset">
+        <span style="font-size:12px; font-weight:600; color:#334155;">Selisih (Tunai Ditahan / Belum Ditransfer):</span>
         <strong id="dispSelisihOmset" style="font-size:14px; color:#0f172a;">Rp 0</strong>
       </div>
 
       <div class="grid-2" style="margin-top:12px;">
-        <div>
-          <label>1. Foto Struk Close Shift (Wajib)</label>
+        <!-- KOTAK 1: STRUK CLOSE SHIFT -->
+        <div id="wrapBoxStruk">
+          <label>1. Struk Close Shift (Scan Tanggal Otomatis)</label>
           <div class="photo-box">
-            <input type="file" accept="image/*" capture="environment" onchange="handleImageUpload(this, 'fotoStruk', 'prevFotoStruk', 'infoFotoStruk')" />
+            <div class="photo-btn-row">
+              <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoStruk', true)">Kamera / Scan Struk</button>
+              <button type="button" class="btn-gal" onclick="triggerPhotoCapture('fotoStruk', false)">Pilih dari Galeri</button>
+            </div>
             <div id="infoFotoStruk" class="photo-info"></div>
+            <div id="ocrFotoStruk" class="ocr-box"></div>
             <img id="prevFotoStruk" class="photo-preview" alt="Preview Struk Close Shift" />
           </div>
         </div>
-        <div>
-          <label>2. Foto Bukti Transfer Omset (Wajib)</label>
+
+        <!-- KOTAK 2: BUKTI TRANSFER M-BANKING / ATM -->
+        <div id="wrapBoxTransfer">
+          <label>2. Bukti Transfer M-Banking / ATM (Scan Tanggal)</label>
           <div class="photo-box">
-            <input type="file" accept="image/*" capture="environment" onchange="handleImageUpload(this, 'fotoTransfer', 'prevFotoTransfer', 'infoFotoTransfer')" />
+            <div class="photo-btn-row">
+              <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoTransfer', true)">Kamera / Scan ATM</button>
+              <button type="button" class="btn-gal" onclick="triggerPhotoCapture('fotoTransfer', false)">Galeri (M-Banking)</button>
+            </div>
             <div id="infoFotoTransfer" class="photo-info"></div>
+            <div id="ocrFotoTransfer" class="ocr-box"></div>
             <img id="prevFotoTransfer" class="photo-preview" alt="Preview Bukti Transfer" />
           </div>
         </div>
       </div>
 
       <div style="margin-top:12px;">
-        <label>Catatan Setoran (Opsional)</label>
-        <input type="text" id="omsetCatatan" placeholder="Contoh: Rp 200.000 ditahan untuk uang kembalian besok" />
+        <label>Catatan / Alasan Kendala Transfer (Opsional)</label>
+        <input type="text" id="omsetCatatan" placeholder="Contoh: Agen BRILink tutup malam, transfer besok jam 08.00" />
       </div>
 
       <div style="margin-top:16px;">
@@ -489,10 +608,14 @@
       manager: "Abdurrahman Hidayatullah"
     },
     reportType: "PENERIMAAN",
+    omsetMode: "FULL", // "FULL" | "TUNDA_TF" | "SUSUL_TF"
     selectedCategory: "ALL",
     quantities: {},
     poQuantities: {},
     photos: { fotoDo: "", fotoStruk: "", fotoTransfer: "" },
+    ocrDates: { fotoDo: "", fotoStruk: "", fotoTransfer: "" },
+    activePhotoTarget: "fotoStruk",
+    camStream: null,
     masterKdkmp: JSON.parse(localStorage.getItem("kdkmp_master_gerai") || "null") || DEFAULT_KDKMP,
     masterBarang: JSON.parse(localStorage.getItem("kdkmp_master_barang") || "null") || DEFAULT_BARANG,
     rekapStok: JSON.parse(localStorage.getItem("kdkmp_rekap_stok") || "[]"),
@@ -500,11 +623,11 @@
   };
 
   document.addEventListener("DOMContentLoaded", async () => {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
     document.getElementById("inpTanggal").value = today;
     document.getElementById("omsetTanggal").value = today;
 
-    const tomorrow = new Date(Date.now() + 86400000 * 2).toISOString().slice(0, 10);
+    const tomorrow = new Date(Date.now() + 86400000 * 2).toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
     document.getElementById("poTanggal").value = tomorrow;
 
     const badge = document.getElementById("connBadge");
@@ -518,6 +641,13 @@
     renderItemList();
     renderPoItemList();
     renderMyPoTable();
+
+    document.addEventListener("click", (e) => {
+      const wrap = document.getElementById("quickSearchWrap");
+      if (wrap && !wrap.contains(e.target)) {
+        document.getElementById("geraiSearchResults").style.display = "none";
+      }
+    });
 
     if (SCRIPT_URL) {
       await syncFromServer();
@@ -575,7 +705,45 @@
     }
   }
 
-  // ==================== IDENTITAS GERAI ====================
+  // ==================== PENCARIAN CEPAT & IDENTITAS GERAI ====================
+  function onQuickGeraiSearch(rawQuery) {
+    const q = (rawQuery || "").trim().toLowerCase();
+    const box = document.getElementById("geraiSearchResults");
+    if (!q) { box.style.display = "none"; return; }
+
+    const matches = state.masterKdkmp.filter(g =>
+      (g.Nama_KDKMP || "").toLowerCase().includes(q) ||
+      (g.Kecamatan || "").toLowerCase().includes(q) ||
+      (g.Nama_Manager || "").toLowerCase().includes(q)
+    ).slice(0, 25);
+
+    if (matches.length === 0) {
+      box.innerHTML = `<div class="search-item" style="color:#64748b; cursor:default;">Tidak ada KDKMP yang cocok dengan "${rawQuery}"</div>`;
+    } else {
+      box.innerHTML = matches.map(m => {
+        const escKec = String(m.Kecamatan || "").replace(/'/g, "\\'");
+        const escKdkmp = String(m.Nama_KDKMP || "").replace(/'/g, "\\'");
+        return `
+          <div class="search-item" onclick="selectQuickGerai('${escKec}', '${escKdkmp}')">
+            <div class="search-item-title">${m.Nama_KDKMP}</div>
+            <div class="search-item-sub">Kec. ${m.Kecamatan} • Manager: ${m.Nama_Manager || "-"}</div>
+          </div>
+        `;
+      }).join("");
+    }
+    box.style.display = "block";
+  }
+
+  function selectQuickGerai(kec, kdkmp) {
+    const selKec = document.getElementById("selKecamatan");
+    selKec.value = kec;
+    onKecamatanChange(false);
+    document.getElementById("selKdkmp").value = kdkmp;
+    saveProfile(true);
+    document.getElementById("inpQuickGerai").value = "";
+    document.getElementById("geraiSearchResults").style.display = "none";
+  }
+
   function populateSelectors() {
     const kecList = [...new Set(state.masterKdkmp.map(x => x.Kecamatan))].sort();
     const selKec = document.getElementById("selKecamatan");
@@ -606,52 +774,276 @@
     localStorage.setItem("kdkmp_profile", JSON.stringify(state.profile));
 
     document.getElementById("dispManager").textContent = mgrName;
-    document.getElementById("activeGeraiLabel").textContent =
-      `${kdkmp} (Kec. ${kec}) • ${mgrName}`;
+    document.getElementById("activeGeraiLabel").textContent = `${kdkmp} (Kec. ${kec}) • ${mgrName}`;
 
     renderPoItemList();
     renderMyPoTable();
     if (notify) showToast("Gerai terkunci: " + kdkmp);
   }
 
-  // ==================== KOMPRESI GAMBAR OTOMATIS DI HP ====================
-  function handleImageUpload(inputEl, stateKey, previewId, infoId) {
+  // ==================== DUAL KAMERA LANGSUNG / GALERI & OCR TANGGAL ====================
+  async function triggerPhotoCapture(targetKey, useCamera) {
+    state.activePhotoTarget = targetKey;
+
+    if (!useCamera) {
+      const galInp = document.getElementById("hiddenGalInput");
+      galInp.value = "";
+      galInp.click();
+      return;
+    }
+
+    // Coba buka Live Camera Viewfinder agar lebih tajam & terarah
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: "environment" },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
+          },
+          audio: false
+        });
+        state.camStream = stream;
+        const video = document.getElementById("camVideo");
+        video.srcObject = stream;
+        const titleMap = {
+          fotoStruk: "Scan Struk Close Shift",
+          fotoTransfer: "Scan Bukti Transfer ATM / Struk",
+          fotoDo: "Scan Surat Jalan / DO"
+        };
+        document.getElementById("camModalTitle").textContent = titleMap[targetKey] || "Kamera Scan Dokumen";
+        document.getElementById("cameraModal").style.display = "flex";
+        return;
+      } catch (err) {
+        console.warn("Fallback ke kamera sistem:", err);
+      }
+    }
+
+    // Fallback ke kamera bawaan OS HP jika izin live camera dibatasi
+    const camInp = document.getElementById("hiddenCamFallback");
+    camInp.value = "";
+    camInp.click();
+  }
+
+  function closeCameraModal() {
+    if (state.camStream) {
+      state.camStream.getTracks().forEach(t => t.stop());
+      state.camStream = null;
+    }
+    document.getElementById("cameraModal").style.display = "none";
+  }
+
+  function captureFromCamera() {
+    const video = document.getElementById("camVideo");
+    if (!video.videoWidth) return;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const rawDataUrl = canvas.toDataURL("image/jpeg", 0.92);
+    closeCameraModal();
+    processCapturedImage(rawDataUrl, state.activePhotoTarget);
+  }
+
+  function onFileSelected(inputEl) {
     const file = inputEl.files && inputEl.files[0];
     if (!file) return;
-
-    const infoEl = document.getElementById(infoId);
-    const prevEl = document.getElementById(previewId);
-    infoEl.textContent = "Mengompresi gambar...";
-
     const reader = new FileReader();
-    reader.onload = function(e) {
-      const img = new Image();
-      img.onload = function() {
-        const canvas = document.createElement("canvas");
-        const maxWidth = 900;
-        let width = img.width;
-        let height = img.height;
-
-        if (width > maxWidth) {
-          height = Math.round((height * maxWidth) / width);
-          width = maxWidth;
-        }
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, width, height);
-
-        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.72);
-        state.photos[stateKey] = compressedDataUrl;
-
-        const approxKb = Math.round((compressedDataUrl.length * 3) / 4 / 1024);
-        infoEl.textContent = `Siap upload (${approxKb} KB)`;
-        prevEl.src = compressedDataUrl;
-        prevEl.style.display = "inline-block";
-      };
-      img.src = e.target.result;
-    };
+    reader.onload = (e) => processCapturedImage(e.target.result, state.activePhotoTarget);
     reader.readAsDataURL(file);
+  }
+
+  function processCapturedImage(dataUrl, targetKey) {
+    const mapIds = {
+      fotoDo: { prev: "prevFotoDo", info: "infoFotoDo", ocr: "ocrFotoDo" },
+      fotoStruk: { prev: "prevFotoStruk", info: "infoFotoStruk", ocr: "ocrFotoStruk" },
+      fotoTransfer: { prev: "prevFotoTransfer", info: "infoFotoTransfer", ocr: "ocrFotoTransfer" }
+    };
+    const ui = mapIds[targetKey];
+    const infoEl = document.getElementById(ui.info);
+    const prevEl = document.getElementById(ui.prev);
+
+    infoEl.textContent = "Mengompresi foto & memindai tanggal...";
+
+    const img = new Image();
+    img.onload = function() {
+      // 1. Kompresi gambar bersih untuk disimpan ke Google Drive ASR
+      const uploadCanvas = document.createElement("canvas");
+      const maxUploadW = 950;
+      let uW = img.width;
+      let uH = img.height;
+      if (uW > maxUploadW) {
+        uH = Math.round((uH * maxUploadW) / uW);
+        uW = maxUploadW;
+      }
+      uploadCanvas.width = uW;
+      uploadCanvas.height = uH;
+      uploadCanvas.getContext("2d").drawImage(img, 0, 0, uW, uH);
+
+      const compressedDataUrl = uploadCanvas.toDataURL("image/jpeg", 0.76);
+      state.photos[targetKey] = compressedDataUrl;
+
+      const approxKb = Math.round((compressedDataUrl.length * 3) / 4 / 1024);
+      infoEl.textContent = `Foto siap dikirim (${approxKb} KB)`;
+      prevEl.src = compressedDataUrl;
+      prevEl.style.display = "inline-block";
+
+      // 2. Buat kanvas kontras tinggi khusus untuk OCR pembaca tanggal struk/ATM/m-banking
+      const ocrCanvas = buildHighContrastCanvas(img);
+      runDateOcrScan(ocrCanvas, targetKey, ui.ocr);
+    };
+    img.src = dataUrl;
+  }
+
+  function buildHighContrastCanvas(img) {
+    const canvas = document.createElement("canvas");
+    // Perbesar sedikit jika resolusi kecil agar angka tanggal struk thermal terbaca tajam
+    const targetW = Math.min(1400, Math.max(900, img.width));
+    const scale = targetW / img.width;
+    canvas.width = targetW;
+    canvas.height = Math.round(img.height * scale);
+
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const d = imgData.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const gray = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+      // Tingkatkan kontras agar tinta struk ATM/kasir lebih tegas
+      const contrasted = Math.min(255, Math.max(0, (gray - 128) * 1.45 + 128));
+      d[i] = d[i + 1] = d[i + 2] = contrasted;
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return canvas;
+  }
+
+  async function runDateOcrScan(canvas, targetKey, ocrBoxId) {
+    const ocrEl = document.getElementById(ocrBoxId);
+    ocrEl.className = "ocr-box ocr-scanning";
+    ocrEl.style.display = "block";
+    ocrEl.textContent = "Membaca tanggal pada struk/bukti secara otomatis...";
+
+    if (typeof Tesseract === "undefined") {
+      ocrEl.className = "ocr-box ocr-warn";
+      ocrEl.textContent = "Mesin scan offline — pastikan tanggal di atas sesuai bukti foto.";
+      return;
+    }
+
+    try {
+      const result = await Tesseract.recognize(canvas, "eng");
+      const rawText = (result && result.data && result.data.text) ? result.data.text : "";
+      const detectedYMD = extractDateFromReceiptText(rawText);
+      state.ocrDates[targetKey] = detectedYMD || "";
+
+      renderOcrStatusBadge(targetKey, ocrBoxId);
+    } catch (err) {
+      ocrEl.className = "ocr-box ocr-warn";
+      ocrEl.textContent = "Tanggal tidak terbaca otomatis. Pastikan tanggal laporan di atas benar.";
+    }
+  }
+
+  function extractDateFromReceiptText(rawText) {
+    if (!rawText) return null;
+
+    const MONTH_MAP = {
+      jan: "01", januari: "01", january: "01",
+      feb: "02", februari: "02", february: "02",
+      mar: "03", maret: "03", march: "03",
+      apr: "04", april: "04",
+      mei: "05", may: "05",
+      jun: "06", juni: "06", june: "06",
+      jul: "07", juli: "07", july: "07",
+      agu: "08", ags: "08", agustus: "08", aug: "08", august: "08",
+      sep: "09", sept: "09", september: "09",
+      okt: "10", oktober: "10", oct: "10", october: "10",
+      nov: "11", nop: "11", november: "11", nopember: "11",
+      des: "12", desember: "12", dec: "12", december: "12"
+    };
+
+    const clean = rawText.replace(/\s+/g, " ");
+
+    // 1. Format Nama Bulan: "26 Nov 2026", "26 NOP 26", "26-Agu-2026", "26 November 2026"
+    const mNameRegex = /\b(\d{1,2})[\s\/\-\.]+(jan(?:uari|uary)?|feb(?:ruari|ruary)?|mar(?:et|ch)?|apr(?:il)?|mei|may|jun(?:i|e)?|jul(?:i|y)?|agu(?:stus)?|ags|aug(?:ust)?|sep(?:t|tember)?|okt(?:ober)?|oct(?:ober)?|no[vp](?:ember)?|des(?:ember)?|dec(?:ember)?)[\s\/\-\.,]+(\d{2,4})\b/i;
+    const m1 = clean.match(mNameRegex);
+    if (m1) {
+      const dd = m1[1].padStart(2, "0");
+      const mm = MONTH_MAP[m1[2].toLowerCase()];
+      const yyyy = m1[3].length === 2 ? "20" + m1[3] : m1[3];
+      if (isValidDateParts(yyyy, mm, dd)) return `${yyyy}-${mm}-${dd}`;
+    }
+
+    // 2. Format ISO: "2026-11-26" atau "2026/11/26"
+    const isoRegex = /\b(20\d{2})[\-\/\.](\d{1,2})[\-\/\.](\d{1,2})\b/;
+    const m2 = clean.match(isoRegex);
+    if (m2) {
+      const yyyy = m2[1];
+      const mm = m2[2].padStart(2, "0");
+      const dd = m2[3].padStart(2, "0");
+      if (isValidDateParts(yyyy, mm, dd)) return `${yyyy}-${mm}-${dd}`;
+    }
+
+    // 3. Format Angka Indonesia / ATM: "26/11/2026", "26-11-26", "26.11.2026"
+    const numRegex = /\b(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})\b/g;
+    let match;
+    while ((match = numRegex.exec(clean)) !== null) {
+      const dd = match[1].padStart(2, "0");
+      const mm = match[2].padStart(2, "0");
+      const yyyy = match[3].length === 2 ? "20" + match[3] : match[3];
+      if (isValidDateParts(yyyy, mm, dd)) return `${yyyy}-${mm}-${dd}`;
+    }
+
+    return null;
+  }
+
+  function isValidDateParts(yyyy, mm, dd) {
+    const y = Number(yyyy);
+    const m = Number(mm);
+    const d = Number(dd);
+    return y >= 2024 && y <= 2032 && m >= 1 && m <= 12 && d >= 1 && d <= 31;
+  }
+
+  function renderOcrStatusBadge(targetKey, ocrBoxId) {
+    const ocrEl = document.getElementById(ocrBoxId);
+    const detected = state.ocrDates[targetKey];
+    if (!detected) {
+      ocrEl.className = "ocr-box ocr-warn";
+      ocrEl.innerHTML = `Tanggal struk tidak terbaca jelas — mohon cek manual tanggal laporan di atas.`;
+      return;
+    }
+
+    const targetInputId = targetKey === "fotoDo" ? "inpTanggal" : "omsetTanggal";
+    const selectedDate = document.getElementById(targetInputId).value;
+    const formattedID = detected.split("-").reverse().join("/");
+
+    if (detected === selectedDate) {
+      ocrEl.className = "ocr-box ocr-ok";
+      ocrEl.innerHTML = `<strong>Tanggal Terbaca: ${formattedID}</strong> (Cocok dengan tanggal laporan)`;
+    } else {
+      ocrEl.className = "ocr-box ocr-warn";
+      ocrEl.innerHTML = `
+        <strong>Tanggal Terbaca di Bukti: ${formattedID}</strong> (Berbeda dengan tanggal laporan: ${selectedDate.split("-").reverse().join("/")})
+        <div style="margin-top:5px;">
+          <button type="button" class="btn btn-primary btn-xs" onclick="applyDetectedDate('${targetInputId}', '${detected}')">
+            Gunakan Tanggal ${formattedID}
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function applyDetectedDate(inputId, ymd) {
+    document.getElementById(inputId).value = ymd;
+    recheckOmsetDates();
+    if (state.ocrDates.fotoDo) renderOcrStatusBadge("fotoDo", "ocrFotoDo");
+    showToast("Tanggal laporan disesuaikan ke " + ymd.split("-").reverse().join("/"));
+  }
+
+  function recheckOmsetDates() {
+    if (state.ocrDates.fotoStruk) renderOcrStatusBadge("fotoStruk", "ocrFotoStruk");
+    if (state.ocrDates.fotoTransfer) renderOcrStatusBadge("fotoTransfer", "ocrFotoTransfer");
   }
 
   // ==================== MODUL 1: STOK & BARANG MASUK ====================
@@ -771,6 +1163,7 @@
 
     if (itemsToSend.length === 0) return showToast("Isi minimal 1 jumlah barang!");
 
+    const ocrNote = state.ocrDates.fotoDo ? ` [Scan Tgl DO: ${state.ocrDates.fotoDo}]` : "";
     const payload = {
       action: "STOK_LOG",
       tanggal: document.getElementById("inpTanggal").value,
@@ -780,7 +1173,7 @@
       jenis_laporan: state.reportType,
       supplier: state.reportType === "PENERIMAAN" ? document.getElementById("inpSupplier").value : "-",
       no_do: state.reportType === "PENERIMAAN" ? (document.getElementById("inpNoDo").value.trim() || "-") : "-",
-      catatan: document.getElementById("inpCatatan").value.trim(),
+      catatan: (document.getElementById("inpCatatan").value.trim() + ocrNote).trim(),
       foto_do_base64: state.reportType === "PENERIMAAN" ? state.photos.fotoDo : "",
       items: itemsToSend
     };
@@ -807,10 +1200,12 @@
       renderPerGroupWaOutputs(payload, linkFoto);
       state.quantities = {};
       state.photos.fotoDo = "";
+      state.ocrDates.fotoDo = "";
       document.getElementById("inpNoDo").value = "";
       document.getElementById("inpCatatan").value = "";
       document.getElementById("prevFotoDo").style.display = "none";
       document.getElementById("infoFotoDo").textContent = "";
+      document.getElementById("ocrFotoDo").style.display = "none";
       renderItemList();
     } catch (err) {
       alert("Gagal kirim: " + err.message);
@@ -893,7 +1288,51 @@
     document.getElementById("waResultBox").scrollIntoView({ behavior: "smooth" });
   }
 
-  // ==================== MODUL 2: SETOR OMSET & BUKTI FOTO ====================
+  // ==================== MODUL 2: 3 MODE SETOR OMSET & BUKTI FOTO ====================
+  function setOmsetMode(mode) {
+    state.omsetMode = mode;
+    document.getElementById("modeOmsetFull").className = mode === "FULL" ? "type-pill active-stock" : "type-pill";
+    document.getElementById("modeOmsetTunda").className = mode === "TUNDA_TF" ? "type-pill active-warn" : "type-pill";
+    document.getElementById("modeOmsetSusul").className = mode === "SUSUL_TF" ? "type-pill active-in" : "type-pill";
+
+    const lblTgl = document.getElementById("lblOmsetTanggal");
+    const wrapOmset = document.getElementById("wrapInputOmsetTotal");
+    const wrapTf = document.getElementById("wrapInputOmsetTransfer");
+    const wrapSelisih = document.getElementById("wrapSelisihOmset");
+    const wrapStruk = document.getElementById("wrapBoxStruk");
+    const wrapBoxTf = document.getElementById("wrapBoxTransfer");
+    const wrapBank = document.getElementById("wrapOmsetBank");
+
+    if (mode === "FULL") {
+      lblTgl.textContent = "Tanggal Operasional (Hari H)";
+      wrapOmset.style.display = "block";
+      wrapTf.style.display = "block";
+      wrapSelisih.style.display = "flex";
+      wrapStruk.style.display = "block";
+      wrapBoxTf.style.display = "block";
+      wrapBank.style.display = "block";
+    } else if (mode === "TUNDA_TF") {
+      lblTgl.textContent = "Tanggal Close Shift (Hari H)";
+      wrapOmset.style.display = "block";
+      wrapTf.style.display = "none";
+      wrapSelisih.style.display = "none";
+      wrapStruk.style.display = "block";
+      wrapBoxTf.style.display = "none";
+      wrapBank.style.display = "none";
+      document.getElementById("inpOmsetTransfer").value = "0";
+    } else if (mode === "SUSUL_TF") {
+      lblTgl.textContent = "Tanggal Omset yang Dilunasi (Kemarin)";
+      wrapOmset.style.display = "none";
+      wrapTf.style.display = "block";
+      wrapSelisih.style.display = "none";
+      wrapStruk.style.display = "none";
+      wrapBoxTf.style.display = "block";
+      wrapBank.style.display = "block";
+      document.getElementById("inpOmsetTotal").value = "0";
+    }
+    calcOmsetDiff();
+  }
+
   function calcOmsetDiff() {
     const omset = Number(document.getElementById("inpOmsetTotal").value) || 0;
     const tf = Number(document.getElementById("inpOmsetTransfer").value) || 0;
@@ -903,16 +1342,38 @@
   }
 
   async function submitOmsetReport() {
-    const omset = Number(document.getElementById("inpOmsetTotal").value) || 0;
-    const tf = Number(document.getElementById("inpOmsetTransfer").value) || 0;
+    const mode = state.omsetMode;
+    const omset = mode === "SUSUL_TF" ? 0 : (Number(document.getElementById("inpOmsetTotal").value) || 0);
+    const tf = mode === "TUNDA_TF" ? 0 : (Number(document.getElementById("inpOmsetTransfer").value) || 0);
 
-    if (omset <= 0 && tf <= 0) return showToast("Isi nominal omset atau transfer terlebih dahulu!");
-    if (!state.photos.fotoStruk || !state.photos.fotoTransfer) {
-      return showToast("Wajib lampirkan Foto Struk Close Shift dan Foto Bukti Transfer!");
+    if (mode === "FULL") {
+      if (omset <= 0 && tf <= 0) return showToast("Isi nominal omset dan transfer!");
+      if (!state.photos.fotoStruk || !state.photos.fotoTransfer) {
+        return showToast("Mode Lengkap wajib lampirkan Foto Struk & Bukti Transfer!");
+      }
+    } else if (mode === "TUNDA_TF") {
+      if (omset <= 0) return showToast("Isi total omset pada struk close shift!");
+      if (!state.photos.fotoStruk) return showToast("Wajib lampirkan Foto Struk Close Shift!");
+    } else if (mode === "SUSUL_TF") {
+      if (tf <= 0) return showToast("Isi nominal dana yang ditransfer!");
+      if (!state.photos.fotoTransfer) return showToast("Wajib lampirkan Foto Bukti Transfer!");
     }
+
+    const modeTags = {
+      FULL: "[LUNAS HARI H]",
+      TUNDA_TF: "[CLOSE SHIFT - TRANSFER MENYUSUL H+1]",
+      SUSUL_TF: "[PELUNASAN TRANSFER SUSULAN]"
+    };
+    const ocrTags = [];
+    if (state.ocrDates.fotoStruk) ocrTags.push(`Scan Struk: ${state.ocrDates.fotoStruk}`);
+    if (state.ocrDates.fotoTransfer) ocrTags.push(`Scan TF: ${state.ocrDates.fotoTransfer}`);
+
+    const userNote = document.getElementById("omsetCatatan").value.trim();
+    const combinedNote = [modeTags[mode], ocrTags.join(", "), userNote].filter(Boolean).join(" • ");
 
     const payload = {
       action: "SETOR_OMSET",
+      mode_setoran: mode,
       tanggal: document.getElementById("omsetTanggal").value,
       shift: document.getElementById("omsetShift").value,
       kecamatan: state.profile.kecamatan,
@@ -920,27 +1381,27 @@
       manager: state.profile.manager,
       nominal_omset: omset,
       nominal_transfer: tf,
-      metode_rekening: document.getElementById("omsetBank").value,
-      foto_struk_base64: state.photos.fotoStruk,
-      foto_transfer_base64: state.photos.fotoTransfer,
-      catatan: document.getElementById("omsetCatatan").value.trim()
+      metode_rekening: mode === "TUNDA_TF" ? "Menyusul (H+1)" : document.getElementById("omsetBank").value,
+      foto_struk_base64: mode === "SUSUL_TF" ? "" : state.photos.fotoStruk,
+      foto_transfer_base64: mode === "TUNDA_TF" ? "" : state.photos.fotoTransfer,
+      catatan: combinedNote
     };
 
     const btn = document.getElementById("btnSubmitOmset");
     btn.disabled = true;
-    btn.textContent = "Mengunggah Foto ke Google Drive ASR...";
+    btn.textContent = "Mengunggah Bukti ke Pusat ASR...";
 
     try {
-      let linkStruk = "(Tersimpan Lokal)";
-      let linkTf = "(Tersimpan Lokal)";
+      let linkStruk = mode === "SUSUL_TF" ? "(Sudah dilaporkan saat Close Shift)" : "(Tersimpan Lokal)";
+      let linkTf = mode === "TUNDA_TF" ? "(Menyusul H+1)" : "(Tersimpan Lokal)";
 
       if (SCRIPT_URL) {
         const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
         const json = await res.json();
         if (json.status !== "success") throw new Error(json.message || "Gagal upload setoran");
-        linkStruk = json.link_struk;
-        linkTf = json.link_transfer;
-        showToast("Bukti foto & laporan omset tersimpan ke Drive ASR!");
+        if (json.link_struk && json.link_struk !== "-") linkStruk = json.link_struk;
+        if (json.link_transfer && json.link_transfer !== "-") linkTf = json.link_transfer;
+        showToast("Laporan & bukti foto tersimpan ke Google Drive ASR!");
       } else {
         const omsetLogs = JSON.parse(localStorage.getItem("kdkmp_omset_logs") || "[]");
         omsetLogs.unshift({
@@ -949,38 +1410,44 @@
           Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager,
           Nominal_Omset: omset, Nominal_Transfer: tf, Selisih_Tunai: omset - tf,
           Metode_Rekening: payload.metode_rekening,
-          Link_Struk_CloseShift: payload.foto_struk_base64,
-          Link_Bukti_Transfer: payload.foto_transfer_base64,
+          Link_Struk_CloseShift: payload.foto_struk_base64 || "-",
+          Link_Bukti_Transfer: payload.foto_transfer_base64 || "-",
           Catatan: payload.catatan
         });
         localStorage.setItem("kdkmp_omset_logs", JSON.stringify(omsetLogs.slice(0, 200)));
-        showToast("Laporan omset & foto tersimpan di Sandbox Lokal!");
+        showToast("Tersimpan di Sandbox Lokal!");
       }
 
-      const waMsg = `*LAPORAN SETOR OMSET & CLOSE SHIFT*\n` +
+      const judulWa = mode === "TUNDA_TF"
+        ? "LAPORAN CLOSE SHIFT (TRANSFER MENYUSUL H+1)"
+        : (mode === "SUSUL_TF" ? "PELUNASAN TRANSFER OMSET SUSULAN" : "LAPORAN SETOR OMSET & CLOSE SHIFT");
+
+      const waMsg = `*${judulWa}*\n` +
         `Gerai: *${payload.nama_kdkmp}*\n` +
         `Kecamatan: ${payload.kecamatan}\n` +
-        `Tanggal: ${payload.tanggal} (${payload.shift})\n` +
+        `Tanggal Omset: ${payload.tanggal} (${payload.shift})\n` +
         `Manager: ${payload.manager}\n\n` +
-        `Total Omset Struk: *${formatRp(omset)}*\n` +
-        `Nominal Ditransfer: *${formatRp(tf)}*\n` +
-        `Selisih / Tunai Ditahan: ${formatRp(omset - tf)}\n` +
-        `Rekening Tujuan: ${payload.metode_rekening}\n` +
-        `Struk Close Shift: ${linkStruk}\n` +
-        `Bukti Transfer: ${linkTf}` +
-        (payload.catatan ? `\nCatatan: ${payload.catatan}` : "");
+        (mode !== "SUSUL_TF" ? `Total Omset Struk: *${formatRp(omset)}*\n` : "") +
+        (mode !== "TUNDA_TF" ? `Nominal Ditransfer: *${formatRp(tf)}*\nRekening Tujuan: ${payload.metode_rekening}\n` : "Status Transfer: *Menyusul H+1*\n") +
+        (mode !== "SUSUL_TF" ? `Struk Close Shift: ${linkStruk}\n` : "") +
+        (mode !== "TUNDA_TF" ? `Bukti Transfer: ${linkTf}\n` : "") +
+        (userNote ? `Catatan: ${userNote}` : "");
 
-      document.getElementById("waOmsetTxt").value = waMsg;
+      document.getElementById("waOmsetTxt").value = waMsg.trim();
       document.getElementById("waOmsetBox").style.display = "block";
       document.getElementById("waOmsetBox").scrollIntoView({ behavior: "smooth" });
 
-      // Reset form foto
+      // Reset form foto & nominal
       state.photos.fotoStruk = "";
       state.photos.fotoTransfer = "";
+      state.ocrDates.fotoStruk = "";
+      state.ocrDates.fotoTransfer = "";
       document.getElementById("prevFotoStruk").style.display = "none";
       document.getElementById("prevFotoTransfer").style.display = "none";
       document.getElementById("infoFotoStruk").textContent = "";
       document.getElementById("infoFotoTransfer").textContent = "";
+      document.getElementById("ocrFotoStruk").style.display = "none";
+      document.getElementById("ocrFotoTransfer").style.display = "none";
       document.getElementById("inpOmsetTotal").value = "";
       document.getElementById("inpOmsetTransfer").value = "";
       document.getElementById("omsetCatatan").value = "";
