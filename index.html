@@ -34,7 +34,6 @@
     .status-live { background: #065f46; border: 1px solid #34d399; color: #ecfdf5; }
     .status-sandbox { background: #92400e; border: 1px solid #fbbf24; color: #fef3c7; }
 
-    /* Bar Identitas Gerai Ringkas (Tanpa Dropdown) */
     .gerai-strip {
       margin-top: 8px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.24);
       border-radius: 10px; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px;
@@ -47,14 +46,15 @@
       padding: 6px 10px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap;
     }
 
-    /* ==================== STICKY TABS ==================== */
+    /* ==================== STICKY 4-TABS NAVIGATION ==================== */
     .nav-tabs {
       display: flex; background: #fff; border-bottom: 1px solid var(--border);
       position: sticky; top: 96px; z-index: 40;
     }
     .nav-btn {
-      flex: 1; padding: 11px 4px; border: none; background: none; font-size: 12px;
-      font-weight: 700; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent;
+      flex: 1; padding: 11px 3px; border: none; background: none; font-size: 11.5px;
+      font-weight: 800; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent;
+      line-height: 1.25;
     }
     .nav-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #eff6ff; }
 
@@ -72,7 +72,6 @@
     }
 
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
 
     label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.3px; }
@@ -84,8 +83,7 @@
       outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,235,0.14);
     }
 
-    /* ==================== 1-TAP PILLS & CHIPS (PENGGANTI DROPDOWN) ==================== */
-    .report-type-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    /* ==================== 1-TAP PILLS & CHIPS ==================== */
     .mode-3-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
     @media (max-width: 540px) { .mode-3-group { grid-template-columns: 1fr; } }
 
@@ -99,11 +97,22 @@
 
     .pill-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
     .opt-pill {
-      padding: 7px 11px; border-radius: 8px; border: 1.5px solid var(--border);
+      padding: 8px 12px; border-radius: 8px; border: 1.5px solid var(--border);
       background: #f8fafc; color: #334155; font-size: 12px; font-weight: 700; cursor: pointer;
     }
     .opt-pill.active {
       background: var(--primary); border-color: var(--primary); color: #fff;
+    }
+
+    .bank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    @media (max-width: 520px) { .bank-grid { grid-template-columns: 1fr; } }
+    .bank-pill {
+      padding: 11px 12px; border-radius: 9px; border: 2px solid var(--border);
+      background: #f8fafc; color: #334155; font-size: 12px; font-weight: 800;
+      cursor: pointer; text-align: left;
+    }
+    .bank-pill.active {
+      background: #eff6ff; border-color: var(--primary); color: var(--primary);
     }
 
     .chip-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; scrollbar-width: none; }
@@ -236,6 +245,7 @@
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
     .btn-success { background: var(--success); color: #fff; }
+    .btn-teal { background: #0f766e; color: #fff; }
     .btn-purple { background: var(--purple); color: #fff; }
     .btn-outline { background: #fff; color: var(--primary); border: 1.5px solid var(--primary); }
     .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
@@ -278,7 +288,6 @@
     <h1 class="header-title">PORTAL MANAGER KDKMP CIANJUR</h1>
     <span id="connBadge" class="badge-status status-sandbox">Sandbox Lokal</span>
   </div>
-  <!-- BAR IDENTITAS GERAI RINGKAS (1 BARIS, TANPA DROPDOWN) -->
   <div class="gerai-strip">
     <div class="gerai-strip-info">
       <div class="gerai-strip-name" id="dispGeraiTitle">KDKMP Selagedang (Kec. Cibeber)</div>
@@ -288,7 +297,7 @@
   </div>
 </header>
 
-<!-- MODAL PEMILIH GERAI INSTAN (PENGGANTI DROPDOWN 180+ GERAI) -->
+<!-- MODAL PEMILIH GERAI INSTAN -->
 <div id="geraiModal" class="modal-overlay" onclick="if(event.target===this) closeGeraiModal()">
   <div class="modal-sheet">
     <div class="modal-head">
@@ -309,122 +318,145 @@
   </div>
 </div>
 
-<!-- MODAL KAMERA LANGSUNG & SCANNER -->
+<!-- MODAL KAMERA LANGSUNG -->
 <div id="cameraModal">
   <div class="cam-header">
-    <strong id="camModalTitle" style="font-size:14px;">Scan Dokumen</strong>
+    <strong id="camModalTitle" style="font-size:14px;">Kamera Dokumen</strong>
     <button type="button" class="btn btn-sm" style="background:#dc2626; color:#fff;" onclick="closeCameraModal()">Tutup</button>
   </div>
   <div class="cam-viewport">
     <video id="camVideo" autoplay playsinline></video>
-    <div class="cam-guide">
-      <span>Posisikan area tanggal di dalam bingkai hijau</span>
+    <div class="cam-guide" id="camGuideBox">
+      <span id="camGuideText">Posisikan area tanggal di dalam bingkai hijau</span>
     </div>
   </div>
   <div class="cam-footer">
-    <button type="button" class="btn btn-success" style="max-width:280px; font-size:15px;" onclick="captureFromCamera()">
-      Jepret & Scan Tanggal
+    <button type="button" class="btn btn-success" style="max-width:280px; font-size:15px;" id="btnCamCapture" onclick="captureFromCamera()">
+      Jepret & Scan
     </button>
   </div>
 </div>
 
-<!-- INPUT FILE TERSEMBUNYI UNTUK GALERI & FALLBACK KAMERA -->
 <input type="file" id="hiddenGalInput" accept="image/*" style="display:none;" onchange="onFileSelected(this)" />
 <input type="file" id="hiddenCamFallback" accept="image/*" capture="environment" style="display:none;" onchange="onFileSelected(this)" />
 
-<!-- NAVIGASI 3 MODUL OPERASIONAL MANAGER -->
+<!-- NAVIGASI 4 MODUL OPERASIONAL MANAGER -->
 <nav class="nav-tabs">
-  <button class="nav-btn active" onclick="switchTab('tab-stok', this)">1. Stok & Barang</button>
-  <button class="nav-btn" onclick="switchTab('tab-omset', this)">2. Omset & Struk</button>
-  <button class="nav-btn" onclick="switchTab('tab-po', this)">3. Rencana PO</button>
+  <button class="nav-btn active" onclick="switchTab('tab-masuk', this)">1. Barang Masuk</button>
+  <button class="nav-btn" onclick="switchTab('tab-sisa', this)">2. Stok Sisa</button>
+  <button class="nav-btn" onclick="switchTab('tab-omset', this)">3. Omset & Struk</button>
+  <button class="nav-btn" onclick="switchTab('tab-po', this)">4. Rencana PO</button>
 </nav>
 
 <div class="container">
 
-  <!-- ==================== TAB 1: STOK & PENERIMAAN BARANG ==================== -->
-  <section id="tab-stok" class="section active">
+  <!-- ==================== TAB 1: BARANG MASUK (DO) UNTUK INPUT POS ASR ==================== -->
+  <section id="tab-masuk" class="section active">
     <div class="card">
-      <div class="card-title">Jenis Laporan Barang</div>
-      <div class="report-type-group">
-        <div id="pillIn" class="type-pill active-in" onclick="setReportType('PENERIMAAN')">
-          + BARANG MASUK (DO)
-        </div>
-        <div id="pillStock" class="type-pill" onclick="setReportType('STOK_SISA')">
-          = STOK SISA HARIAN
-        </div>
+      <div class="card-title">
+        <span>Penerimaan Barang Masuk (DO)</span>
+        <span style="font-size:11px; color:#2563eb;">Untuk Input Mesin POS ASR</span>
       </div>
 
       <div class="grid-2">
         <div>
-          <label>Tanggal Laporan</label>
-          <input type="date" id="inpTanggal" />
+          <label>Tanggal Terima Barang (Isi Manual)</label>
+          <input type="date" id="masukTanggal" />
         </div>
-        <div id="wrapNoDo">
+        <div>
           <label>Nomor Surat Jalan / DO</label>
-          <input type="text" id="inpNoDo" placeholder="Contoh: DO-2026-8812" />
+          <input type="text" id="masukNoDo" placeholder="Contoh: DO-2026-8812" />
         </div>
       </div>
 
-      <!-- PILIHAN SUPPLIER 1-TAP PILLS (PENGGANTI DROPDOWN) -->
-      <div id="wrapSupplier" style="margin-top:10px;">
+      <div style="margin-top:10px;">
         <label>Supplier / Sumber Kiriman (Ketuk 1x)</label>
         <div class="pill-wrap" id="supplierPills"></div>
       </div>
 
-      <div id="wrapFotoDo" style="margin-top:10px;">
-        <label>Foto Surat Jalan / DO (Opsional)</label>
+      <div style="margin-top:10px;">
+        <label>Foto Surat Jalan / DO (Opsional — Tanpa Scan Tanggal Otomatis)</label>
         <div class="photo-box">
           <div class="photo-btn-row">
-            <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoDo', true)">Scan Surat Jalan / DO</button>
-            <button type="button" class="btn-gal" onclick="triggerPhotoCapture('fotoDo', false)">Galeri</button>
+            <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoDo', true, false)">Foto Surat Jalan</button>
+            <button type="button" class="btn-gal" onclick="triggerPhotoCapture('fotoDo', false, false)">Galeri</button>
           </div>
           <div id="infoFotoDo" class="photo-info"></div>
-          <div id="ocrFotoDo" class="ocr-box"></div>
           <img id="prevFotoDo" class="photo-preview" alt="Preview Surat Jalan" />
         </div>
       </div>
 
       <div style="margin-top:10px;">
-        <label>Catatan Lapangan (Opsional)</label>
-        <input type="text" id="inpCatatan" placeholder="Contoh: Bongkar pagi kemasan aman" />
+        <label>Catatan Bongkar / Kondisi Barang (Opsional)</label>
+        <input type="text" id="masukCatatan" placeholder="Contoh: Bongkar pagi kemasan utuh" />
       </div>
     </div>
 
     <div class="card">
       <div class="card-title">
-        <span>Input Jumlah Barang</span>
-        <span id="itemCountBadge" style="font-size:12px; color:#059669;">0 item diisi</span>
+        <span>Jumlah Barang Diterima (Master Barang ASR)</span>
+        <span id="masukCountBadge" style="font-size:12px; color:#1e3a8a;">0 item diisi</span>
       </div>
 
-      <div class="chip-bar" id="categoryChips"></div>
+      <div class="chip-bar" id="masukCategoryChips"></div>
       <div style="margin-bottom:8px;">
-        <input type="text" id="searchBarang" placeholder="Cari cepat barang (SPHP, Gas, Urea, Minyakita, ID FOOD)..." oninput="renderItemList()" />
+        <input type="text" id="searchBarangMasuk" placeholder="Cari barang dari master (SPHP, Gas, Urea, Minyakita, ID FOOD)..." oninput="renderMasukItemList()" />
       </div>
 
-      <div id="itemListContainer"></div>
+      <div id="masukItemListContainer"></div>
 
-      <details style="margin-top:12px; background:#f8fafc; padding:10px; border-radius:8px; border:1px dashed #cbd5e1;">
-        <summary style="font-size:12px; font-weight:700; color:#334155; cursor:pointer;">+ Tambah Item Baru (Jika Belum Ada di Daftar)</summary>
-        <div style="margin-top:8px;">
-          <div class="pill-wrap" id="customCatPills" style="margin-bottom:8px;"></div>
-          <div style="display:flex; gap:6px;">
-            <input type="text" id="customName" placeholder="Nama barang baru" style="flex:2;" />
-            <input type="text" id="customUnit" placeholder="Satuan" style="flex:1;" />
-            <button type="button" class="btn btn-outline btn-sm" onclick="addCustomItem()">Tambah</button>
-          </div>
-        </div>
-      </details>
-
-      <div id="waResultBox" class="wa-card" style="display:none;">
+      <div id="waMasukResultBox" class="wa-card" style="display:none;">
         <div style="font-size:13px; font-weight:700; color:#166534;">
-          Terkirim! Salin format di bawah sesuai grup WA masing-masing:
+          Terkirim ke Antrean POS ASR! Salin format di bawah sesuai grup WA:
         </div>
-        <div id="waCardsContainer"></div>
+        <div id="waMasukCardsContainer"></div>
       </div>
     </div>
   </section>
 
-  <!-- ==================== TAB 2: SETOR OMSET & BUKTI FOTO ==================== -->
+  <!-- ==================== TAB 2: STOK SISA HARIAN (TUTUP GERAI) ==================== -->
+  <section id="tab-sisa" class="section">
+    <div class="card">
+      <div class="card-title">
+        <span>Laporan Stok Sisa Harian</span>
+        <span style="font-size:11px; color:#0f766e;">Audit Fisik Tutup Gerai</span>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label>Tanggal Stok Sisa</label>
+          <input type="date" id="sisaTanggal" />
+        </div>
+        <div>
+          <label>Catatan Stok Fisik (Opsional)</label>
+          <input type="text" id="sisaCatatan" placeholder="Contoh: Stok tutup gerai malam" />
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>Input Sisa Fisik di Gerai (Master Barang ASR)</span>
+        <span id="sisaCountBadge" style="font-size:12px; color:#0f766e;">0 item diisi</span>
+      </div>
+
+      <div class="chip-bar" id="sisaCategoryChips"></div>
+      <div style="margin-bottom:8px;">
+        <input type="text" id="searchBarangSisa" placeholder="Cari barang dari master..." oninput="renderSisaItemList()" />
+      </div>
+
+      <div id="sisaItemListContainer"></div>
+
+      <div id="waSisaResultBox" class="wa-card" style="display:none;">
+        <div style="font-size:13px; font-weight:700; color:#166534;">
+          Laporan Stok Sisa Terkirim! Salin format di bawah sesuai grup WA:
+        </div>
+        <div id="waSisaCardsContainer"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TAB 3: SETOR OMSET & BUKTI FOTO ==================== -->
   <section id="tab-omset" class="section">
     <div class="card">
       <div class="card-title">Mode Laporan Omset & Transfer</div>
@@ -451,10 +483,10 @@
         </div>
       </div>
 
-      <!-- PILIHAN BANK 1-TAP PILLS (PENGGANTI DROPDOWN) -->
+      <!-- PILIHAN BANK KHUSUS PT AGRINAS PANGAN NUSANTARA -->
       <div id="wrapOmsetBank" style="margin-top:10px;">
-        <label>Rekening Tujuan / Bank (Ketuk 1x)</label>
-        <div class="pill-wrap" id="bankPills"></div>
+        <label>Rekening Tujuan Transfer (Ketuk 1x)</label>
+        <div class="bank-grid" id="bankPills"></div>
       </div>
 
       <div class="grid-2" style="margin-top:12px;">
@@ -476,13 +508,12 @@
       </div>
 
       <div class="grid-2" style="margin-top:12px;">
-        <!-- KOTAK 1: STRUK CLOSESHIFT -->
         <div id="wrapBoxStruk">
           <label>1. Struk Closeshift</label>
           <div class="photo-box">
             <div class="photo-btn-row">
-              <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoStruk', true)">Scan Struk Closeshift</button>
-              <button type="button" class="btn-gal" onclick="triggerPhotoCapture('fotoStruk', false)">Galeri</button>
+              <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoStruk', true, true)">Scan Struk Closeshift</button>
+              <button type="button" class="btn-gal" onclick="triggerPhotoCapture('fotoStruk', false, true)">Galeri</button>
             </div>
             <div id="infoFotoStruk" class="photo-info"></div>
             <div id="ocrFotoStruk" class="ocr-box"></div>
@@ -490,13 +521,12 @@
           </div>
         </div>
 
-        <!-- KOTAK 2: BUKTI TRANSFER / SETOR -->
         <div id="wrapBoxTransfer">
           <label>2. Bukti Transfer / Setor</label>
           <div class="photo-box">
             <div class="photo-btn-row">
-              <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoTransfer', true)">Scan Bukti Setor</button>
-              <button type="button" class="btn-gal" onclick="triggerPhotoCapture('fotoTransfer', false)">Galeri</button>
+              <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoTransfer', true, true)">Scan Bukti Setor</button>
+              <button type="button" class="btn-gal" onclick="triggerPhotoCapture('fotoTransfer', false, true)">Galeri</button>
             </div>
             <div id="infoFotoTransfer" class="photo-info"></div>
             <div id="ocrFotoTransfer" class="ocr-box"></div>
@@ -520,7 +550,7 @@
     </div>
   </section>
 
-  <!-- ==================== TAB 3: PERENCANAAN PO ==================== -->
+  <!-- ==================== TAB 4: PERENCANAAN PO ==================== -->
   <section id="tab-po" class="section">
     <div class="card">
       <div class="card-title">Pengajuan Perencanaan PO Barang</div>
@@ -566,15 +596,15 @@
 
 </div>
 
-<!-- BAR KIRIM MELAYANG DI BAWAH LAYAR (ANTI-SCROLL) -->
+<!-- BAR KIRIM MELAYANG DI BAWAH LAYAR -->
 <div class="floating-bar">
   <div class="floating-inner">
     <div class="floating-summary">
-      <div class="floating-lbl" id="floatBarLabel">Ringkasan Input</div>
+      <div class="floating-lbl" id="floatBarLabel">Barang Masuk (DO)</div>
       <div class="floating-val" id="floatBarValue">0 item diisi</div>
     </div>
     <button type="button" id="floatSubmitBtn" class="btn btn-primary" onclick="handleFloatingSubmit()">
-      Kirim Laporan Barang
+      Kirim Barang Masuk (DO)
     </button>
   </div>
 </div>
@@ -605,8 +635,12 @@
   };
 
   const SHIFT_LIST = ["Full Day / Tutup Gerai", "Shift 1 (Pagi)", "Shift 2 (Malam)"];
-  const BANK_LIST = ["APN BRI", "APN BNI"];
-  const CUSTOM_CATS = ["Produk ID FOOD", "Beras SPHP", "Gas LPG 3kg", "Pupuk Subsidi", "Minyakita", "Komoditas Lain"];
+
+  // HANYA 2 REKENING RESMI ATAS NAMA PT AGRINAS PANGAN NUSANTARA
+  const BANK_LIST = [
+    "BRI — PT AGRINAS PANGAN NUSANTARA",
+    "BNI — PT AGRINAS PANGAN NUSANTARA"
+  ];
 
   const DEFAULT_KDKMP = [
     { Kecamatan: "Cibeber", Nama_KDKMP: "KDKMP Selagedang", Nama_Manager: "Abdurrahman Hidayatullah" },
@@ -630,21 +664,22 @@
   ];
 
   let state = {
-    activeTab: "tab-stok",
+    activeTab: "tab-masuk",
     profile: JSON.parse(localStorage.getItem("kdkmp_profile") || "null"),
     modalSelectedKec: "ALL",
-    reportType: "PENERIMAAN",
     selectedSupplier: "Perum Bulog (SPHP)",
-    selectedCustomCat: "Produk ID FOOD",
     omsetMode: "FULL",
     selectedShift: "Full Day / Tutup Gerai",
-    selectedBank: "BRI KDKMP / ASR",
-    selectedCategory: "ALL",
-    quantities: {},
+    selectedBank: BANK_LIST[0],
+    masukCategory: "ALL",
+    sisaCategory: "ALL",
+    quantitiesMasuk: {},
+    quantitiesSisa: {},
     poQuantities: {},
     photos: { fotoDo: "", fotoStruk: "", fotoTransfer: "" },
-    ocrDates: { fotoDo: "", fotoStruk: "", fotoTransfer: "" },
+    ocrDates: { fotoStruk: "", fotoTransfer: "" },
     activePhotoTarget: "fotoStruk",
+    activeRunOcr: true,
     camStream: null,
     masterKdkmp: JSON.parse(localStorage.getItem("kdkmp_master_gerai") || "null") || DEFAULT_KDKMP,
     masterBarang: JSON.parse(localStorage.getItem("kdkmp_master_barang") || "null") || DEFAULT_BARANG,
@@ -654,7 +689,8 @@
 
   document.addEventListener("DOMContentLoaded", async () => {
     const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
-    document.getElementById("inpTanggal").value = today;
+    document.getElementById("masukTanggal").value = today;
+    document.getElementById("sisaTanggal").value = today;
     document.getElementById("omsetTanggal").value = today;
 
     const tomorrow = new Date(Date.now() + 86400000 * 2).toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
@@ -666,7 +702,6 @@
       badge.className = "badge-status status-live";
     }
 
-    // Jika perangkat baru pertama kali dibuka & belum ada profil tersimpan, langsung buka modal cari gerai
     if (!state.profile) {
       state.profile = {
         kecamatan: state.masterKdkmp[0].Kecamatan,
@@ -680,8 +715,10 @@
     }
 
     renderAllPills();
-    renderCategoryChips();
-    renderItemList();
+    renderMasukCategoryChips();
+    renderSisaCategoryChips();
+    renderMasukItemList();
+    renderSisaItemList();
     renderPoItemList();
     renderMyPoTable();
     updateFloatingBar();
@@ -709,7 +746,6 @@
         localStorage.setItem("kdkmp_rekap_stok", JSON.stringify(state.rekapStok));
         localStorage.setItem("kdkmp_po_list", JSON.stringify(state.poList));
 
-        // Perbarui nama manager dari master jika gerai sudah dipilih
         const found = state.masterKdkmp.find(g => g.Nama_KDKMP === state.profile.nama_kdkmp);
         if (found && found.Nama_Manager) {
           state.profile.manager = found.Nama_Manager;
@@ -718,8 +754,10 @@
           updateGeraiStrip();
         }
 
-        renderCategoryChips();
-        renderItemList();
+        renderMasukCategoryChips();
+        renderSisaCategoryChips();
+        renderMasukItemList();
+        renderSisaItemList();
         renderPoItemList();
         renderMyPoTable();
       }
@@ -739,7 +777,7 @@
     return "Rp " + (Number(num) || 0).toLocaleString("id-ID");
   }
 
-  // ==================== MODAL PEMILIH GERAI INSTAN (ZERO DROPDOWN) ====================
+  // ==================== MODAL PEMILIH GERAI INSTAN ====================
   function updateGeraiStrip() {
     document.getElementById("dispGeraiTitle").textContent = `${state.profile.nama_kdkmp} (Kec. ${state.profile.kecamatan})`;
     document.getElementById("dispManagerSub").textContent = `Manager: ${state.profile.manager || "-"}`;
@@ -821,7 +859,7 @@
     showToast("Gerai terkunci: " + kdkmp);
   }
 
-  // ==================== RENDER 1-TAP PILLS (PENGGANTI DROPDOWN) ====================
+  // ==================== RENDER 1-TAP PILLS ====================
   function renderAllPills() {
     document.getElementById("supplierPills").innerHTML = SUPPLIER_LIST.map(s => `
       <button type="button" class="opt-pill ${state.selectedSupplier === s ? 'active' : ''}" onclick="selectSupplier('${s}')">${s}</button>
@@ -832,20 +870,15 @@
     `).join("");
 
     document.getElementById("bankPills").innerHTML = BANK_LIST.map(bk => `
-      <button type="button" class="opt-pill ${state.selectedBank === bk ? 'active' : ''}" onclick="selectBank('${bk}')">${bk}</button>
-    `).join("");
-
-    document.getElementById("customCatPills").innerHTML = CUSTOM_CATS.map(c => `
-      <button type="button" class="opt-pill ${state.selectedCustomCat === c ? 'active' : ''}" onclick="selectCustomCat('${c}')">${c}</button>
+      <button type="button" class="bank-pill ${state.selectedBank === bk ? 'active' : ''}" onclick="selectBank('${bk}')">${bk}</button>
     `).join("");
   }
 
   function selectSupplier(s) { state.selectedSupplier = s; renderAllPills(); }
   function selectShift(sh) { state.selectedShift = sh; renderAllPills(); }
   function selectBank(bk) { state.selectedBank = bk; renderAllPills(); }
-  function selectCustomCat(c) { state.selectedCustomCat = c; renderAllPills(); }
 
-  // ==================== NAVIGASI TAB & FLOATING SUBMIT BAR ====================
+  // ==================== NAVIGASI 4 TAB & FLOATING SUBMIT BAR ====================
   function switchTab(tabId, btn) {
     state.activeTab = tabId;
     document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
@@ -865,12 +898,18 @@
     const valEl = document.getElementById("floatBarValue");
     const btnEl = document.getElementById("floatSubmitBtn");
 
-    if (state.activeTab === "tab-stok") {
-      const count = Object.keys(state.quantities).filter(k => state.quantities[k] !== "" && state.quantities[k] !== undefined).length;
-      lblEl.textContent = state.reportType === "PENERIMAAN" ? "Barang Masuk (DO)" : "Stok Sisa Harian";
-      valEl.textContent = `${count} item diisi`;
+    if (state.activeTab === "tab-masuk") {
+      const count = Object.keys(state.quantitiesMasuk).filter(k => Number(state.quantitiesMasuk[k]) > 0).length;
+      lblEl.textContent = "Barang Masuk (DO)";
+      valEl.textContent = `${count} item diterima`;
       btnEl.className = "btn btn-primary";
-      btnEl.textContent = "Kirim Laporan Barang";
+      btnEl.textContent = "Kirim Barang Masuk (DO)";
+    } else if (state.activeTab === "tab-sisa") {
+      const count = Object.keys(state.quantitiesSisa).filter(k => state.quantitiesSisa[k] !== "" && state.quantitiesSisa[k] !== undefined).length;
+      lblEl.textContent = "Stok Sisa Harian";
+      valEl.textContent = `${count} item diaudit`;
+      btnEl.className = "btn btn-teal";
+      btnEl.textContent = "Kirim Stok Sisa Harian";
     } else if (state.activeTab === "tab-omset") {
       const omset = Number(document.getElementById("inpOmsetTotal").value) || 0;
       const tf = Number(document.getElementById("inpOmsetTransfer").value) || 0;
@@ -888,14 +927,16 @@
   }
 
   function handleFloatingSubmit() {
-    if (state.activeTab === "tab-stok") submitStokReport();
+    if (state.activeTab === "tab-masuk") submitBarangMasuk();
+    else if (state.activeTab === "tab-sisa") submitStokSisa();
     else if (state.activeTab === "tab-omset") submitOmsetReport();
     else if (state.activeTab === "tab-po") submitPoReport();
   }
 
-  // ==================== DUAL KAMERA LANGSUNG / GALERI & OCR TANGGAL ====================
-  async function triggerPhotoCapture(targetKey, useCamera) {
+  // ==================== KAMERA / GALERI (OCR OPSIONAL HANYA UNTUK STRUK & BUKTI SETOR) ====================
+  async function triggerPhotoCapture(targetKey, useCamera, runOcr) {
     state.activePhotoTarget = targetKey;
+    state.activeRunOcr = Boolean(runOcr);
 
     if (!useCamera) {
       const galInp = document.getElementById("hiddenGalInput");
@@ -907,11 +948,7 @@
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: { ideal: "environment" },
-            width: { ideal: 1920 },
-            height: { ideal: 1080 }
-          },
+          video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } },
           audio: false
         });
         state.camStream = stream;
@@ -920,9 +957,13 @@
         const titleMap = {
           fotoStruk: "Scan Struk Closeshift",
           fotoTransfer: "Scan Bukti Setor",
-          fotoDo: "Scan Surat Jalan / DO"
+          fotoDo: "Foto Surat Jalan / DO"
         };
-        document.getElementById("camModalTitle").textContent = titleMap[targetKey] || "Scan Dokumen";
+        document.getElementById("camModalTitle").textContent = titleMap[targetKey] || "Kamera Dokumen";
+        document.getElementById("camGuideText").textContent = runOcr
+          ? "Posisikan area tanggal di dalam bingkai hijau"
+          : "Posisikan lembar Surat Jalan / DO di dalam bingkai";
+        document.getElementById("btnCamCapture").textContent = runOcr ? "Jepret & Scan Tanggal" : "Jepret Foto DO";
         document.getElementById("cameraModal").style.display = "flex";
         return;
       } catch (err) {
@@ -954,20 +995,20 @@
 
     const rawDataUrl = canvas.toDataURL("image/jpeg", 0.92);
     closeCameraModal();
-    processCapturedImage(rawDataUrl, state.activePhotoTarget);
+    processCapturedImage(rawDataUrl, state.activePhotoTarget, state.activeRunOcr);
   }
 
   function onFileSelected(inputEl) {
     const file = inputEl.files && inputEl.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (e) => processCapturedImage(e.target.result, state.activePhotoTarget);
+    reader.onload = (e) => processCapturedImage(e.target.result, state.activePhotoTarget, state.activeRunOcr);
     reader.readAsDataURL(file);
   }
 
-  function processCapturedImage(dataUrl, targetKey) {
+  function processCapturedImage(dataUrl, targetKey, runOcr) {
     const mapIds = {
-      fotoDo: { prev: "prevFotoDo", info: "infoFotoDo", ocr: "ocrFotoDo" },
+      fotoDo: { prev: "prevFotoDo", info: "infoFotoDo", ocr: null },
       fotoStruk: { prev: "prevFotoStruk", info: "infoFotoStruk", ocr: "ocrFotoStruk" },
       fotoTransfer: { prev: "prevFotoTransfer", info: "infoFotoTransfer", ocr: "ocrFotoTransfer" }
     };
@@ -975,7 +1016,7 @@
     const infoEl = document.getElementById(ui.info);
     const prevEl = document.getElementById(ui.prev);
 
-    infoEl.textContent = "Memproses foto & memindai tanggal...";
+    infoEl.textContent = runOcr ? "Memproses foto & memindai tanggal..." : "Memproses foto surat jalan...";
 
     const img = new Image();
     img.onload = function() {
@@ -999,8 +1040,10 @@
       prevEl.src = compressedDataUrl;
       prevEl.style.display = "inline-block";
 
-      const ocrCanvas = buildHighContrastCanvas(img);
-      runDateOcrScan(ocrCanvas, targetKey, ui.ocr);
+      if (runOcr && ui.ocr) {
+        const ocrCanvas = buildHighContrastCanvas(img);
+        runDateOcrScan(ocrCanvas, targetKey, ui.ocr);
+      }
     };
     img.src = dataUrl;
   }
@@ -1114,8 +1157,7 @@
       return;
     }
 
-    const targetInputId = targetKey === "fotoDo" ? "inpTanggal" : "omsetTanggal";
-    const selectedDate = document.getElementById(targetInputId).value;
+    const selectedDate = document.getElementById("omsetTanggal").value;
     const formattedID = detected.split("-").reverse().join("/");
 
     if (detected === selectedDate) {
@@ -1126,7 +1168,7 @@
       ocrEl.innerHTML = `
         <strong>Tanggal di Bukti: ${formattedID}</strong> (Tanggal laporan: ${selectedDate.split("-").reverse().join("/")})
         <div style="margin-top:4px;">
-          <button type="button" class="btn btn-primary btn-xs" onclick="applyDetectedDate('${targetInputId}', '${detected}')">
+          <button type="button" class="btn btn-primary btn-xs" onclick="applyDetectedDate('${detected}')">
             Samakan ke ${formattedID}
           </button>
         </div>
@@ -1134,10 +1176,9 @@
     }
   }
 
-  function applyDetectedDate(inputId, ymd) {
-    document.getElementById(inputId).value = ymd;
+  function applyDetectedDate(ymd) {
+    document.getElementById("omsetTanggal").value = ymd;
     recheckOmsetDates();
-    if (state.ocrDates.fotoDo) renderOcrStatusBadge("fotoDo", "ocrFotoDo");
     showToast("Tanggal disesuaikan ke " + ymd.split("-").reverse().join("/"));
   }
 
@@ -1146,125 +1187,99 @@
     if (state.ocrDates.fotoTransfer) renderOcrStatusBadge("fotoTransfer", "ocrFotoTransfer");
   }
 
-  // ==================== MODUL 1: STOK & BARANG MASUK ====================
-  function setReportType(type) {
-    state.reportType = type;
-    document.getElementById("pillIn").className = type === "PENERIMAAN" ? "type-pill active-in" : "type-pill";
-    document.getElementById("pillStock").className = type === "STOK_SISA" ? "type-pill active-stock" : "type-pill";
-    document.getElementById("wrapSupplier").style.display = type === "PENERIMAAN" ? "block" : "none";
-    document.getElementById("wrapNoDo").style.display = type === "PENERIMAAN" ? "block" : "none";
-    document.getElementById("wrapFotoDo").style.display = type === "PENERIMAAN" ? "block" : "none";
-    updateFloatingBar();
-  }
-
-  function renderCategoryChips() {
+  // ==================== TAB 1: BARANG MASUK (DO) ====================
+  function renderMasukCategoryChips() {
     const cats = ["ALL", ...new Set(state.masterBarang.map(b => b.Kategori))];
-    document.getElementById("categoryChips").innerHTML = cats.map(c => {
+    document.getElementById("masukCategoryChips").innerHTML = cats.map(c => {
       const label = c === "ALL" ? "Semua" : c;
-      const active = state.selectedCategory === c ? "active" : "";
-      return `<button type="button" class="chip ${active}" onclick="selectCategory('${c}')">${label}</button>`;
+      const active = state.masukCategory === c ? "active" : "";
+      return `<button type="button" class="chip ${active}" onclick="selectMasukCategory('${c}')">${label}</button>`;
     }).join("");
   }
 
-  function selectCategory(cat) {
-    state.selectedCategory = cat;
-    // Otomatis sesuaikan pilihan Supplier saat chip komoditas diketuk
+  function selectMasukCategory(cat) {
+    state.masukCategory = cat;
     if (CAT_TO_SUPPLIER[cat]) {
       state.selectedSupplier = CAT_TO_SUPPLIER[cat];
       renderAllPills();
     }
-    renderCategoryChips();
-    renderItemList();
+    renderMasukCategoryChips();
+    renderMasukItemList();
   }
 
-  function renderItemList() {
-    const query = document.getElementById("searchBarang").value.toLowerCase();
+  function renderMasukItemList() {
+    const query = document.getElementById("searchBarangMasuk").value.toLowerCase();
     const filtered = state.masterBarang.filter(b => {
-      const matchCat = state.selectedCategory === "ALL" || b.Kategori === state.selectedCategory;
+      const matchCat = state.masukCategory === "ALL" || b.Kategori === state.masukCategory;
       const matchSearch = b.Nama_Barang.toLowerCase().includes(query) || b.Kategori.toLowerCase().includes(query);
       return matchCat && matchSearch;
     });
 
-    const container = document.getElementById("itemListContainer");
+    const container = document.getElementById("masukItemListContainer");
     if (filtered.length === 0) {
-      container.innerHTML = `<p style="font-size:13px; color:#64748b; text-align:center;">Barang tidak ditemukan.</p>`;
+      container.innerHTML = `<p style="font-size:13px; color:#64748b; text-align:center;">Barang tidak ditemukan di Master ASR.</p>`;
       return;
     }
 
     container.innerHTML = filtered.map(b => {
-      const val = state.quantities[b.Kode_Barang] !== undefined ? state.quantities[b.Kode_Barang] : "";
-      const hasValClass = val !== "" && Number(val) >= 0 ? "has-value" : "";
+      const val = state.quantitiesMasuk[b.Kode_Barang] !== undefined ? state.quantitiesMasuk[b.Kode_Barang] : "";
+      const hasValClass = val !== "" && Number(val) > 0 ? "has-value" : "";
       return `
         <div class="item-row">
           <div class="item-info">
             <div class="item-name">${b.Nama_Barang}</div>
             <div class="item-meta">${b.Kategori} • ${b.Satuan}</div>
             <div class="quick-add-row">
-              <button type="button" class="btn-qadd" onclick="stepQty('${b.Kode_Barang}', 10)">+10</button>
-              <button type="button" class="btn-qadd" onclick="stepQty('${b.Kode_Barang}', 50)">+50</button>
-              <button type="button" class="btn-qadd" onclick="stepQty('${b.Kode_Barang}', 100)">+100</button>
+              <button type="button" class="btn-qadd" onclick="stepMasukQty('${b.Kode_Barang}', 10)">+10</button>
+              <button type="button" class="btn-qadd" onclick="stepMasukQty('${b.Kode_Barang}', 50)">+50</button>
+              <button type="button" class="btn-qadd" onclick="stepMasukQty('${b.Kode_Barang}', 100)">+100</button>
             </div>
           </div>
           <div class="qty-control">
-            <button type="button" class="btn-step" onclick="stepQty('${b.Kode_Barang}', -1)">-</button>
+            <button type="button" class="btn-step" onclick="stepMasukQty('${b.Kode_Barang}', -1)">-</button>
             <input type="number" min="0" inputmode="numeric" class="qty-input ${hasValClass}"
-              id="qty_${b.Kode_Barang}" value="${val}" placeholder="0"
-              oninput="updateQty('${b.Kode_Barang}', this.value)" />
-            <button type="button" class="btn-step" onclick="stepQty('${b.Kode_Barang}', 1)">+</button>
+              id="mqty_${b.Kode_Barang}" value="${val}" placeholder="0"
+              oninput="updateMasukQty('${b.Kode_Barang}', this.value)" />
+            <button type="button" class="btn-step" onclick="stepMasukQty('${b.Kode_Barang}', 1)">+</button>
           </div>
         </div>
       `;
     }).join("");
-    updateFilledCount();
+    updateMasukCount();
   }
 
-  function stepQty(code, delta) {
-    const curr = Number(state.quantities[code] || 0);
+  function stepMasukQty(code, delta) {
+    const curr = Number(state.quantitiesMasuk[code] || 0);
     const next = Math.max(0, curr + delta);
-    state.quantities[code] = next;
-    const inp = document.getElementById("qty_" + code);
-    if (inp) { inp.value = next; inp.classList.add("has-value"); }
-    updateFilledCount();
+    if (next <= 0) delete state.quantitiesMasuk[code];
+    else state.quantitiesMasuk[code] = next;
+
+    const inp = document.getElementById("mqty_" + code);
+    if (inp) {
+      inp.value = next > 0 ? next : "";
+      inp.classList.toggle("has-value", next > 0);
+    }
+    updateMasukCount();
   }
 
-  function updateQty(code, rawVal) {
-    if (rawVal === "") delete state.quantities[code];
-    else state.quantities[code] = Math.max(0, Number(rawVal));
-    const inp = document.getElementById("qty_" + code);
-    if (inp) inp.classList.toggle("has-value", rawVal !== "");
-    updateFilledCount();
+  function updateMasukQty(code, rawVal) {
+    if (rawVal === "" || Number(rawVal) <= 0) delete state.quantitiesMasuk[code];
+    else state.quantitiesMasuk[code] = Number(rawVal);
+    const inp = document.getElementById("mqty_" + code);
+    if (inp) inp.classList.toggle("has-value", Number(rawVal) > 0);
+    updateMasukCount();
   }
 
-  function updateFilledCount() {
-    const count = Object.keys(state.quantities).filter(k => state.quantities[k] !== "" && state.quantities[k] !== undefined).length;
-    document.getElementById("itemCountBadge").textContent = `${count} item diisi`;
+  function updateMasukCount() {
+    const count = Object.keys(state.quantitiesMasuk).filter(k => Number(state.quantitiesMasuk[k]) > 0).length;
+    document.getElementById("masukCountBadge").textContent = `${count} item diisi`;
     updateFloatingBar();
   }
 
-  function addCustomItem() {
-    const name = document.getElementById("customName").value.trim();
-    const unit = document.getElementById("customUnit").value.trim() || "Pcs";
-    if (!name) return showToast("Isi nama barang dulu!");
-    state.masterBarang.push({
-      Kode_Barang: "CST-" + Date.now().toString().slice(-5),
-      Kategori: state.selectedCustomCat,
-      Nama_Barang: name,
-      Satuan: unit
-    });
-    localStorage.setItem("kdkmp_master_barang", JSON.stringify(state.masterBarang));
-    document.getElementById("customName").value = "";
-    document.getElementById("customUnit").value = "";
-    renderCategoryChips();
-    renderItemList();
-    renderPoItemList();
-    showToast("Item baru ditambahkan: " + name);
-  }
-
-  async function submitStokReport() {
+  async function submitBarangMasuk() {
     const itemsToSend = [];
-    for (const [code, qty] of Object.entries(state.quantities)) {
-      if (qty === "" || qty === undefined) continue;
-      if (state.reportType === "PENERIMAAN" && Number(qty) <= 0) continue;
+    for (const [code, qty] of Object.entries(state.quantitiesMasuk)) {
+      if (!qty || Number(qty) <= 0) continue;
       const master = state.masterBarang.find(b => b.Kode_Barang === code);
       if (master) {
         itemsToSend.push({
@@ -1277,52 +1292,48 @@
       }
     }
 
-    if (itemsToSend.length === 0) return showToast("Isi minimal 1 jumlah barang!");
+    if (itemsToSend.length === 0) return showToast("Isi minimal 1 barang yang diterima!");
 
-    const ocrNote = state.ocrDates.fotoDo ? ` [Scan Tgl DO: ${state.ocrDates.fotoDo}]` : "";
     const payload = {
-      action: "STOK_LOG",
-      tanggal: document.getElementById("inpTanggal").value,
+      action: "BARANG_MASUK",
+      tanggal: document.getElementById("masukTanggal").value,
       kecamatan: state.profile.kecamatan,
       nama_kdkmp: state.profile.nama_kdkmp,
       manager: state.profile.manager,
-      jenis_laporan: state.reportType,
-      supplier: state.reportType === "PENERIMAAN" ? state.selectedSupplier : "-",
-      no_do: state.reportType === "PENERIMAAN" ? (document.getElementById("inpNoDo").value.trim() || "-") : "-",
-      catatan: (document.getElementById("inpCatatan").value.trim() + ocrNote).trim(),
-      foto_do_base64: state.reportType === "PENERIMAAN" ? state.photos.fotoDo : "",
+      supplier: state.selectedSupplier,
+      no_do: document.getElementById("masukNoDo").value.trim() || "-",
+      catatan: document.getElementById("masukCatatan").value.trim(),
+      foto_do_base64: state.photos.fotoDo,
       items: itemsToSend
     };
 
     const btn = document.getElementById("floatSubmitBtn");
     btn.disabled = true;
-    btn.textContent = "Mengirim...";
+    btn.textContent = "Mengirim DO...";
 
     try {
       let linkFoto = "-";
       if (SCRIPT_URL) {
         const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
         const json = await res.json();
-        if (json.status !== "success") throw new Error(json.message || "Gagal simpan ke server");
+        if (json.status !== "success") throw new Error(json.message || "Gagal simpan barang masuk");
         linkFoto = json.link_foto_do || "-";
         await syncFromServer();
-        showToast("Tersimpan ke Google Sheets ASR!");
+        showToast("Barang Masuk (DO) masuk antrean input POS ASR!");
       } else {
-        saveStokLocally(payload);
+        saveMasukLocally(payload);
         if (payload.foto_do_base64) linkFoto = "(Tersimpan di Mode Sandbox Lokal)";
-        showToast(`Tersimpan di Sandbox Lokal (${itemsToSend.length} item)`);
+        showToast(`Barang Masuk tersimpan (${itemsToSend.length} item)`);
       }
 
-      renderPerGroupWaOutputs(payload, linkFoto);
-      state.quantities = {};
+      renderPerGroupWaCards("waMasukCardsContainer", "waMasukResultBox", "PENERIMAAN BARANG (DO)", payload, linkFoto, true);
+      state.quantitiesMasuk = {};
       state.photos.fotoDo = "";
-      state.ocrDates.fotoDo = "";
-      document.getElementById("inpNoDo").value = "";
-      document.getElementById("inpCatatan").value = "";
+      document.getElementById("masukNoDo").value = "";
+      document.getElementById("masukCatatan").value = "";
       document.getElementById("prevFotoDo").style.display = "none";
       document.getElementById("infoFotoDo").textContent = "";
-      document.getElementById("ocrFotoDo").style.display = "none";
-      renderItemList();
+      renderMasukItemList();
     } catch (err) {
       alert("Gagal kirim: " + err.message);
     } finally {
@@ -1331,23 +1342,24 @@
     }
   }
 
-  function saveStokLocally(payload) {
-    const logs = JSON.parse(localStorage.getItem("kdkmp_recent_logs") || "[]");
+  function saveMasukLocally(payload) {
+    const logs = JSON.parse(localStorage.getItem("kdkmp_penerimaan_logs") || "[]");
     const nowStr = new Date().toLocaleString("id-ID");
 
-    payload.items.forEach(item => {
+    payload.items.forEach((item, idx) => {
       logs.unshift({
-        Waktu_Input: nowStr, Tanggal: payload.tanggal, Kecamatan: payload.kecamatan,
-        Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager, Jenis_Laporan: payload.jenis_laporan,
-        Kategori: item.kategori, Supplier: payload.supplier, No_DO: payload.no_do,
-        Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan,
-        Jumlah: item.jumlah, Link_Foto_DO: payload.foto_do_base64 ? "Sandbox_Foto_DO" : "-"
+        ID_Log: "DO-" + Date.now() + "-" + idx,
+        Waktu_Input: nowStr, Tanggal_Terima: payload.tanggal, Kecamatan: payload.kecamatan,
+        Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager, Kategori: item.kategori,
+        Supplier: payload.supplier, No_DO: payload.no_do, Kode_Barang: item.kode_barang,
+        Nama_Barang: item.nama_barang, Satuan: item.satuan, Jumlah: item.jumlah,
+        Link_Foto_DO: payload.foto_do_base64 ? "Sandbox_Foto_DO" : "-",
+        Status_Input_POS: "Belum Input POS", Catatan: payload.catatan
       });
-      const idx = state.rekapStok.findIndex(s => s.Nama_KDKMP === payload.nama_kdkmp && s.Kode_Barang === item.kode_barang);
-      if (idx >= 0) {
-        const prev = Number(state.rekapStok[idx].Stok_Akhir) || 0;
-        state.rekapStok[idx].Stok_Akhir = payload.jenis_laporan === "PENERIMAAN" ? (prev + item.jumlah) : item.jumlah;
-        state.rekapStok[idx].Update_Terakhir = nowStr;
+      const rIdx = state.rekapStok.findIndex(s => s.Nama_KDKMP === payload.nama_kdkmp && s.Kode_Barang === item.kode_barang);
+      if (rIdx >= 0) {
+        state.rekapStok[rIdx].Stok_Akhir = (Number(state.rekapStok[rIdx].Stok_Akhir) || 0) + item.jumlah;
+        state.rekapStok[rIdx].Update_Terakhir = nowStr;
       } else {
         state.rekapStok.push({
           Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Kategori: item.kategori,
@@ -1356,32 +1368,188 @@
         });
       }
     });
-    localStorage.setItem("kdkmp_recent_logs", JSON.stringify(logs.slice(0, 250)));
+    localStorage.setItem("kdkmp_penerimaan_logs", JSON.stringify(logs.slice(0, 250)));
     localStorage.setItem("kdkmp_rekap_stok", JSON.stringify(state.rekapStok));
   }
 
-  function renderPerGroupWaOutputs(payload, linkFotoDo) {
-    const jenisText = payload.jenis_laporan === "PENERIMAAN" ? "PENERIMAAN BARANG" : "STOK SISA HARIAN";
+  // ==================== TAB 2: STOK SISA HARIAN ====================
+  function renderSisaCategoryChips() {
+    const cats = ["ALL", ...new Set(state.masterBarang.map(b => b.Kategori))];
+    document.getElementById("sisaCategoryChips").innerHTML = cats.map(c => {
+      const label = c === "ALL" ? "Semua" : c;
+      const active = state.sisaCategory === c ? "active" : "";
+      return `<button type="button" class="chip ${active}" onclick="selectSisaCategory('${c}')">${label}</button>`;
+    }).join("");
+  }
+
+  function selectSisaCategory(cat) {
+    state.sisaCategory = cat;
+    renderSisaCategoryChips();
+    renderSisaItemList();
+  }
+
+  function renderSisaItemList() {
+    const query = document.getElementById("searchBarangSisa").value.toLowerCase();
+    const filtered = state.masterBarang.filter(b => {
+      const matchCat = state.sisaCategory === "ALL" || b.Kategori === state.sisaCategory;
+      const matchSearch = b.Nama_Barang.toLowerCase().includes(query) || b.Kategori.toLowerCase().includes(query);
+      return matchCat && matchSearch;
+    });
+
+    const container = document.getElementById("sisaItemListContainer");
+    if (filtered.length === 0) {
+      container.innerHTML = `<p style="font-size:13px; color:#64748b; text-align:center;">Barang tidak ditemukan di Master ASR.</p>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(b => {
+      const val = state.quantitiesSisa[b.Kode_Barang] !== undefined ? state.quantitiesSisa[b.Kode_Barang] : "";
+      const hasValClass = val !== "" && Number(val) >= 0 ? "has-value" : "";
+      return `
+        <div class="item-row">
+          <div class="item-info">
+            <div class="item-name">${b.Nama_Barang}</div>
+            <div class="item-meta">${b.Kategori} • ${b.Satuan}</div>
+            <div class="quick-add-row">
+              <button type="button" class="btn-qadd" onclick="stepSisaQty('${b.Kode_Barang}', 10)">+10</button>
+              <button type="button" class="btn-qadd" onclick="stepSisaQty('${b.Kode_Barang}', 50)">+50</button>
+              <button type="button" class="btn-qadd" onclick="stepSisaQty('${b.Kode_Barang}', 100)">+100</button>
+            </div>
+          </div>
+          <div class="qty-control">
+            <button type="button" class="btn-step" onclick="stepSisaQty('${b.Kode_Barang}', -1)">-</button>
+            <input type="number" min="0" inputmode="numeric" class="qty-input ${hasValClass}"
+              id="sqty_${b.Kode_Barang}" value="${val}" placeholder="0"
+              oninput="updateSisaQty('${b.Kode_Barang}', this.value)" />
+            <button type="button" class="btn-step" onclick="stepSisaQty('${b.Kode_Barang}', 1)">+</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+    updateSisaCount();
+  }
+
+  function stepSisaQty(code, delta) {
+    const curr = Number(state.quantitiesSisa[code] || 0);
+    const next = Math.max(0, curr + delta);
+    state.quantitiesSisa[code] = next;
+    const inp = document.getElementById("sqty_" + code);
+    if (inp) { inp.value = next; inp.classList.add("has-value"); }
+    updateSisaCount();
+  }
+
+  function updateSisaQty(code, rawVal) {
+    if (rawVal === "") delete state.quantitiesSisa[code];
+    else state.quantitiesSisa[code] = Math.max(0, Number(rawVal));
+    const inp = document.getElementById("sqty_" + code);
+    if (inp) inp.classList.toggle("has-value", rawVal !== "");
+    updateSisaCount();
+  }
+
+  function updateSisaCount() {
+    const count = Object.keys(state.quantitiesSisa).filter(k => state.quantitiesSisa[k] !== "" && state.quantitiesSisa[k] !== undefined).length;
+    document.getElementById("sisaCountBadge").textContent = `${count} item diisi`;
+    updateFloatingBar();
+  }
+
+  async function submitStokSisa() {
+    const itemsToSend = [];
+    for (const [code, qty] of Object.entries(state.quantitiesSisa)) {
+      if (qty === "" || qty === undefined) continue;
+      const master = state.masterBarang.find(b => b.Kode_Barang === code);
+      if (master) {
+        itemsToSend.push({
+          kode_barang: master.Kode_Barang,
+          kategori: master.Kategori,
+          nama_barang: master.Nama_Barang,
+          satuan: master.Satuan,
+          jumlah: Number(qty)
+        });
+      }
+    }
+
+    if (itemsToSend.length === 0) return showToast("Isi minimal 1 jumlah stok sisa!");
+
+    const payload = {
+      action: "STOK_SISA",
+      tanggal: document.getElementById("sisaTanggal").value,
+      kecamatan: state.profile.kecamatan,
+      nama_kdkmp: state.profile.nama_kdkmp,
+      manager: state.profile.manager,
+      catatan: document.getElementById("sisaCatatan").value.trim(),
+      items: itemsToSend
+    };
+
+    const btn = document.getElementById("floatSubmitBtn");
+    btn.disabled = true;
+    btn.textContent = "Mengirim Stok Sisa...";
+
+    try {
+      if (SCRIPT_URL) {
+        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+        const json = await res.json();
+        if (json.status !== "success") throw new Error(json.message || "Gagal simpan stok sisa");
+        await syncFromServer();
+        showToast("Laporan Stok Sisa Harian tersimpan ke ASR!");
+      } else {
+        const logs = JSON.parse(localStorage.getItem("kdkmp_stok_sisa_logs") || "[]");
+        const nowStr = new Date().toLocaleString("id-ID");
+        payload.items.forEach(item => {
+          logs.unshift({
+            Waktu_Input: nowStr, Tanggal: payload.tanggal, Kecamatan: payload.kecamatan,
+            Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager, Kategori: item.kategori,
+            Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan,
+            Jumlah: item.jumlah, Catatan: payload.catatan
+          });
+          const rIdx = state.rekapStok.findIndex(s => s.Nama_KDKMP === payload.nama_kdkmp && s.Kode_Barang === item.kode_barang);
+          if (rIdx >= 0) {
+            state.rekapStok[rIdx].Stok_Akhir = item.jumlah;
+            state.rekapStok[rIdx].Update_Terakhir = nowStr;
+          } else {
+            state.rekapStok.push({
+              Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Kategori: item.kategori,
+              Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan,
+              Stok_Akhir: item.jumlah, Update_Terakhir: nowStr
+            });
+          }
+        });
+        localStorage.setItem("kdkmp_stok_sisa_logs", JSON.stringify(logs.slice(0, 250)));
+        localStorage.setItem("kdkmp_rekap_stok", JSON.stringify(state.rekapStok));
+        showToast(`Stok Sisa tersimpan (${itemsToSend.length} item)`);
+      }
+
+      renderPerGroupWaCards("waSisaCardsContainer", "waSisaResultBox", "STOK SISA HARIAN", payload, "-", false);
+      state.quantitiesSisa = {};
+      document.getElementById("sisaCatatan").value = "";
+      renderSisaItemList();
+    } catch (err) {
+      alert("Gagal kirim: " + err.message);
+    } finally {
+      btn.disabled = false;
+      updateFloatingBar();
+    }
+  }
+
+  function renderPerGroupWaCards(containerId, boxId, titleHeader, payload, linkFotoDo, isIncoming) {
     const grouped = {};
     payload.items.forEach(it => {
       if (!grouped[it.kategori]) grouped[it.kategori] = [];
       grouped[it.kategori].push(it);
     });
 
-    const container = document.getElementById("waCardsContainer");
+    const container = document.getElementById(containerId);
     let html = "";
     let idx = 0;
 
     for (const [kat, list] of Object.entries(grouped)) {
       idx++;
+      const uid = `${containerId}_${idx}`;
       const lines = list.map(i => `• ${i.nama_barang}: *${i.jumlah} ${i.satuan}*`).join("\n");
-      let extra = payload.jenis_laporan === "PENERIMAAN"
-        ? `Supplier: ${payload.supplier}\nNo. DO: ${payload.no_do}\n`
-        : "";
-      if (linkFotoDo && linkFotoDo !== "-") extra += `Foto DO: ${linkFotoDo}\n`;
+      let extra = isIncoming ? `Supplier: ${payload.supplier}\nNo. DO: ${payload.no_do}\n` : "";
+      if (isIncoming && linkFotoDo && linkFotoDo !== "-") extra += `Foto DO: ${linkFotoDo}\n`;
       if (payload.catatan) extra += `Catatan: ${payload.catatan}\n`;
 
-      const msg = `*LAPORAN ${jenisText} - ${kat.toUpperCase()}*\n` +
+      const msg = `*LAPORAN ${titleHeader} - ${kat.toUpperCase()}*\n` +
         `Gerai: *${payload.nama_kdkmp}*\n` +
         `Kecamatan: ${payload.kecamatan}\n` +
         `Tanggal: ${payload.tanggal}\n` +
@@ -1392,19 +1560,19 @@
         <div class="wa-item-box">
           <div class="wa-item-head">
             <strong style="font-size:12px; color:#0f172a;">Grup WA: ${kat}</strong>
-            <button type="button" class="btn btn-success btn-sm" onclick="copyBox('waTxt_${idx}')">Salin untuk Grup ${kat}</button>
+            <button type="button" class="btn btn-success btn-sm" onclick="copyBox('${uid}')">Salin untuk Grup ${kat}</button>
           </div>
-          <textarea id="waTxt_${idx}" class="wa-preview" readonly>${msg}</textarea>
+          <textarea id="${uid}" class="wa-preview" readonly>${msg}</textarea>
         </div>
       `;
     }
 
     container.innerHTML = html;
-    document.getElementById("waResultBox").style.display = "block";
-    document.getElementById("waResultBox").scrollIntoView({ behavior: "smooth" });
+    document.getElementById(boxId).style.display = "block";
+    document.getElementById(boxId).scrollIntoView({ behavior: "smooth" });
   }
 
-  // ==================== MODUL 2: 3 MODE SETOR OMSET & BUKTI FOTO ====================
+  // ==================== TAB 3: SETOR OMSET & BUKTI FOTO ====================
   function setOmsetMode(mode) {
     state.omsetMode = mode;
     document.getElementById("modeOmsetFull").className = mode === "FULL" ? "type-pill active-stock" : "type-pill";
@@ -1576,7 +1744,7 @@
     }
   }
 
-  // ==================== MODUL 3: PERENCANAAN PO ====================
+  // ==================== TAB 4: PERENCANAAN PO ====================
   function renderPoItemList() {
     const container = document.getElementById("poItemListContainer");
     container.innerHTML = state.masterBarang.map(b => {
