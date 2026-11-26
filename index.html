@@ -67,6 +67,7 @@
     .pill-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
     .opt-pill { padding: 8px 12px; border-radius: 8px; border: 1.5px solid var(--border); background: #f8fafc; color: #334155; font-size: 12px; font-weight: 700; cursor: pointer; }
     .opt-pill.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .opt-pill.active-danger { background: var(--danger); border-color: var(--danger); color: #fff; }
 
     .bank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     @media (max-width: 520px) { .bank-grid { grid-template-columns: 1fr; } }
@@ -246,22 +247,16 @@
 
 <div class="container">
 
-  <!-- TAB 1: BARANG MASUK (DO) -->
+  <!-- TAB 1: BARANG MASUK (DO) — TANPA INPUT NOMOR PO/DO -->
   <section id="tab-masuk" class="section active">
     <div class="card">
       <div class="card-title">
         <span>Penerimaan Barang Masuk (DO)</span>
         <span style="font-size:11px; color:#2563eb;">Untuk Input Mesin POS ASR</span>
       </div>
-      <div class="grid-2">
-        <div>
-          <label>Tanggal Terima Barang (Isi Manual)</label>
-          <input type="date" id="masukTanggal" />
-        </div>
-        <div>
-          <label>Nomor Surat Jalan / DO</label>
-          <input type="text" id="masukNoDo" placeholder="Contoh: DO-2026-8812" />
-        </div>
+      <div>
+        <label>Tanggal Terima Barang</label>
+        <input type="date" id="masukTanggal" />
       </div>
       <div style="margin-top:10px;">
         <label>Supplier / Sumber Kiriman (Ketuk 1x)</label>
@@ -297,7 +292,7 @@
     </div>
   </section>
 
-  <!-- TAB 2: STOK SISA HARIAN -->
+  <!-- TAB 2: STOK SISA HARIAN (DENGAN FILTER SUPPLIER DARI SHEET) -->
   <section id="tab-sisa" class="section">
     <div class="card">
       <div class="card-title">
@@ -314,6 +309,10 @@
           <input type="text" id="sisaCatatan" placeholder="Contoh: Stok tutup gerai malam" />
         </div>
       </div>
+      <div style="margin-top:10px;">
+        <label>Filter Supplier (Ketuk 1x)</label>
+        <div class="pill-wrap" id="sisaSupplierPills"></div>
+      </div>
     </div>
 
     <div class="card">
@@ -321,9 +320,10 @@
         <span>Input Sisa Fisik di Gerai (Master Barang ASR)</span>
         <span id="sisaCountBadge" style="font-size:12px; color:#0f766e;">0 item diisi</span>
       </div>
+      <div class="vendor-sub-banner" id="sisaVendorBanner">Menampilkan produk supplier: Semua Supplier</div>
       <div class="chip-bar" id="sisaCategoryChips"></div>
       <div style="margin-bottom:8px;">
-        <input type="text" id="searchBarangSisa" placeholder="Cari barang dari master..." oninput="renderSisaItemList()" />
+        <input type="text" id="searchBarangSisa" placeholder="Cari barang dari supplier / master..." oninput="renderSisaItemList()" />
       </div>
       <div id="sisaItemListContainer"></div>
     </div>
@@ -418,7 +418,7 @@
     </div>
   </section>
 
-  <!-- TAB 4: PERENCANAAN PO -->
+  <!-- TAB 4: PERENCANAAN PO (DENGAN FILTER SUPPLIER DARI SHEET & SEARCH PRODUK) -->
   <section id="tab-po" class="section">
     <div class="card">
       <div class="card-title">Pengajuan Perencanaan PO Barang</div>
@@ -431,6 +431,14 @@
           <label>Catatan Pengajuan PO (Opsional)</label>
           <input type="text" id="poCatatan" placeholder="Contoh: Prioritas akhir pekan / stok menipis" />
         </div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label>Filter Supplier (Ketuk 1x)</label>
+        <div class="pill-wrap" id="poSupplierPills"></div>
+      </div>
+      <div class="vendor-sub-banner" id="poVendorBanner">Menampilkan produk supplier: Semua Supplier</div>
+      <div style="margin-bottom:8px;">
+        <input type="text" id="searchBarangPo" placeholder="Cari barang untuk diajukan PO..." oninput="renderPoItemList()" />
       </div>
       <div id="poItemListContainer"></div>
     </div>
@@ -454,7 +462,7 @@
     </div>
   </section>
 
-  <!-- TAB 5: LAPORAN PRODUK REJECT / RETUR -->
+  <!-- TAB 5: LAPORAN PRODUK REJECT / RETUR (TANPA NO PO, DENGAN FILTER SUPPLIER & SEARCH PRODUK) -->
   <section id="tab-reject" class="section">
     <div class="card">
       <div class="card-title" style="color:var(--danger);">
@@ -472,31 +480,28 @@
           <input type="date" id="rejTanggal" />
         </div>
         <div>
-          <label>Pilih Nomor PO dari ASR</label>
-          <select id="rejPoSelect" onchange="onSelectRejectPo(this.value)"></select>
+          <label>Cari Nama Produk Reject</label>
+          <input type="text" id="searchBarangReject" placeholder="Ketik nama barang..." oninput="renderRejectBarangOptions()" />
         </div>
       </div>
 
-      <div id="wrapManualRejectBarang" style="margin-top:10px; display:none;">
-        <div class="grid-2">
-          <div>
-            <label>Nomor PO Manual (Jika Belum Terdaftar)</label>
-            <input type="text" id="rejManualNoPo" placeholder="Contoh: PO-ASR-2026-0099" />
-          </div>
-          <div>
-            <label>Pilih Produk Reject (Master Barang)</label>
-            <select id="rejManualBarang" onchange="onSelectManualRejectBarang()"></select>
-          </div>
-        </div>
+      <div style="margin-top:10px;">
+        <label>Filter Supplier (Ketuk 1x)</label>
+        <div class="pill-wrap" id="rejectSupplierPills"></div>
+      </div>
+
+      <div style="margin-top:10px;">
+        <label>Pilih Produk Reject (<span id="rejFilteredCount">0</span> tersedia)</label>
+        <select id="rejBarangSelect" onchange="onSelectRejectBarang()"></select>
       </div>
 
       <div id="rejSelectedBarangInfo" style="margin-top:10px; background:#fef2f2; border:1px solid #fecaca; border-radius:9px; padding:9px 12px; font-size:12px; color:#7f1d1d;">
-        Pilih Nomor PO ASR di atas untuk memuat detail produk & Qty PO.
+        Pilih supplier dan produk yang mengalami kerusakan/reject di atas.
       </div>
 
       <div class="grid-3" style="margin-top:12px;">
         <div>
-          <label>Qty PO</label>
+          <label>Qty Kirim / DO</label>
           <input type="number" min="0" inputmode="numeric" id="rejQtyPo" placeholder="0" oninput="calcRejectQty()" />
         </div>
         <div>
@@ -534,9 +539,9 @@
           <thead>
             <tr>
               <th>Tanggal</th>
-              <th>No. PO</th>
+              <th>Supplier</th>
               <th>Produk</th>
-              <th>PO / Aktual / Reject</th>
+              <th>Kirim / Aktual / Reject</th>
               <th>Status Retur</th>
             </tr>
           </thead>
@@ -564,9 +569,6 @@
 <div id="toast" class="toast"></div>
 
 <script>
-  // =========================================================================
-  // KONFIGURASI BACKEND: Ganti dengan URL Web App Google Apps Script (/exec) kamu
-  // =========================================================================
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfCK5cs_vIUUEUfSTlUamHoyy1mxGiHu76hwbegsyA76sOFAnlFvjAY7f-P_RqdUFOjA/exec";
 
   const DEFAULT_SUPPLIER_LIST = ["BULOG", "PERTAMINA", "PUPUK INDONESIA", "ID FOOD", "GONUSA"];
@@ -592,6 +594,9 @@
     profile: JSON.parse(localStorage.getItem("kdkmp_profile") || "null"),
     modalSelectedKec: "ALL",
     selectedSupplier: "BULOG",
+    selectedSisaSupplier: "ALL",
+    selectedPoSupplier: "ALL",
+    selectedRejectSupplier: "ALL",
     omsetMode: "FULL",
     selectedShift: "Full Day / Tutup Gerai",
     selectedBank: BANK_LIST[0],
@@ -716,6 +721,10 @@
 
         const supList = getDynamicSuppliers();
         if (!supList.includes(state.selectedSupplier)) state.selectedSupplier = supList[0];
+        if (state.selectedSisaSupplier !== "ALL" && !supList.includes(state.selectedSisaSupplier)) state.selectedSisaSupplier = "ALL";
+        if (state.selectedPoSupplier !== "ALL" && !supList.includes(state.selectedPoSupplier)) state.selectedPoSupplier = "ALL";
+        if (state.selectedRejectSupplier !== "ALL" && !supList.includes(state.selectedRejectSupplier)) state.selectedRejectSupplier = "ALL";
+
         renderAllPills();
         renderSisaCategoryChips();
         renderMasukItemList();
@@ -826,15 +835,52 @@
   function renderAllPills() {
     const supList = getDynamicSuppliers();
     if (!supList.includes(state.selectedSupplier)) state.selectedSupplier = supList[0];
+
+    // Tab 1: Supplier Masuk
     document.getElementById("supplierPills").innerHTML = supList.map(s => {
       const escS = s.replace(/'/g, "\\'");
       return `<button type="button" class="opt-pill ${state.selectedSupplier === s ? 'active' : ''}" onclick="selectSupplier('${escS}')">${s}</button>`;
     }).join("");
+
+    // Tab 2: Supplier Stok Sisa
+    const supWithAll = ["ALL", ...supList];
+    const sisaSupEl = document.getElementById("sisaSupplierPills");
+    if (sisaSupEl) {
+      sisaSupEl.innerHTML = supWithAll.map(s => {
+        const escS = s.replace(/'/g, "\\'");
+        const label = s === "ALL" ? "Semua Supplier" : s;
+        return `<button type="button" class="opt-pill ${state.selectedSisaSupplier === s ? 'active' : ''}" onclick="selectSisaSupplier('${escS}')">${label}</button>`;
+      }).join("");
+    }
+
+    // Tab 4: Supplier Rencana PO
+    const poSupEl = document.getElementById("poSupplierPills");
+    if (poSupEl) {
+      poSupEl.innerHTML = supWithAll.map(s => {
+        const escS = s.replace(/'/g, "\\'");
+        const label = s === "ALL" ? "Semua Supplier" : s;
+        return `<button type="button" class="opt-pill ${state.selectedPoSupplier === s ? 'active' : ''}" onclick="selectPoSupplier('${escS}')">${label}</button>`;
+      }).join("");
+    }
+
+    // Tab 5: Supplier Produk Reject
+    const rejSupEl = document.getElementById("rejectSupplierPills");
+    if (rejSupEl) {
+      rejSupEl.innerHTML = supWithAll.map(s => {
+        const escS = s.replace(/'/g, "\\'");
+        const label = s === "ALL" ? "Semua Supplier" : s;
+        return `<button type="button" class="opt-pill ${state.selectedRejectSupplier === s ? 'active-danger' : ''}" onclick="selectRejectSupplier('${escS}')">${label}</button>`;
+      }).join("");
+    }
+
     document.getElementById("shiftPills").innerHTML = SHIFT_LIST.map(sh => `<button type="button" class="opt-pill ${state.selectedShift === sh ? 'active' : ''}" onclick="selectShift('${sh}')">${sh}</button>`).join("");
     document.getElementById("bankPills").innerHTML = BANK_LIST.map(bk => `<button type="button" class="bank-pill ${state.selectedBank === bk ? 'active' : ''}" onclick="selectBank('${bk}')">${bk}</button>`).join("");
   }
 
   function selectSupplier(s) { state.selectedSupplier = s; renderAllPills(); renderMasukItemList(); }
+  function selectSisaSupplier(s) { state.selectedSisaSupplier = s; state.sisaCategory = "ALL"; renderAllPills(); renderSisaCategoryChips(); renderSisaItemList(); }
+  function selectPoSupplier(s) { state.selectedPoSupplier = s; renderAllPills(); renderPoItemList(); }
+  function selectRejectSupplier(s) { state.selectedRejectSupplier = s; renderAllPills(); renderRejectBarangOptions(); }
   function selectShift(sh) { state.selectedShift = sh; renderAllPills(); }
   function selectBank(bk) { state.selectedBank = bk; renderAllPills(); }
 
@@ -1240,7 +1286,7 @@
     if (state.activeTab === "tab-omset") updateFloatingBar();
   }
 
-  // TAB 1: BARANG MASUK
+  // TAB 1: BARANG MASUK (TANPA NO PO)
   function renderMasukItemList() {
     const query = document.getElementById("searchBarangMasuk").value.toLowerCase();
     const activeSup = String(state.selectedSupplier || "").trim().toLowerCase();
@@ -1319,7 +1365,7 @@
     const payload = {
       action: "BARANG_MASUK", tanggal: document.getElementById("masukTanggal").value,
       kecamatan: state.profile.kecamatan, nama_kdkmp: state.profile.nama_kdkmp, manager: state.profile.manager,
-      supplier: state.selectedSupplier, no_do: document.getElementById("masukNoDo").value.trim() || "-",
+      supplier: state.selectedSupplier, no_do: "-",
       catatan: document.getElementById("masukCatatan").value.trim(), foto_do_base64: state.photos.fotoDo, items: itemsToSend
     };
 
@@ -1327,35 +1373,50 @@
     btn.disabled = true; btn.textContent = "Menyimpan DO...";
     try {
       if (SCRIPT_URL) await postToBackend(payload);
-      showSuccessConfirmation("Barang Masuk (DO) Tersimpan!", "Data penerimaan barang telah masuk ke sistem ASR.", [`<strong>Gerai:</strong> ${payload.nama_kdkmp}`, `<strong>Tanggal:</strong> ${payload.tanggal}`, `<strong>Supplier / DO:</strong> ${payload.supplier} (${payload.no_do})`, ...itemsToSend.map(i => `• ${i.nama_barang}: <strong>+${i.jumlah} ${i.satuan}</strong>`)]);
+      showSuccessConfirmation("Barang Masuk (DO) Tersimpan!", "Data penerimaan barang telah masuk ke sistem ASR.", [`<strong>Gerai:</strong> ${payload.nama_kdkmp}`, `<strong>Tanggal:</strong> ${payload.tanggal}`, `<strong>Supplier:</strong> ${payload.supplier}`, ...itemsToSend.map(i => `• ${i.nama_barang}: <strong>+${i.jumlah} ${i.satuan}</strong>`)]);
       state.quantitiesMasuk = {}; state.photos.fotoDo = "";
-      document.getElementById("masukNoDo").value = ""; document.getElementById("masukCatatan").value = "";
+      document.getElementById("masukCatatan").value = "";
       document.getElementById("prevFotoDo").style.display = "none"; document.getElementById("infoFotoDo").textContent = "";
       renderMasukItemList();
     } catch (err) { alert("Gagal menyimpan Barang Masuk: " + err.message); }
     finally { btn.disabled = false; updateFloatingBar(); }
   }
 
-  // TAB 2: STOK SISA
+  // TAB 2: STOK SISA (DENGAN FILTER SUPPLIER DARI SHEET)
   function renderSisaCategoryChips() {
-    const cats = ["ALL", ...new Set(state.masterBarang.map(b => b.Kategori))];
-    document.getElementById("sisaCategoryChips").innerHTML = cats.map(c => `<button type="button" class="chip ${state.sisaCategory === c ? 'active' : ''}" onclick="selectSisaCategory('${c}')">${c === 'ALL' ? 'Semua' : c}</button>`).join("");
+    const activeSup = String(state.selectedSisaSupplier || "ALL").trim().toLowerCase();
+    const baseItems = activeSup === "all"
+      ? state.masterBarang
+      : state.masterBarang.filter(b => String(b.Supplier || "").trim().toLowerCase() === activeSup);
+    const cats = ["ALL", ...new Set(baseItems.map(b => b.Kategori).filter(Boolean))];
+    document.getElementById("sisaCategoryChips").innerHTML = cats.map(c => `<button type="button" class="chip ${state.sisaCategory === c ? 'active' : ''}" onclick="selectSisaCategory('${c}')">${c === 'ALL' ? 'Semua Kategori' : c}</button>`).join("");
   }
   function selectSisaCategory(cat) { state.sisaCategory = cat; renderSisaCategoryChips(); renderSisaItemList(); }
 
   function renderSisaItemList() {
     const query = document.getElementById("searchBarangSisa").value.toLowerCase();
-    const filtered = state.masterBarang.filter(b => (state.sisaCategory === "ALL" || b.Kategori === state.sisaCategory) && (b.Nama_Barang.toLowerCase().includes(query) || b.Kategori.toLowerCase().includes(query)));
+    const activeSup = String(state.selectedSisaSupplier || "ALL").trim().toLowerCase();
+    const bannerEl = document.getElementById("sisaVendorBanner");
+    if (bannerEl) bannerEl.textContent = `Menampilkan produk supplier: ${state.selectedSisaSupplier === "ALL" ? "Semua Supplier" : state.selectedSisaSupplier}`;
+
+    const filtered = state.masterBarang.filter(b => {
+      const matchSup = activeSup === "all" || String(b.Supplier || "").trim().toLowerCase() === activeSup;
+      const matchCat = state.sisaCategory === "ALL" || b.Kategori === state.sisaCategory;
+      const matchQ = !query || (b.Nama_Barang || "").toLowerCase().includes(query) || (b.Kategori || "").toLowerCase().includes(query) || (b.Supplier || "").toLowerCase().includes(query);
+      return matchSup && matchCat && matchQ;
+    });
+
     const container = document.getElementById("sisaItemListContainer");
-    if (filtered.length === 0) { container.innerHTML = `<p style="font-size:13px; color:#64748b; text-align:center;">Barang tidak ditemukan.</p>`; return; }
+    if (filtered.length === 0) { container.innerHTML = `<p style="font-size:13px; color:#64748b; text-align:center;">Barang tidak ditemukan untuk filter supplier ini.</p>`; return; }
     container.innerHTML = filtered.map(b => {
       const val = state.quantitiesSisa[b.Kode_Barang] !== undefined ? state.quantitiesSisa[b.Kode_Barang] : "";
       const hasValClass = val !== "" && Number(val) >= 0 ? "has-value" : "";
+      const supLabel = b.Supplier ? ` • <strong style="color:#1e3a8a;">${b.Supplier}</strong>` : "";
       return `
         <div class="item-row">
           <div class="item-info">
             <div class="item-name">${b.Nama_Barang}</div>
-            <div class="item-meta">${b.Kategori} • ${b.Satuan}</div>
+            <div class="item-meta">${b.Kategori} • ${b.Satuan}${supLabel}</div>
             <div class="quick-add-row">
               <button type="button" class="btn-qadd" onclick="stepSisaQty('${b.Kode_Barang}', 10)">+10</button>
               <button type="button" class="btn-qadd" onclick="stepSisaQty('${b.Kode_Barang}', 50)">+50</button>
@@ -1397,7 +1458,7 @@
     for (const [code, qty] of Object.entries(state.quantitiesSisa)) {
       if (qty === "" || qty === undefined) continue;
       const master = state.masterBarang.find(b => b.Kode_Barang === code);
-      if (master) itemsToSend.push({ kode_barang: master.Kode_Barang, kategori: master.Kategori, nama_barang: master.Nama_Barang, satuan: master.Satuan, jumlah: Number(qty) });
+      if (master) itemsToSend.push({ kode_barang: master.Kode_Barang, kategori: master.Kategori, supplier: master.Supplier || "-", nama_barang: master.Nama_Barang, satuan: master.Satuan, jumlah: Number(qty) });
     }
     if (itemsToSend.length === 0) return showToast("Isi minimal 1 jumlah stok sisa!");
     const payload = { action: "STOK_SISA", tanggal: document.getElementById("sisaTanggal").value, kecamatan: state.profile.kecamatan, nama_kdkmp: state.profile.nama_kdkmp, manager: state.profile.manager, catatan: document.getElementById("sisaCatatan").value.trim(), items: itemsToSend };
@@ -1440,20 +1501,39 @@
     finally { btn.disabled = false; updateFloatingBar(); }
   }
 
-  // TAB 4: PO
+  // TAB 4: PERENCANAAN PO (DENGAN FILTER SUPPLIER DARI SHEET & SEARCH PRODUK)
   function renderPoItemList() {
     const container = document.getElementById("poItemListContainer");
     if (!container) return;
-    container.innerHTML = state.masterBarang.map(b => {
+
+    const query = (document.getElementById("searchBarangPo")?.value || "").toLowerCase();
+    const activeSup = String(state.selectedPoSupplier || "ALL").trim().toLowerCase();
+    const bannerEl = document.getElementById("poVendorBanner");
+    if (bannerEl) bannerEl.textContent = `Menampilkan produk supplier: ${state.selectedPoSupplier === "ALL" ? "Semua Supplier" : state.selectedPoSupplier}`;
+
+    const filtered = state.masterBarang.filter(b => {
+      const matchSup = activeSup === "all" || String(b.Supplier || "").trim().toLowerCase() === activeSup;
+      const matchQ = !query || (b.Nama_Barang || "").toLowerCase().includes(query) || (b.Kategori || "").toLowerCase().includes(query) || (b.Supplier || "").toLowerCase().includes(query);
+      return matchSup && matchQ;
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<p style="font-size:13px; color:#64748b; text-align:center;">Tidak ada produk yang cocok dengan filter supplier / pencarian ini.</p>`;
+      if (state.activeTab === "tab-po") updateFloatingBar();
+      return;
+    }
+
+    container.innerHTML = filtered.map(b => {
       const stokRec = state.rekapStok.find(s => s.Nama_KDKMP === state.profile.nama_kdkmp && s.Kode_Barang === b.Kode_Barang);
       const stokNow = stokRec ? (Number(stokRec.Stok_Akhir) || 0) : 0;
       const val = state.poQuantities[b.Kode_Barang] !== undefined ? state.poQuantities[b.Kode_Barang] : "";
       const hasValClass = val !== "" && Number(val) > 0 ? "has-value" : "";
+      const supLabel = b.Supplier ? ` • <strong style="color:#6d28d9;">${b.Supplier}</strong>` : "";
       return `
         <div class="item-row">
           <div class="item-info">
             <div class="item-name">${b.Nama_Barang}</div>
-            <div class="item-meta">${b.Kategori} • ${b.Satuan}</div>
+            <div class="item-meta">${b.Kategori} • ${b.Satuan}${supLabel}</div>
             <span class="stok-ref">Stok gerai saat ini: ${stokNow} ${b.Satuan}</span>
             <div class="quick-add-row">
               <button type="button" class="btn-qadd" onclick="stepPoQty('${b.Kode_Barang}', 10)">+10</button>
@@ -1471,6 +1551,7 @@
     }).join("");
     if (state.activeTab === "tab-po") updateFloatingBar();
   }
+
   function stepPoQty(code, delta) {
     const next = Math.max(0, Number(state.poQuantities[code] || 0) + delta);
     if (next <= 0) delete state.poQuantities[code]; else state.poQuantities[code] = next;
@@ -1478,12 +1559,14 @@
     if (inp) { inp.value = next > 0 ? next : ""; inp.classList.toggle("has-value", next > 0); }
     if (state.activeTab === "tab-po") updateFloatingBar();
   }
+
   function updatePoQty(code, rawVal) {
     if (rawVal === "" || Number(rawVal) <= 0) delete state.poQuantities[code]; else state.poQuantities[code] = Number(rawVal);
     const inp = document.getElementById("poqty_" + code);
     if (inp) inp.classList.toggle("has-value", Number(rawVal) > 0);
     if (state.activeTab === "tab-po") updateFloatingBar();
   }
+
   async function submitPoReport() {
     const itemsToSend = [];
     for (const [code, qty] of Object.entries(state.poQuantities)) {
@@ -1491,7 +1574,15 @@
       const master = state.masterBarang.find(b => b.Kode_Barang === code);
       if (master) {
         const stokRec = state.rekapStok.find(s => s.Nama_KDKMP === state.profile.nama_kdkmp && s.Kode_Barang === code);
-        itemsToSend.push({ kode_barang: master.Kode_Barang, kategori: master.Kategori, nama_barang: master.Nama_Barang, satuan: master.Satuan, stok_saat_ini: stokRec ? (Number(stokRec.Stok_Akhir) || 0) : 0, jumlah_po: Number(qty) });
+        itemsToSend.push({
+          kode_barang: master.Kode_Barang,
+          kategori: master.Kategori,
+          supplier: master.Supplier || "-",
+          nama_barang: master.Nama_Barang,
+          satuan: master.Satuan,
+          stok_saat_ini: stokRec ? (Number(stokRec.Stok_Akhir) || 0) : 0,
+          jumlah_po: Number(qty)
+        });
       }
     }
     if (itemsToSend.length === 0) return showToast("Isi minimal 1 jumlah pesanan PO!");
@@ -1500,12 +1591,13 @@
     btn.disabled = true; btn.textContent = "Mengirim PO...";
     try {
       if (SCRIPT_URL) await postToBackend(payload);
-      showSuccessConfirmation("Pengajuan PO Terkirim!", "Rencana kebutuhan barang telah masuk ke antrean approval pusat ASR.", [`<strong>Gerai:</strong> ${payload.nama_kdkmp}`, `<strong>Target Kirim:</strong> ${payload.tanggal_kebutuhan}`, ...itemsToSend.map(i => `• ${i.nama_barang}: <strong>${i.jumlah_po} ${i.satuan}</strong>`)]);
+      showSuccessConfirmation("Pengajuan PO Terkirim!", "Rencana kebutuhan barang telah masuk ke antrean approval pusat ASR.", [`<strong>Gerai:</strong> ${payload.nama_kdkmp}`, `<strong>Target Kirim:</strong> ${payload.tanggal_kebutuhan}`, ...itemsToSend.map(i => `• [${i.supplier}] ${i.nama_barang}: <strong>${i.jumlah_po} ${i.satuan}</strong>`)]);
       state.poQuantities = {}; document.getElementById("poCatatan").value = "";
       renderPoItemList(); syncFromServer();
     } catch (err) { alert("Gagal mengirim Pengajuan PO: " + err.message); }
     finally { btn.disabled = false; updateFloatingBar(); }
   }
+
   function renderMyPoTable() {
     const tbody = document.getElementById("tblMyPoBody");
     if (!tbody) return;
@@ -1522,78 +1614,59 @@
     }).join("");
   }
 
-  // TAB 5: LAPORAN PRODUK REJECT
+  // TAB 5: LAPORAN PRODUK REJECT (TANPA NO PO, DENGAN FILTER SUPPLIER DARI SHEET)
   function initRejectForm() {
     updateGeraiStrip();
-    const selPo = document.getElementById("rejPoSelect");
-    const selBrg = document.getElementById("rejManualBarang");
-    if (!selPo || !selBrg) return;
+    renderRejectBarangOptions();
+  }
 
-    selBrg.innerHTML = state.masterBarang.map(b => `<option value="${b.Kode_Barang}">${b.Nama_Barang} (${b.Satuan})</option>`).join("");
+  function renderRejectBarangOptions() {
+    const selBrg = document.getElementById("rejBarangSelect");
+    const countEl = document.getElementById("rejFilteredCount");
+    if (!selBrg) return;
 
-    const myPos = state.poList.filter(p => p.Nama_KDKMP === state.profile.nama_kdkmp);
-    let opts = `<option value="">-- Pilih Nomor PO dari ASR --</option>`;
-    myPos.forEach((p, idx) => {
-      const displayNoPo = (p.No_PO_ASR && p.No_PO_ASR !== "-") ? p.No_PO_ASR : p.ID_PO;
-      opts += `<option value="${idx}">${displayNoPo} • ${p.Nama_Barang} (PO: ${p.Jumlah_PO} ${p.Satuan})</option>`;
+    const query = (document.getElementById("searchBarangReject")?.value || "").toLowerCase();
+    const activeSup = String(state.selectedRejectSupplier || "ALL").trim().toLowerCase();
+
+    const filtered = state.masterBarang.filter(b => {
+      const matchSup = activeSup === "all" || String(b.Supplier || "").trim().toLowerCase() === activeSup;
+      const matchQ = !query || (b.Nama_Barang || "").toLowerCase().includes(query) || (b.Kategori || "").toLowerCase().includes(query) || (b.Supplier || "").toLowerCase().includes(query);
+      return matchSup && matchQ;
     });
-    opts += `<option value="MANUAL">+ Input Nomor PO Manual / Lainnya</option>`;
-    selPo.innerHTML = opts;
-    onSelectRejectPo("");
-  }
 
-  function onSelectRejectPo(val) {
-    const manualWrap = document.getElementById("wrapManualRejectBarang");
-    const infoBox = document.getElementById("rejSelectedBarangInfo");
-    const myPos = state.poList.filter(p => p.Nama_KDKMP === state.profile.nama_kdkmp);
+    if (countEl) countEl.textContent = filtered.length;
 
-    if (val === "") {
-      manualWrap.style.display = "none";
+    if (filtered.length === 0) {
+      selBrg.innerHTML = `<option value="">-- Tidak ada produk cocok --</option>`;
       state.selectedRejectItem = null;
-      infoBox.innerHTML = "Pilih Nomor PO ASR di atas untuk memuat detail produk & Qty PO.";
-      document.getElementById("rejQtyPo").value = "";
-      document.getElementById("rejQtyAktual").value = "";
-      calcRejectQty();
+      document.getElementById("rejSelectedBarangInfo").innerHTML = "Tidak ada produk yang cocok dengan filter supplier / pencarian.";
       return;
     }
 
-    if (val === "MANUAL") {
-      manualWrap.style.display = "block";
-      onSelectManualRejectBarang();
-      return;
-    }
-
-    manualWrap.style.display = "none";
-    const poObj = myPos[Number(val)];
-    if (!poObj) return;
-    const noPo = (poObj.No_PO_ASR && poObj.No_PO_ASR !== "-") ? poObj.No_PO_ASR : poObj.ID_PO;
-    state.selectedRejectItem = {
-      no_po: noPo,
-      kode_barang: poObj.Kode_Barang,
-      nama_barang: poObj.Nama_Barang,
-      satuan: poObj.Satuan,
-      qty_po: Number(poObj.Jumlah_PO) || 0
-    };
-    document.getElementById("rejQtyPo").value = state.selectedRejectItem.qty_po;
-    document.getElementById("rejQtyAktual").value = "";
-    infoBox.innerHTML = `<strong>No. PO: ${noPo}</strong><br>Produk: <strong>${poObj.Nama_Barang}</strong> (${poObj.Satuan}) • Qty PO: <strong>${poObj.Jumlah_PO} ${poObj.Satuan}</strong>`;
-    calcRejectQty();
+    selBrg.innerHTML = filtered.map(b => {
+      const supLabel = b.Supplier ? `[${b.Supplier}] ` : "";
+      return `<option value="${b.Kode_Barang}">${supLabel}${b.Nama_Barang} (${b.Satuan})</option>`;
+    }).join("");
+    onSelectRejectBarang();
   }
 
-  function onSelectManualRejectBarang() {
-    const code = document.getElementById("rejManualBarang").value;
-    const brg = state.masterBarang.find(b => b.Kode_Barang === code) || state.masterBarang[0];
-    const manualNo = document.getElementById("rejManualNoPo").value.trim() || "-";
-    if (brg) {
-      state.selectedRejectItem = {
-        no_po: manualNo,
-        kode_barang: brg.Kode_Barang,
-        nama_barang: brg.Nama_Barang,
-        satuan: brg.Satuan,
-        qty_po: Number(document.getElementById("rejQtyPo").value) || 0
-      };
-      document.getElementById("rejSelectedBarangInfo").innerHTML = `Mode Input Manual • Produk: <strong>${brg.Nama_Barang}</strong> (${brg.Satuan})`;
+  function onSelectRejectBarang() {
+    const code = document.getElementById("rejBarangSelect").value;
+    const brg = state.masterBarang.find(b => b.Kode_Barang === code);
+    const infoBox = document.getElementById("rejSelectedBarangInfo");
+    if (!brg) {
+      state.selectedRejectItem = null;
+      return;
     }
+    state.selectedRejectItem = {
+      no_po: "-",
+      supplier: brg.Supplier || "-",
+      kode_barang: brg.Kode_Barang,
+      nama_barang: brg.Nama_Barang,
+      satuan: brg.Satuan
+    };
+    infoBox.innerHTML = `Supplier: <strong>${brg.Supplier || "-"}</strong> • Produk: <strong>${brg.Nama_Barang}</strong> (${brg.Satuan})`;
+    calcRejectQty();
   }
 
   function calcRejectQty() {
@@ -1605,22 +1678,15 @@
   }
 
   async function submitRejectReport() {
-    const selVal = document.getElementById("rejPoSelect").value;
-    if (!selVal) return showToast("Pilih Nomor PO terlebih dahulu!");
+    if (!state.selectedRejectItem) return showToast("Pilih produk yang mengalami reject!");
 
-    if (selVal === "MANUAL") onSelectManualRejectBarang();
-    if (!state.selectedRejectItem) return showToast("Data produk reject belum lengkap!");
-
-    const noPo = selVal === "MANUAL"
-      ? (document.getElementById("rejManualNoPo").value.trim() || "-")
-      : state.selectedRejectItem.no_po;
     const qtyPo = Number(document.getElementById("rejQtyPo").value) || 0;
     const qtyAktual = Number(document.getElementById("rejQtyAktual").value) || 0;
     const qtyReject = Math.max(0, qtyPo - qtyAktual);
     const ket = document.getElementById("rejKeterangan").value.trim();
 
-    if (qtyPo <= 0) return showToast("Isi Qty PO terlebih dahulu!");
-    if (qtyReject <= 0) return showToast("Qty Aktual sama dengan Qty PO (tidak ada selisih reject).");
+    if (qtyPo <= 0) return showToast("Isi Qty Kirim / DO terlebih dahulu!");
+    if (qtyReject <= 0) return showToast("Qty Aktual sama dengan Qty Kirim (tidak ada selisih reject).");
     if (!ket) return showToast("Isi keterangan / detail kerusakan produk reject!");
     if (!state.photos.fotoReject) return showToast("Ambil foto dokumentasi barang reject terlebih dahulu!");
 
@@ -1630,7 +1696,8 @@
       kecamatan: state.profile.kecamatan,
       nama_kdkmp: state.profile.nama_kdkmp,
       manager: state.profile.manager,
-      no_po: noPo,
+      supplier: state.selectedRejectItem.supplier,
+      no_po: "-",
       kode_barang: state.selectedRejectItem.kode_barang,
       nama_barang: state.selectedRejectItem.nama_barang,
       satuan: state.selectedRejectItem.satuan,
@@ -1653,15 +1720,13 @@
         [
           `<strong>Gerai:</strong> ${payload.nama_kdkmp} (Kec. ${payload.kecamatan})`,
           `<strong>Manager:</strong> ${payload.manager}`,
-          `<strong>No. PO:</strong> ${payload.no_po}`,
+          `<strong>Supplier:</strong> ${payload.supplier}`,
           `<strong>Produk:</strong> ${payload.nama_barang}`,
-          `<strong>Qty PO / Aktual / Reject:</strong> ${qtyPo} / ${qtyAktual} / <strong style="color:#dc2626;">${qtyReject} ${payload.satuan}</strong>`,
+          `<strong>Qty Kirim / Aktual / Reject:</strong> ${qtyPo} / ${qtyAktual} / <strong style="color:#dc2626;">${qtyReject} ${payload.satuan}</strong>`,
           `<strong>Keterangan:</strong> ${payload.keterangan}`
         ]
       );
 
-      document.getElementById("rejPoSelect").value = "";
-      document.getElementById("rejManualNoPo").value = "";
       document.getElementById("rejQtyPo").value = "";
       document.getElementById("rejQtyAktual").value = "";
       document.getElementById("rejQtyReject").value = "0";
@@ -1669,7 +1734,7 @@
       state.photos.fotoReject = "";
       document.getElementById("prevFotoReject").style.display = "none";
       document.getElementById("infoFotoReject").textContent = "";
-      onSelectRejectPo("");
+      calcRejectQty();
       syncFromServer();
     } catch (err) {
       alert("Gagal mengirim Laporan Reject: " + err.message);
@@ -1692,7 +1757,7 @@
       const badgeCls = st === "Selesai Diganti" ? "tag-ok" : "tag-err";
       return `<tr>
         <td>${String(r.Tanggal_Kejadian || "").slice(0, 10)}</td>
-        <td><strong>${r.No_PO || "-"}</strong></td>
+        <td><strong>${r.Supplier || "-"}</strong></td>
         <td>${r.Nama_Barang}</td>
         <td>${r.Qty_PO} / ${r.Qty_Aktual} / <strong style="color:#dc2626;">${r.Qty_Reject} ${r.Satuan}</strong></td>
         <td><span class="tag ${badgeCls}">${st}</span></td>
