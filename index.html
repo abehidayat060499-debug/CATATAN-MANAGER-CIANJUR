@@ -469,11 +469,11 @@
 
 <script>
   // =========================================================================
-  // KONFIGURASI BACKEND: Tempel URL Web App Google Apps Script (/exec) di sini
+  // KONFIGURASI BACKEND: Ganti dengan URL Web App Google Apps Script (/exec) barumu jika berbeda
   // =========================================================================
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfCK5cs_vIUUEUfSTlUamHoyy1mxGiHu76hwbegsyA76sOFAnlFvjAY7f-P_RqdUFOjA/exec";
 
-  const SUPPLIER_LIST = [
+  const DEFAULT_SUPPLIER_LIST = [
     "Perum Bulog (SPHP)",
     "Agen Pertamina (LPG 3kg)",
     "Distributor Pupuk Subsidi",
@@ -481,14 +481,6 @@
     "ID FOOD / RNI",
     "Supplier Lainnya"
   ];
-
-  const CAT_TO_SUPPLIER = {
-    "Beras SPHP": "Perum Bulog (SPHP)",
-    "Gas LPG 3kg": "Agen Pertamina (LPG 3kg)",
-    "Pupuk Subsidi": "Distributor Pupuk Subsidi",
-    "Minyakita": "Distributor Minyakita",
-    "Produk ID FOOD": "ID FOOD / RNI"
-  };
 
   const SHIFT_LIST = ["Full Day / Tutup Gerai", "Shift 1 (Pagi)", "Shift 2 (Malam)"];
   const BANK_LIST = ["BRI — PT AGRINAS PANGAN NUSANTARA", "BNI — PT AGRINAS PANGAN NUSANTARA"];
@@ -538,6 +530,22 @@
     rekapStok: JSON.parse(localStorage.getItem("kdkmp_rekap_stok") || "[]"),
     poList: JSON.parse(localStorage.getItem("kdkmp_po_list") || "[]")
   };
+
+  function getDynamicSuppliers() {
+    const dariSheet = [...new Set(
+      (state.masterBarang || [])
+        .map(b => String(b.Supplier || "").trim())
+        .filter(Boolean)
+    )];
+    return dariSheet.length > 0 ? dariSheet : DEFAULT_SUPPLIER_LIST;
+  }
+
+  function getSupplierForCategory(cat) {
+    const found = (state.masterBarang || []).find(
+      b => String(b.Kategori || "").trim() === String(cat || "").trim() && String(b.Supplier || "").trim()
+    );
+    return found ? String(found.Supplier).trim() : null;
+  }
 
   document.addEventListener("DOMContentLoaded", async () => {
     const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
@@ -630,6 +638,11 @@
           updateGeraiStrip();
         }
 
+        const supList = getDynamicSuppliers();
+        if (!supList.includes(state.selectedSupplier)) {
+          state.selectedSupplier = supList[0];
+        }
+        renderAllPills();
         renderMasukCategoryChips();
         renderSisaCategoryChips();
         renderMasukItemList();
@@ -731,7 +744,12 @@
 
   // PILLS & NAVIGASI
   function renderAllPills() {
-    document.getElementById("supplierPills").innerHTML = SUPPLIER_LIST.map(s => `<button type="button" class="opt-pill ${state.selectedSupplier === s ? 'active' : ''}" onclick="selectSupplier('${s}')">${s}</button>`).join("");
+    const supList = getDynamicSuppliers();
+    if (!supList.includes(state.selectedSupplier)) state.selectedSupplier = supList[0];
+    document.getElementById("supplierPills").innerHTML = supList.map(s => {
+      const escS = s.replace(/'/g, "\\'");
+      return `<button type="button" class="opt-pill ${state.selectedSupplier === s ? 'active' : ''}" onclick="selectSupplier('${escS}')">${s}</button>`;
+    }).join("");
     document.getElementById("shiftPills").innerHTML = SHIFT_LIST.map(sh => `<button type="button" class="opt-pill ${state.selectedShift === sh ? 'active' : ''}" onclick="selectShift('${sh}')">${sh}</button>`).join("");
     document.getElementById("bankPills").innerHTML = BANK_LIST.map(bk => `<button type="button" class="bank-pill ${state.selectedBank === bk ? 'active' : ''}" onclick="selectBank('${bk}')">${bk}</button>`).join("");
   }
@@ -1221,7 +1239,8 @@
 
   function selectMasukCategory(cat) {
     state.masukCategory = cat;
-    if (CAT_TO_SUPPLIER[cat]) { state.selectedSupplier = CAT_TO_SUPPLIER[cat]; renderAllPills(); }
+    const autoSup = getSupplierForCategory(cat);
+    if (autoSup) { state.selectedSupplier = autoSup; renderAllPills(); }
     renderMasukCategoryChips();
     renderMasukItemList();
   }
