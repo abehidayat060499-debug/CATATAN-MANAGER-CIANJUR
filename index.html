@@ -22,293 +22,139 @@
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 92px; }
 
-    /* ==================== TOP HEADER & GERAI PILL ==================== */
-    header {
-      background: linear-gradient(135deg, #0f172a, #1e3a8a);
-      color: #fff; padding: 12px 14px; position: sticky; top: 0; z-index: 50;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    }
+    /* HEADER & GERAI PILL */
+    header { background: linear-gradient(135deg, #0f172a, #1e3a8a); color: #fff; padding: 12px 14px; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
     .header-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
     .header-title { font-size: 14px; font-weight: 800; margin: 0; letter-spacing: 0.2px; }
     .badge-status { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
     .status-live { background: #065f46; border: 1px solid #34d399; color: #ecfdf5; }
     .status-sandbox { background: #92400e; border: 1px solid #fbbf24; color: #fef3c7; }
-
-    .gerai-strip {
-      margin-top: 8px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.24);
-      border-radius: 10px; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px;
-    }
+    .gerai-strip { margin-top: 8px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.24); border-radius: 10px; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
     .gerai-strip-info { min-width: 0; flex: 1; }
     .gerai-strip-name { font-size: 13px; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .gerai-strip-sub { font-size: 11px; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
-    .btn-switch-gerai {
-      background: #fff; color: var(--primary); border: none; border-radius: 7px;
-      padding: 6px 10px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap;
-    }
+    .btn-switch-gerai { background: #fff; color: var(--primary); border: none; border-radius: 7px; padding: 6px 10px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap; }
 
-    /* ==================== STICKY 4-TABS NAVIGATION ==================== */
-    .nav-tabs {
-      display: flex; background: #fff; border-bottom: 1px solid var(--border);
-      position: sticky; top: 96px; z-index: 40;
-    }
-    .nav-btn {
-      flex: 1; padding: 11px 3px; border: none; background: none; font-size: 11.5px;
-      font-weight: 800; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent;
-      line-height: 1.25;
-    }
+    /* STICKY 4-TABS NAVIGATION */
+    .nav-tabs { display: flex; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 96px; z-index: 40; }
+    .nav-btn { flex: 1; padding: 11px 3px; border: none; background: none; font-size: 11.5px; font-weight: 800; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; line-height: 1.25; }
     .nav-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #eff6ff; }
 
     .container { max-width: 740px; margin: 0 auto; padding: 12px; }
     .section { display: none; }
     .section.active { display: block; }
 
-    .card {
-      background: var(--card); border-radius: 12px; padding: 14px;
-      border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 12px;
-    }
-    .card-title {
-      font-size: 13px; font-weight: 800; margin: 0 0 10px 0; color: var(--primary);
-      display: flex; justify-content: space-between; align-items: center; gap: 8px;
-    }
+    .card { background: var(--card); border-radius: 12px; padding: 14px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 12px; }
+    .card-title { font-size: 13px; font-weight: 800; margin: 0 0 10px 0; color: var(--primary); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
 
     label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.3px; }
-    input[type="text"], input[type="number"], input[type="date"], textarea {
-      width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 9px;
-      font-size: 14px; background: #fff; color: var(--text);
-    }
-    input:focus, textarea:focus {
-      outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,235,0.14);
-    }
-    input[readonly].scan-locked {
-      background: #f8fafc; color: #0f172a; font-weight: 800; border-color: #94a3b8;
-    }
+    input[type="text"], input[type="number"], input[type="date"], textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 9px; font-size: 14px; background: #fff; color: var(--text); }
+    input:focus, textarea:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,235,0.14); }
+    input[readonly].scan-locked { background: #f8fafc; color: #0f172a; font-weight: 800; border-color: #94a3b8; }
 
-    /* ==================== 1-TAP PILLS & CHIPS ==================== */
+    /* PILLS & CHIPS */
     .mode-3-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
     @media (max-width: 540px) { .mode-3-group { grid-template-columns: 1fr; } }
-
-    .type-pill {
-      padding: 10px 8px; border: 2px solid var(--border); border-radius: 10px; text-align: center;
-      cursor: pointer; font-weight: 800; font-size: 12px; background: #f8fafc; transition: 0.12s;
-    }
+    .type-pill { padding: 10px 8px; border: 2px solid var(--border); border-radius: 10px; text-align: center; cursor: pointer; font-weight: 800; font-size: 12px; background: #f8fafc; transition: 0.12s; }
     .type-pill.active-in { border-color: var(--primary-light); background: #eff6ff; color: var(--primary); }
     .type-pill.active-stock { border-color: var(--success); background: #ecfdf5; color: #065f46; }
     .type-pill.active-warn { border-color: var(--warning); background: #fffbeb; color: #92400e; }
 
     .pill-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
-    .opt-pill {
-      padding: 8px 12px; border-radius: 8px; border: 1.5px solid var(--border);
-      background: #f8fafc; color: #334155; font-size: 12px; font-weight: 700; cursor: pointer;
-    }
-    .opt-pill.active {
-      background: var(--primary); border-color: var(--primary); color: #fff;
-    }
+    .opt-pill { padding: 8px 12px; border-radius: 8px; border: 1.5px solid var(--border); background: #f8fafc; color: #334155; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .opt-pill.active { background: var(--primary); border-color: var(--primary); color: #fff; }
 
     .bank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     @media (max-width: 520px) { .bank-grid { grid-template-columns: 1fr; } }
-    .bank-pill {
-      padding: 11px 12px; border-radius: 9px; border: 2px solid var(--border);
-      background: #f8fafc; color: #334155; font-size: 12px; font-weight: 800;
-      cursor: pointer; text-align: left;
-    }
-    .bank-pill.active {
-      background: #eff6ff; border-color: var(--primary); color: var(--primary);
-    }
+    .bank-pill { padding: 11px 12px; border-radius: 9px; border: 2px solid var(--border); background: #f8fafc; color: #334155; font-size: 12px; font-weight: 800; cursor: pointer; text-align: left; }
+    .bank-pill.active { background: #eff6ff; border-color: var(--primary); color: var(--primary); }
 
     .chip-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; scrollbar-width: none; }
     .chip-bar::-webkit-scrollbar { display: none; }
-    .chip {
-      padding: 7px 13px; border-radius: 999px; border: 1.5px solid var(--border);
-      background: #fff; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer;
-    }
+    .chip { padding: 7px 13px; border-radius: 999px; border: 1.5px solid var(--border); background: #fff; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer; }
     .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-    /* ==================== ITEM ROWS & QUICK INCREMENT ==================== */
-    .item-row {
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
-      padding: 10px 0; border-bottom: 1px solid #f1f5f9;
-    }
+    /* ITEM ROWS & STEPPER */
+    .item-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
     .item-row:last-child { border-bottom: none; }
     .item-info { flex: 1; min-width: 0; }
     .item-name { font-size: 13px; font-weight: 700; line-height: 1.3; }
     .item-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
     .quick-add-row { display: flex; gap: 4px; margin-top: 5px; }
-    .btn-qadd {
-      padding: 3px 7px; font-size: 10px; font-weight: 800; border-radius: 5px;
-      border: 1px solid #bfdbfe; background: #eff6ff; color: var(--primary); cursor: pointer;
-    }
-    .btn-qadd:active { background: #dbeafe; }
-
-    .stok-ref {
-      display: inline-block; background: #fef3c7; color: #92400e; font-weight: 700;
-      padding: 2px 7px; border-radius: 6px; font-size: 11px; margin-top: 3px;
-    }
-
+    .btn-qadd { padding: 3px 7px; font-size: 10px; font-weight: 800; border-radius: 5px; border: 1px solid #bfdbfe; background: #eff6ff; color: var(--primary); cursor: pointer; }
+    .stok-ref { display: inline-block; background: #fef3c7; color: #92400e; font-weight: 700; padding: 2px 7px; border-radius: 6px; font-size: 11px; margin-top: 3px; }
     .qty-control { display: flex; align-items: center; gap: 5px; }
-    .btn-step {
-      width: 34px; height: 36px; border-radius: 8px; border: 1.5px solid var(--border);
-      background: #f8fafc; font-size: 18px; font-weight: 800; cursor: pointer;
-    }
+    .btn-step { width: 34px; height: 36px; border-radius: 8px; border: 1.5px solid var(--border); background: #f8fafc; font-size: 18px; font-weight: 800; cursor: pointer; }
     .qty-input { width: 68px !important; text-align: center; font-weight: 800; font-size: 15px !important; padding: 7px 4px !important; }
     .qty-input.has-value { background: #eff6ff; border-color: var(--primary-light); color: var(--primary); }
 
-    /* ==================== PHOTO SCANNER & MATCHING BOXES ==================== */
-    .photo-box {
-      border: 2px dashed #94a3b8; border-radius: 10px; padding: 10px; text-align: center;
-      background: #f8fafc;
-    }
+    /* PHOTO SCANNER & MATCHING BOXES */
+    .photo-box { border: 2px dashed #94a3b8; border-radius: 10px; padding: 10px; text-align: center; background: #f8fafc; }
     .photo-btn-row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 7px; }
-    .btn-cam {
-      background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 11px 8px;
-      font-size: 12px; font-weight: 800; cursor: pointer;
-    }
-    .btn-gal {
-      background: #fff; color: #0f172a; border: 1.5px solid #94a3b8; border-radius: 8px; padding: 11px 8px;
-      font-size: 12px; font-weight: 700; cursor: pointer;
-    }
-    .photo-preview {
-      max-width: 100%; max-height: 170px; border-radius: 8px; margin-top: 8px;
-      display: none; border: 1px solid #cbd5e1;
-    }
+    .btn-cam { background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 11px 8px; font-size: 12px; font-weight: 800; cursor: pointer; }
+    .btn-gal { background: #fff; color: #0f172a; border: 1.5px solid #94a3b8; border-radius: 8px; padding: 11px 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .photo-preview { max-width: 100%; max-height: 170px; border-radius: 8px; margin-top: 8px; display: none; border: 1px solid #cbd5e1; }
     .photo-info { font-size: 11px; color: #059669; font-weight: 700; margin-top: 5px; }
-    .ocr-box {
-      margin-top: 6px; padding: 8px 10px; border-radius: 8px; font-size: 11.5px;
-      text-align: left; display: none; line-height: 1.45;
-    }
+    .ocr-box { margin-top: 6px; padding: 8px 10px; border-radius: 8px; font-size: 11.5px; text-align: left; display: none; line-height: 1.45; }
     .ocr-scanning { background: #eff6ff; border: 1px solid #93c5fd; color: #1e40af; }
     .ocr-ok { background: #dcfce7; border: 1px solid #86efac; color: #166534; }
     .ocr-warn { background: #fef3c7; border: 1px solid #fcd34d; color: #92400e; }
 
-    .nominal-header-row {
-      display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 5px;
-    }
+    .nominal-header-row { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 5px; }
     .nominal-header-row label { margin-bottom: 0; }
-    .btn-koreksi {
-      background: #fffbeb; color: #b45309; border: 1px solid #f59e0b;
-      border-radius: 6px; padding: 3px 8px; font-size: 10.5px; font-weight: 800; cursor: pointer;
-    }
-    .btn-koreksi.is-editing {
-      background: #dc2626; color: #fff; border-color: #dc2626;
-    }
+    .btn-koreksi { background: #fffbeb; color: #b45309; border: 1px solid #f59e0b; border-radius: 6px; padding: 3px 8px; font-size: 10.5px; font-weight: 800; cursor: pointer; }
+    .btn-koreksi.is-editing { background: #dc2626; color: #fff; border-color: #dc2626; }
 
-    .match-status-box {
-      border-radius: 10px; padding: 11px 13px; margin-top: 12px;
-      font-size: 12.5px; font-weight: 700; line-height: 1.45;
-      border: 1.5px solid #cbd5e1; background: #f8fafc; color: #334155;
-    }
-    .match-ok {
-      background: #dcfce7; border-color: #22c55e; color: #14532d;
-    }
-    .match-err {
-      background: #fee2e2; border-color: #ef4444; color: #7f1d1d;
-    }
+    .match-status-box { border-radius: 10px; padding: 11px 13px; margin-top: 12px; font-size: 12.5px; font-weight: 700; line-height: 1.45; border: 1.5px solid #cbd5e1; background: #f8fafc; color: #334155; }
+    .match-ok { background: #dcfce7; border-color: #22c55e; color: #14532d; }
+    .match-err { background: #fee2e2; border-color: #ef4444; color: #7f1d1d; }
 
-    /* ==================== MODALS (GERAI, CAMERA, & SUKSES) ==================== */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.72); z-index: 9990;
-      display: none; align-items: flex-end; justify-content: center;
-    }
+    /* MODALS (GERAI, CAMERA, & SUKSES) */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.72); z-index: 9990; display: none; align-items: flex-end; justify-content: center; }
     @media (min-width: 640px) { .modal-overlay { align-items: center; padding: 16px; } }
-    .modal-sheet {
-      background: #fff; width: 100%; max-width: 560px; max-height: 86vh;
-      border-radius: 18px 18px 0 0; display: flex; flex-direction: column; overflow: hidden;
-      box-shadow: 0 -10px 30px rgba(0,0,0,0.25);
-    }
+    .modal-sheet { background: #fff; width: 100%; max-width: 560px; max-height: 86vh; border-radius: 18px 18px 0 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -10px 30px rgba(0,0,0,0.25); }
     @media (min-width: 640px) { .modal-sheet { border-radius: 16px; } }
-    .modal-head {
-      padding: 14px 16px; border-bottom: 1px solid #e2e8f0;
-      display: flex; justify-content: space-between; align-items: center;
-    }
+    .modal-head { padding: 14px 16px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
     .modal-body { padding: 12px 16px; overflow-y: auto; flex: 1; }
-    .gerai-option {
-      padding: 11px 12px; border: 1px solid #e2e8f0; border-radius: 10px;
-      margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-    }
+    .gerai-option { padding: 11px 12px; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
     .gerai-option:hover, .gerai-option.selected { background: #eff6ff; border-color: var(--primary-light); }
 
-    /* SUCCESS CONFIRMATION MODAL */
-    #successModal {
-      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.78); z-index: 10050;
-      display: none; align-items: center; justify-content: center; padding: 16px;
-    }
-    .success-card {
-      background: #fff; width: 100%; max-width: 420px; border-radius: 18px;
-      padding: 24px 20px; text-align: center; box-shadow: 0 20px 45px rgba(0,0,0,0.35);
-      animation: popIn 0.18s ease-out;
-    }
-    @keyframes popIn {
-      from { transform: scale(0.92); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    .success-icon {
-      width: 60px; height: 60px; border-radius: 999px; background: #dcfce7; color: #059669;
-      display: inline-flex; align-items: center; justify-content: center;
-      font-size: 32px; font-weight: 900; margin-bottom: 12px; border: 2px solid #34d399;
-    }
+    #successModal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.78); z-index: 10050; display: none; align-items: center; justify-content: center; padding: 16px; }
+    .success-card { background: #fff; width: 100%; max-width: 420px; border-radius: 18px; padding: 24px 20px; text-align: center; box-shadow: 0 20px 45px rgba(0,0,0,0.35); animation: popIn 0.18s ease-out; }
+    @keyframes popIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .success-icon { width: 60px; height: 60px; border-radius: 999px; background: #dcfce7; color: #059669; display: inline-flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; margin-bottom: 12px; border: 2px solid #34d399; }
     .success-title { font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; }
     .success-sub { font-size: 13px; color: #475569; margin: 0 0 14px 0; line-height: 1.45; }
-    .success-detail-box {
-      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;
-      padding: 10px 12px; text-align: left; font-size: 12px; color: #334155;
-      margin-bottom: 16px; line-height: 1.5;
-    }
+    .success-detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; text-align: left; font-size: 12px; color: #334155; margin-bottom: 16px; line-height: 1.5; }
 
-    #cameraModal {
-      position: fixed; inset: 0; background: #000; z-index: 9999;
-      display: none; flex-direction: column; justify-content: space-between;
-    }
-    .cam-header {
-      padding: 14px 16px; background: rgba(15, 23, 42, 0.88); color: #fff;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .cam-viewport {
-      position: relative; flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden;
-    }
+    #cameraModal { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; flex-direction: column; justify-content: space-between; }
+    .cam-header { padding: 14px 16px; background: rgba(15, 23, 42, 0.88); color: #fff; display: flex; justify-content: space-between; align-items: center; }
+    .cam-viewport { position: relative; flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     #camVideo { width: 100%; height: 100%; object-fit: cover; }
-    .cam-guide {
-      position: absolute; width: 86%; height: 74%; border: 2.5px dashed #34d399;
-      border-radius: 14px; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45); pointer-events: none;
-      display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px;
-    }
-    .cam-guide span {
-      background: rgba(0,0,0,0.75); color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 999px;
-    }
+    .cam-guide { position: absolute; width: 86%; height: 74%; border: 2.5px dashed #34d399; border-radius: 14px; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45); pointer-events: none; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; }
+    .cam-guide span { background: rgba(0,0,0,0.75); color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 999px; }
     .cam-footer { padding: 16px; background: rgba(15, 23, 42, 0.94); display: flex; justify-content: center; }
 
-    /* ==================== STICKY BOTTOM SUBMIT BAR ==================== */
-    .floating-bar {
-      position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff;
-      border-top: 1px solid #cbd5e1; padding: 10px 14px; z-index: 45;
-      box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.08);
-    }
-    .floating-inner {
-      max-width: 740px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    }
+    /* STICKY BOTTOM SUBMIT BAR */
+    .floating-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 10px 14px; z-index: 45; box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.08); }
+    .floating-inner { max-width: 740px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .floating-summary { min-width: 0; }
     .floating-lbl { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
     .floating-val { font-size: 14px; font-weight: 800; color: var(--text); white-space: nowrap; }
 
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 12px 18px; border-radius: 10px; border: none; font-size: 13px; font-weight: 800;
-      cursor: pointer; transition: 0.15s;
-    }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 18px; border-radius: 10px; border: none; font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.15s; }
     .btn-primary { background: var(--primary); color: #fff; }
-    .btn-primary:disabled, .btn-success:disabled, .btn-teal:disabled, .btn-purple:disabled {
-      background: #94a3b8 !important; cursor: not-allowed; opacity: 0.75;
-    }
+    .btn-primary:disabled, .btn-success:disabled, .btn-teal:disabled, .btn-purple:disabled { background: #94a3b8 !important; cursor: not-allowed; opacity: 0.75; }
     .btn-success { background: var(--success); color: #fff; }
     .btn-teal { background: #0f766e; color: #fff; }
     .btn-purple { background: var(--purple); color: #fff; }
     .btn-outline { background: #fff; color: var(--primary); border: 1.5px solid var(--primary); }
     .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
-    .btn-xs { padding: 4px 8px; font-size: 11px; border-radius: 6px; }
 
     .rp-hint { font-size: 12px; font-weight: 800; color: var(--primary); margin-top: 4px; }
-
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
     th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
@@ -318,11 +164,7 @@
     .tag-ok { background: #dcfce7; color: #166534; }
     .tag-info { background: #dbeafe; color: #1e40af; }
 
-    .toast {
-      position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
-      background: #0f172a; color: #fff; padding: 10px 18px; border-radius: 999px;
-      font-size: 13px; font-weight: 700; z-index: 10060; display: none; box-shadow: 0 6px 18px rgba(0,0,0,0.28);
-    }
+    .toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); background: #0f172a; color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 13px; font-weight: 700; z-index: 10060; display: none; box-shadow: 0 6px 18px rgba(0,0,0,0.28); }
   </style>
 </head>
 <body>
@@ -362,13 +204,7 @@
       <button type="button" class="btn btn-outline btn-sm" onclick="closeGeraiModal()">Tutup</button>
     </div>
     <div class="modal-body">
-      <input
-        type="text"
-        id="modalGeraiSearch"
-        placeholder="Ketik nama desa, KDKMP, atau nama manager..."
-        oninput="filterGeraiModal()"
-        style="margin-bottom:10px; border-color:#2563eb;"
-      />
+      <input type="text" id="modalGeraiSearch" placeholder="Ketik nama desa, KDKMP, atau nama manager..." oninput="filterGeraiModal()" style="margin-bottom:10px; border-color:#2563eb;" />
       <div class="chip-bar" id="modalKecChips"></div>
       <div id="modalGeraiList"></div>
     </div>
@@ -407,14 +243,13 @@
 
 <div class="container">
 
-  <!-- ==================== TAB 1: BARANG MASUK (DO) UNTUK INPUT POS ASR ==================== -->
+  <!-- TAB 1: BARANG MASUK (DO) -->
   <section id="tab-masuk" class="section active">
     <div class="card">
       <div class="card-title">
         <span>Penerimaan Barang Masuk (DO)</span>
         <span style="font-size:11px; color:#2563eb;">Untuk Input Mesin POS ASR</span>
       </div>
-
       <div class="grid-2">
         <div>
           <label>Tanggal Terima Barang (Isi Manual)</label>
@@ -425,12 +260,10 @@
           <input type="text" id="masukNoDo" placeholder="Contoh: DO-2026-8812" />
         </div>
       </div>
-
       <div style="margin-top:10px;">
         <label>Supplier / Sumber Kiriman (Ketuk 1x)</label>
         <div class="pill-wrap" id="supplierPills"></div>
       </div>
-
       <div style="margin-top:10px;">
         <label>Foto Surat Jalan / DO (Opsional)</label>
         <div class="photo-box">
@@ -442,7 +275,6 @@
           <img id="prevFotoDo" class="photo-preview" alt="Preview Surat Jalan" />
         </div>
       </div>
-
       <div style="margin-top:10px;">
         <label>Catatan Bongkar / Kondisi Barang (Opsional)</label>
         <input type="text" id="masukCatatan" placeholder="Contoh: Bongkar pagi kemasan utuh" />
@@ -454,24 +286,21 @@
         <span>Jumlah Barang Diterima (Master Barang ASR)</span>
         <span id="masukCountBadge" style="font-size:12px; color:#1e3a8a;">0 item diisi</span>
       </div>
-
       <div class="chip-bar" id="masukCategoryChips"></div>
       <div style="margin-bottom:8px;">
         <input type="text" id="searchBarangMasuk" placeholder="Cari barang dari master (SPHP, Gas, Urea, Minyakita, ID FOOD)..." oninput="renderMasukItemList()" />
       </div>
-
       <div id="masukItemListContainer"></div>
     </div>
   </section>
 
-  <!-- ==================== TAB 2: STOK SISA HARIAN (TUTUP GERAI) ==================== -->
+  <!-- TAB 2: STOK SISA HARIAN -->
   <section id="tab-sisa" class="section">
     <div class="card">
       <div class="card-title">
         <span>Laporan Stok Sisa Harian</span>
         <span style="font-size:11px; color:#0f766e;">Audit Fisik Tutup Gerai</span>
       </div>
-
       <div class="grid-2">
         <div>
           <label>Tanggal Stok Sisa</label>
@@ -489,17 +318,15 @@
         <span>Input Sisa Fisik di Gerai (Master Barang ASR)</span>
         <span id="sisaCountBadge" style="font-size:12px; color:#0f766e;">0 item diisi</span>
       </div>
-
       <div class="chip-bar" id="sisaCategoryChips"></div>
       <div style="margin-bottom:8px;">
         <input type="text" id="searchBarangSisa" placeholder="Cari barang dari master..." oninput="renderSisaItemList()" />
       </div>
-
       <div id="sisaItemListContainer"></div>
     </div>
   </section>
 
-  <!-- ==================== TAB 3: LAPORAN SALES (AUTO-SCAN + PENCOCOKAN + KOREKSI) ==================== -->
+  <!-- TAB 3: LAPORAN SALES (AUTO-SCAN + PENCOCOKAN + KOREKSI) -->
   <section id="tab-omset" class="section">
     <div class="card">
       <div class="card-title">
@@ -508,15 +335,9 @@
       </div>
 
       <div class="mode-3-group">
-        <div id="modeOmsetFull" class="type-pill active-stock" onclick="setOmsetMode('FULL')">
-          1. Closeshift + Setor Hari H
-        </div>
-        <div id="modeOmsetTunda" class="type-pill" onclick="setOmsetMode('TUNDA_TF')">
-          2. Closeshift Dulu (TF H+1)
-        </div>
-        <div id="modeOmsetSusul" class="type-pill" onclick="setOmsetMode('SUSUL_TF')">
-          3. Susul Bukti Setor (H+1)
-        </div>
+        <div id="modeOmsetFull" class="type-pill active-stock" onclick="setOmsetMode('FULL')">1. Closeshift + Setor Hari H</div>
+        <div id="modeOmsetTunda" class="type-pill" onclick="setOmsetMode('TUNDA_TF')">2. Closeshift Dulu (TF H+1)</div>
+        <div id="modeOmsetSusul" class="type-pill" onclick="setOmsetMode('SUSUL_TF')">3. Susul Bukti Setor (H+1)</div>
       </div>
 
       <div class="grid-2">
@@ -530,13 +351,11 @@
         </div>
       </div>
 
-      <!-- PILIHAN BANK KHUSUS PT AGRINAS PANGAN NUSANTARA -->
       <div id="wrapOmsetBank" style="margin-top:10px;">
         <label>Rekening Tujuan Transfer (Ketuk 1x)</label>
         <div class="bank-grid" id="bankPills"></div>
       </div>
 
-      <!-- SCANNER FOTO STRUK CLOSESHIFT & BUKTI TRANSFER -->
       <div class="grid-2" style="margin-top:12px;">
         <div id="wrapBoxStruk">
           <label>1. Scan Foto Struk Closeshift</label>
@@ -565,14 +384,11 @@
         </div>
       </div>
 
-      <!-- HASIL NOMINAL OTOMATIS + TOMBOL KOREKSI MANUAL -->
       <div class="grid-2" style="margin-top:12px;">
         <div id="wrapInputOmsetTotal">
           <div class="nominal-header-row">
             <label>Omset Sales Struk (Tanpa Kas Awal)</label>
-            <button type="button" id="btnKoreksiOmset" class="btn-koreksi" onclick="toggleManualCorrection('omset')">
-              Koreksi Nominal
-            </button>
+            <button type="button" id="btnKoreksiOmset" class="btn-koreksi" onclick="toggleManualCorrection('omset')">Koreksi Nominal</button>
           </div>
           <input type="number" min="0" inputmode="numeric" id="inpOmsetTotal" class="scan-locked" readonly placeholder="Otomatis dari scan struk" oninput="evaluateSalesMatch()" />
           <div id="hintOmsetTotal" class="rp-hint">Rp 0</div>
@@ -581,16 +397,13 @@
         <div id="wrapInputOmsetTransfer">
           <div class="nominal-header-row">
             <label>Nominal Transfer Bersih (Dikurangi Admin)</label>
-            <button type="button" id="btnKoreksiTransfer" class="btn-koreksi" onclick="toggleManualCorrection('transfer')">
-              Koreksi Nominal
-            </button>
+            <button type="button" id="btnKoreksiTransfer" class="btn-koreksi" onclick="toggleManualCorrection('transfer')">Koreksi Nominal</button>
           </div>
           <input type="number" min="0" inputmode="numeric" id="inpOmsetTransfer" class="scan-locked" readonly placeholder="Otomatis dari bukti TF" oninput="evaluateSalesMatch()" />
           <div id="hintOmsetTransfer" class="rp-hint">Rp 0</div>
         </div>
       </div>
 
-      <!-- STATUS PENCOCOKAN STRUK VS TRANSFER -->
       <div id="salesMatchBox" class="match-status-box">
         Silakan scan foto Struk Closeshift dan Bukti Transfer untuk mencocokkan nominal sales.
       </div>
@@ -602,7 +415,7 @@
     </div>
   </section>
 
-  <!-- ==================== TAB 4: PERENCANAAN PO ==================== -->
+  <!-- TAB 4: PERENCANAAN PO -->
   <section id="tab-po" class="section">
     <div class="card">
       <div class="card-title">Pengajuan Perencanaan PO Barang</div>
@@ -616,7 +429,6 @@
           <input type="text" id="poCatatan" placeholder="Contoh: Prioritas akhir pekan / stok menipis" />
         </div>
       </div>
-
       <div id="poItemListContainer"></div>
     </div>
 
@@ -640,7 +452,7 @@
 
 </div>
 
-<!-- BAR KIRIM MELAYANG DI BAWAH LAYAR -->
+<!-- BAR KIRIM MELAYANG -->
 <div class="floating-bar">
   <div class="floating-inner">
     <div class="floating-summary">
@@ -679,11 +491,7 @@
   };
 
   const SHIFT_LIST = ["Full Day / Tutup Gerai", "Shift 1 (Pagi)", "Shift 2 (Malam)"];
-
-  const BANK_LIST = [
-    "BRI — PT AGRINAS PANGAN NUSANTARA",
-    "BNI — PT AGRINAS PANGAN NUSANTARA"
-  ];
+  const BANK_LIST = ["BRI — PT AGRINAS PANGAN NUSANTARA", "BNI — PT AGRINAS PANGAN NUSANTARA"];
 
   const DEFAULT_KDKMP = [
     { Kecamatan: "Cibeber", Nama_KDKMP: "KDKMP Selagedang", Nama_Manager: "Abdurrahman Hidayatullah" },
@@ -767,12 +575,10 @@
     renderMyPoTable();
     evaluateSalesMatch();
 
-    if (SCRIPT_URL) {
-      syncFromServer();
-    }
+    if (SCRIPT_URL) syncFromServer();
   });
 
-  // ==================== KOMUNIKASI BACKEND TAHAN BANTING (iOS & ANDROID) ====================
+  // KOMUNIKASI BACKEND TAHAN BANTING (iOS & ANDROID)
   async function postToBackend(payload) {
     const options = {
       method: "POST",
@@ -836,7 +642,6 @@
     }
   }
 
-  // ==================== NOTIFIKASI POP-UP BERHASIL ====================
   function showSuccessConfirmation(title, subtitle, detailLines) {
     document.getElementById("successModalTitle").textContent = title;
     document.getElementById("successModalSub").textContent = subtitle;
@@ -844,9 +649,7 @@
     document.getElementById("successModal").style.display = "flex";
   }
 
-  function closeSuccessModal() {
-    document.getElementById("successModal").style.display = "none";
-  }
+  function closeSuccessModal() { document.getElementById("successModal").style.display = "none"; }
 
   function showToast(msg) {
     const el = document.getElementById("toast");
@@ -855,11 +658,9 @@
     setTimeout(() => { el.style.display = "none"; }, 2600);
   }
 
-  function formatRp(num) {
-    return "Rp " + (Number(num) || 0).toLocaleString("id-ID");
-  }
+  function formatRp(num) { return "Rp " + (Number(num) || 0).toLocaleString("id-ID"); }
 
-  // ==================== MODAL PEMILIH GERAI INSTAN ====================
+  // GERAI MODAL
   function updateGeraiStrip() {
     document.getElementById("dispGeraiTitle").textContent = `${state.profile.nama_kdkmp} (Kec. ${state.profile.kecamatan})`;
     document.getElementById("dispManagerSub").textContent = `Manager: ${state.profile.manager || "-"}`;
@@ -874,9 +675,7 @@
     setTimeout(() => document.getElementById("modalGeraiSearch").focus(), 120);
   }
 
-  function closeGeraiModal() {
-    document.getElementById("geraiModal").style.display = "none";
-  }
+  function closeGeraiModal() { document.getElementById("geraiModal").style.display = "none"; }
 
   function renderModalKecChips() {
     const kecs = ["ALL", ...new Set(state.masterKdkmp.map(x => x.Kecamatan))].sort((a, b) => a === "ALL" ? -1 : a.localeCompare(b));
@@ -887,20 +686,13 @@
     }).join("");
   }
 
-  function selectModalKec(kec) {
-    state.modalSelectedKec = kec;
-    renderModalKecChips();
-    filterGeraiModal();
-  }
+  function selectModalKec(kec) { state.modalSelectedKec = kec; renderModalKecChips(); filterGeraiModal(); }
 
   function filterGeraiModal() {
     const q = document.getElementById("modalGeraiSearch").value.trim().toLowerCase();
     const list = state.masterKdkmp.filter(g => {
       const matchKec = state.modalSelectedKec === "ALL" || g.Kecamatan === state.modalSelectedKec;
-      const matchQ = !q ||
-        (g.Nama_KDKMP || "").toLowerCase().includes(q) ||
-        (g.Kecamatan || "").toLowerCase().includes(q) ||
-        (g.Nama_Manager || "").toLowerCase().includes(q);
+      const matchQ = !q || (g.Nama_KDKMP || "").toLowerCase().includes(q) || (g.Kecamatan || "").toLowerCase().includes(q) || (g.Nama_Manager || "").toLowerCase().includes(q);
       return matchKec && matchQ;
     });
 
@@ -928,11 +720,7 @@
 
   function selectGeraiFromModal(kec, kdkmp) {
     const found = state.masterKdkmp.find(g => g.Kecamatan === kec && g.Nama_KDKMP === kdkmp);
-    state.profile = {
-      kecamatan: kec,
-      nama_kdkmp: kdkmp,
-      manager: found && found.Nama_Manager ? found.Nama_Manager : "-"
-    };
+    state.profile = { kecamatan: kec, nama_kdkmp: kdkmp, manager: found && found.Nama_Manager ? found.Nama_Manager : "-" };
     localStorage.setItem("kdkmp_profile", JSON.stringify(state.profile));
     updateGeraiStrip();
     closeGeraiModal();
@@ -941,37 +729,24 @@
     showToast("Gerai aktif: " + kdkmp);
   }
 
-  // ==================== RENDER 1-TAP PILLS ====================
+  // PILLS & NAVIGASI
   function renderAllPills() {
-    document.getElementById("supplierPills").innerHTML = SUPPLIER_LIST.map(s => `
-      <button type="button" class="opt-pill ${state.selectedSupplier === s ? 'active' : ''}" onclick="selectSupplier('${s}')">${s}</button>
-    `).join("");
-
-    document.getElementById("shiftPills").innerHTML = SHIFT_LIST.map(sh => `
-      <button type="button" class="opt-pill ${state.selectedShift === sh ? 'active' : ''}" onclick="selectShift('${sh}')">${sh}</button>
-    `).join("");
-
-    document.getElementById("bankPills").innerHTML = BANK_LIST.map(bk => `
-      <button type="button" class="bank-pill ${state.selectedBank === bk ? 'active' : ''}" onclick="selectBank('${bk}')">${bk}</button>
-    `).join("");
+    document.getElementById("supplierPills").innerHTML = SUPPLIER_LIST.map(s => `<button type="button" class="opt-pill ${state.selectedSupplier === s ? 'active' : ''}" onclick="selectSupplier('${s}')">${s}</button>`).join("");
+    document.getElementById("shiftPills").innerHTML = SHIFT_LIST.map(sh => `<button type="button" class="opt-pill ${state.selectedShift === sh ? 'active' : ''}" onclick="selectShift('${sh}')">${sh}</button>`).join("");
+    document.getElementById("bankPills").innerHTML = BANK_LIST.map(bk => `<button type="button" class="bank-pill ${state.selectedBank === bk ? 'active' : ''}" onclick="selectBank('${bk}')">${bk}</button>`).join("");
   }
 
   function selectSupplier(s) { state.selectedSupplier = s; renderAllPills(); }
   function selectShift(sh) { state.selectedShift = sh; renderAllPills(); }
   function selectBank(bk) { state.selectedBank = bk; renderAllPills(); }
 
-  // ==================== NAVIGASI 4 TAB & FLOATING SUBMIT BAR ====================
   function switchTab(tabId, btn) {
     state.activeTab = tabId;
     document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
     document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
     document.getElementById(tabId).classList.add("active");
     btn.classList.add("active");
-
-    if (tabId === "tab-po") {
-      renderPoItemList();
-      renderMyPoTable();
-    }
+    if (tabId === "tab-po") { renderPoItemList(); renderMyPoTable(); }
     updateFloatingBar();
   }
 
@@ -1019,7 +794,7 @@
     else if (state.activeTab === "tab-po") submitPoReport();
   }
 
-  // ==================== KAMERA / GALERI & SMART OCR SALES ====================
+  // KAMERA & SMART OCR SALES
   async function triggerPhotoCapture(targetKey, useCamera, runOcr) {
     state.activePhotoTarget = targetKey;
     state.activeRunOcr = Boolean(runOcr);
@@ -1040,15 +815,9 @@
         state.camStream = stream;
         const video = document.getElementById("camVideo");
         video.srcObject = stream;
-        const titleMap = {
-          fotoStruk: "Scan Struk Closeshift",
-          fotoTransfer: "Scan Bukti Transfer",
-          fotoDo: "Foto Surat Jalan / DO"
-        };
+        const titleMap = { fotoStruk: "Scan Struk Closeshift", fotoTransfer: "Scan Bukti Transfer", fotoDo: "Foto Surat Jalan / DO" };
         document.getElementById("camModalTitle").textContent = titleMap[targetKey] || "Kamera Dokumen";
-        document.getElementById("camGuideText").textContent = runOcr
-          ? "Pastikan seluruh tulisan & angka nominal terlihat jelas di dalam bingkai"
-          : "Posisikan lembar Surat Jalan / DO di dalam bingkai";
+        document.getElementById("camGuideText").textContent = runOcr ? "Pastikan seluruh tulisan & angka nominal terlihat jelas di dalam bingkai" : "Posisikan lembar Surat Jalan / DO di dalam bingkai";
         document.getElementById("btnCamCapture").textContent = runOcr ? "Jepret & Baca Nominal" : "Jepret Foto DO";
         document.getElementById("cameraModal").style.display = "flex";
         return;
@@ -1063,22 +832,17 @@
   }
 
   function closeCameraModal() {
-    if (state.camStream) {
-      state.camStream.getTracks().forEach(t => t.stop());
-      state.camStream = null;
-    }
+    if (state.camStream) { state.camStream.getTracks().forEach(t => t.stop()); state.camStream = null; }
     document.getElementById("cameraModal").style.display = "none";
   }
 
   function captureFromCamera() {
     const video = document.getElementById("camVideo");
     if (!video.videoWidth) return;
-
     const canvas = document.createElement("canvas");
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
-
     const rawDataUrl = canvas.toDataURL("image/jpeg", 0.92);
     closeCameraModal();
     processCapturedImage(rawDataUrl, state.activePhotoTarget, state.activeRunOcr);
@@ -1108,12 +872,8 @@
     img.onload = function() {
       const uploadCanvas = document.createElement("canvas");
       const maxUploadW = 850;
-      let uW = img.width;
-      let uH = img.height;
-      if (uW > maxUploadW) {
-        uH = Math.round((uH * maxUploadW) / uW);
-        uW = maxUploadW;
-      }
+      let uW = img.width, uH = img.height;
+      if (uW > maxUploadW) { uH = Math.round((uH * maxUploadW) / uW); uW = maxUploadW; }
       uploadCanvas.width = uW;
       uploadCanvas.height = uH;
       uploadCanvas.getContext("2d").drawImage(img, 0, 0, uW, uH);
@@ -1161,9 +921,7 @@
     const ocrEl = document.getElementById(ocrBoxId);
     ocrEl.className = "ocr-box ocr-scanning";
     ocrEl.style.display = "block";
-    ocrEl.textContent = targetKey === "fotoStruk"
-      ? "Membaca nominal omset (di antara Kas Awal & Total)..."
-      : "Membaca nominal transfer & mengurangi biaya admin...";
+    ocrEl.textContent = targetKey === "fotoStruk" ? "Membaca nominal omset (di antara Kas Awal & Total)..." : "Membaca nominal transfer & mengurangi biaya admin...";
 
     if (typeof Tesseract === "undefined") {
       ocrEl.className = "ocr-box ocr-warn";
@@ -1181,17 +939,14 @@
       if (targetKey === "fotoStruk") {
         const parsed = extractSalesFromCloseShift(rawText);
         if (parsed.omsetSales > 0) {
-          const inp = document.getElementById("inpOmsetTotal");
-          inp.value = parsed.omsetSales;
+          document.getElementById("inpOmsetTotal").value = parsed.omsetSales;
           lockInputAfterScan("omset");
 
           let breakdownHtml = `<strong>Omset Sales Terbaca: ${formatRp(parsed.omsetSales)}</strong>`;
           if (parsed.kasAwal > 0 || parsed.grandTotal > 0) {
             breakdownHtml += `<br><span style="font-size:11px;">(Kas Awal: ${formatRp(parsed.kasAwal)} • Total Bawah: ${formatRp(parsed.grandTotal)})</span>`;
           }
-          if (detectedDate) {
-            breakdownHtml += `<br><span style="font-size:11px;">Tanggal Struk: ${detectedDate.split("-").reverse().join("/")}</span>`;
-          }
+          if (detectedDate) breakdownHtml += `<br><span style="font-size:11px;">Tanggal Struk: ${detectedDate.split("-").reverse().join("/")}</span>`;
           ocrEl.className = "ocr-box ocr-ok";
           ocrEl.innerHTML = breakdownHtml;
         } else {
@@ -1201,17 +956,14 @@
       } else if (targetKey === "fotoTransfer") {
         const parsedTf = extractTransferFromReceipt(rawText);
         if (parsedTf.netTransfer > 0) {
-          const inp = document.getElementById("inpOmsetTransfer");
-          inp.value = parsedTf.netTransfer;
+          document.getElementById("inpOmsetTransfer").value = parsedTf.netTransfer;
           lockInputAfterScan("transfer");
 
           let tfHtml = `<strong>Nominal Transfer Bersih: ${formatRp(parsedTf.netTransfer)}</strong>`;
           if (parsedTf.biayaAdmin > 0) {
             tfHtml += `<br><span style="font-size:11px;">(Tertera: ${formatRp(parsedTf.grossAmount)} − Biaya Admin: ${formatRp(parsedTf.biayaAdmin)})</span>`;
           }
-          if (detectedDate) {
-            tfHtml += `<br><span style="font-size:11px;">Tanggal Bukti: ${detectedDate.split("-").reverse().join("/")}</span>`;
-          }
+          if (detectedDate) tfHtml += `<br><span style="font-size:11px;">Tanggal Bukti: ${detectedDate.split("-").reverse().join("/")}</span>`;
           ocrEl.className = "ocr-box ocr-ok";
           ocrEl.innerHTML = tfHtml;
         } else {
@@ -1227,38 +979,22 @@
     }
   }
 
-  // ==================== EKSTRAKSI ANGKA UANG & LOGIKA STRUK CLOSESHIFT ====================
   function parseMoneyTokensFromLine(line) {
-    // Normalisasi karakter OCR yang sering tertukar di sekitar angka
-    const cleaned = line
-      .replace(/Rp\.?/gi, " ")
-      .replace(/IDR/gi, " ")
-      .replace(/[Oo](?=\d{2,3})/g, "0");
-
-    // Tangkap format ribuan Indonesia (contoh: 4.550.000 atau 4,550,000) atau digit utuh >= 4 digit
+    const cleaned = line.replace(/Rp\.?/gi, " ").replace(/IDR/gi, " ").replace(/[Oo](?=\d{2,3})/g, "0");
     const regex = /\b\d{1,3}(?:[.,]\d{3})+(?:[.,]\d{2})?\b|\b\d{4,9}\b/g;
     const matches = cleaned.match(regex) || [];
     const nums = [];
-
     matches.forEach(m => {
-      // Buang desimal sen di akhir seperti ,00 atau .00
-      let noCents = m.replace(/[.,]00$/, "");
-      const digitsOnly = noCents.replace(/[.,]/g, "");
-      const val = Number(digitsOnly);
-      if (val >= 500 && val <= 900000000) {
-        nums.push(val);
-      }
+      const noCents = m.replace(/[.,]00$/, "");
+      const val = Number(noCents.replace(/[.,]/g, ""));
+      if (val >= 500 && val <= 900000000) nums.push(val);
     });
     return nums;
   }
 
   function extractSalesFromCloseShift(rawText) {
     const lines = String(rawText || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-    let kasAwal = 0;
-    let idxKasAwal = -1;
-    let grandTotal = 0;
-    let idxGrandTotal = lines.length;
-    let middleExplicitSales = 0;
+    let kasAwal = 0, idxKasAwal = -1, grandTotal = 0, idxGrandTotal = lines.length, middleExplicitSales = 0;
     const lineItems = [];
 
     lines.forEach((line, idx) => {
@@ -1277,11 +1013,8 @@
       }
     });
 
-    // 1. Prioritaskan baris dengan label Penjualan / Omset yang berada di antara Kas Awal dan Total Bawah
     const betweenLines = lineItems.filter(it =>
-      it.maxNum > 0 &&
-      it.idx > idxKasAwal &&
-      it.idx < idxGrandTotal &&
+      it.maxNum > 0 && it.idx > idxKasAwal && it.idx < idxGrandTotal &&
       !/kas\s*awal|modal\s*awal|saldo\s*awal|tunai\s*fisik|selisih/i.test(it.line)
     );
 
@@ -1289,7 +1022,6 @@
     if (middleExplicitSales > 0) {
       omsetSales = middleExplicitSales;
     } else if (betweenLines.length > 0) {
-      // Jika ada beberapa baris angka di tengah, cari yang cocok dengan (grandTotal - kasAwal) atau ambil nilai tengah utama
       if (grandTotal > kasAwal && kasAwal > 0) {
         const expected = grandTotal - kasAwal;
         const exactBetween = betweenLines.find(b => b.maxNum === expected);
@@ -1298,7 +1030,6 @@
         omsetSales = betweenLines[betweenLines.length - 1].maxNum;
       }
     } else if (grandTotal > kasAwal && kasAwal > 0) {
-      // Fallback otomatis jika baris tengah terpotong: Total Bawah - Kas Awal
       omsetSales = grandTotal - kasAwal;
     } else if (grandTotal > 0) {
       omsetSales = grandTotal;
@@ -1309,9 +1040,7 @@
 
   function extractTransferFromReceipt(rawText) {
     const lines = String(rawText || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-    let nominalTransfer = 0;
-    let biayaAdmin = 0;
-    let totalDebet = 0;
+    let nominalTransfer = 0, biayaAdmin = 0, totalDebet = 0;
     const allNums = [];
 
     lines.forEach(line => {
@@ -1320,11 +1049,8 @@
       if (maxNum > 0) allNums.push(maxNum);
 
       if (/biaya\s*admin|admin(\s*bank)?|biaya\s*transaksi|biaya\s*layanan|fee\b/i.test(line)) {
-        if (/gratis|free|\b0\b/i.test(line) && maxNum === 0) {
-          biayaAdmin = 0;
-        } else if (maxNum > 0 && maxNum <= 50000) {
-          biayaAdmin = maxNum;
-        }
+        if (/gratis|free|\b0\b/i.test(line) && maxNum === 0) biayaAdmin = 0;
+        else if (maxNum > 0 && maxNum <= 50000) biayaAdmin = maxNum;
       } else if (/nominal(\s*transfer)?|jumlah(\s*transfer)?|amount|nilai\s*transfer/i.test(line) && !/total/i.test(line) && maxNum > 0) {
         nominalTransfer = maxNum;
       } else if (/total(\s*debet|\s*bayar|\s*transaksi|\s*pembayaran)?/i.test(line) && maxNum > 0) {
@@ -1336,11 +1062,9 @@
     let netTransfer = grossAmount;
 
     if (nominalTransfer > 0 && totalDebet > nominalTransfer && biayaAdmin > 0 && (totalDebet - nominalTransfer === biayaAdmin)) {
-      // Struk menampilkan Nominal Bersih (mis. 4.500.000), Admin (2.500), dan Total Debet (4.502.500)
       grossAmount = totalDebet;
       netTransfer = nominalTransfer;
     } else if (grossAmount > biayaAdmin && biayaAdmin > 0) {
-      // Nominal yang terpampang sudah termasuk biaya admin -> kurangi biaya admin
       netTransfer = grossAmount - biayaAdmin;
     }
 
@@ -1349,26 +1073,11 @@
 
   function extractDateFromReceiptText(rawText) {
     if (!rawText) return null;
-    const MONTH_MAP = {
-      jan: "01", januari: "01", january: "01",
-      feb: "02", februari: "02", february: "02",
-      mar: "03", maret: "03", march: "03",
-      apr: "04", april: "04",
-      mei: "05", may: "05",
-      jun: "06", juni: "06", june: "06",
-      jul: "07", juli: "07", july: "07",
-      agu: "08", ags: "08", agustus: "08", aug: "08", august: "08",
-      sep: "09", sept: "09", september: "09",
-      okt: "10", oktober: "10", oct: "10", october: "10",
-      nov: "11", nop: "11", november: "11", nopember: "11",
-      des: "12", desember: "12", dec: "12", december: "12"
-    };
+    const MONTH_MAP = { jan:"01",januari:"01",january:"01",feb:"02",februari:"02",february:"02",mar:"03",maret:"03",march:"03",apr:"04",april:"04",mei:"05",may:"05",jun:"06",juni:"06",june:"06",jul:"07",juli:"07",july:"07",agu:"08",ags:"08",agustus:"08",aug:"08",august:"08",sep:"09",sept:"09",september:"09",okt:"10",oktober:"10",oct:"10",october:"10",nov:"11",nop:"11",november:"11",nopember:"11",des:"12",desember:"12",dec:"12",december:"12" };
     const clean = rawText.replace(/\s+/g, " ");
     const m1 = clean.match(/\b(\d{1,2})[\s\/\-\.]+(jan(?:uari|uary)?|feb(?:ruari|ruary)?|mar(?:et|ch)?|apr(?:il)?|mei|may|jun(?:i|e)?|jul(?:i|y)?|agu(?:stus)?|ags|aug(?:ust)?|sep(?:t|tember)?|okt(?:ober)?|oct(?:ober)?|no[vp](?:ember)?|des(?:ember)?|dec(?:ember)?)[\s\/\-\.,]+(\d{2,4})\b/i);
     if (m1) {
-      const dd = m1[1].padStart(2, "0");
-      const mm = MONTH_MAP[m1[2].toLowerCase()];
-      const yyyy = m1[3].length === 2 ? "20" + m1[3] : m1[3];
+      const dd = m1[1].padStart(2, "0"), mm = MONTH_MAP[m1[2].toLowerCase()], yyyy = m1[3].length === 2 ? "20" + m1[3] : m1[3];
       if (isValidDateParts(yyyy, mm, dd)) return `${yyyy}-${mm}-${dd}`;
     }
     const m2 = clean.match(/\b(20\d{2})[\-\/\.](\d{1,2})[\-\/\.](\d{1,2})\b/);
@@ -1379,8 +1088,7 @@
     const numRegex = /\b(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})\b/g;
     let match;
     while ((match = numRegex.exec(clean)) !== null) {
-      const dd = match[1].padStart(2, "0"), mm = match[2].padStart(2, "0");
-      const yyyy = match[3].length === 2 ? "20" + match[3] : match[3];
+      const dd = match[1].padStart(2, "0"), mm = match[2].padStart(2, "0"), yyyy = match[3].length === 2 ? "20" + match[3] : match[3];
       if (isValidDateParts(yyyy, mm, dd)) return `${yyyy}-${mm}-${dd}`;
     }
     return null;
@@ -1391,66 +1099,36 @@
     return y >= 2024 && y <= 2032 && m >= 1 && m <= 12 && d >= 1 && d <= 31;
   }
 
-  function recheckOmsetDates() {
-    evaluateSalesMatch();
-  }
+  function recheckOmsetDates() { evaluateSalesMatch(); }
 
-  // ==================== KOREKSI MANUAL & PENCOCOKAN STRICT SALES ====================
+  // KOREKSI MANUAL & PENCOCOKAN STRICT SALES
   function lockInputAfterScan(field) {
     if (field === "omset") {
       state.ocrCorrected.omset = false;
       const inp = document.getElementById("inpOmsetTotal");
       const btn = document.getElementById("btnKoreksiOmset");
-      inp.readOnly = true;
-      inp.classList.add("scan-locked");
-      btn.classList.remove("is-editing");
-      btn.textContent = "Koreksi Nominal";
+      inp.readOnly = true; inp.classList.add("scan-locked");
+      btn.classList.remove("is-editing"); btn.textContent = "Koreksi Nominal";
     } else if (field === "transfer") {
       state.ocrCorrected.transfer = false;
       const inp = document.getElementById("inpOmsetTransfer");
       const btn = document.getElementById("btnKoreksiTransfer");
-      inp.readOnly = true;
-      inp.classList.add("scan-locked");
-      btn.classList.remove("is-editing");
-      btn.textContent = "Koreksi Nominal";
+      inp.readOnly = true; inp.classList.add("scan-locked");
+      btn.classList.remove("is-editing"); btn.textContent = "Koreksi Nominal";
     }
   }
 
   function toggleManualCorrection(field) {
-    if (field === "omset") {
-      const inp = document.getElementById("inpOmsetTotal");
-      const btn = document.getElementById("btnKoreksiOmset");
-      if (inp.readOnly) {
-        inp.readOnly = false;
-        inp.classList.remove("scan-locked");
-        btn.classList.add("is-editing");
-        btn.textContent = "Selesai Koreksi";
-        state.ocrCorrected.omset = true;
-        inp.focus();
-        inp.select();
-      } else {
-        inp.readOnly = true;
-        inp.classList.add("scan-locked");
-        btn.classList.remove("is-editing");
-        btn.textContent = "Koreksi Nominal";
-      }
-    } else if (field === "transfer") {
-      const inp = document.getElementById("inpOmsetTransfer");
-      const btn = document.getElementById("btnKoreksiTransfer");
-      if (inp.readOnly) {
-        inp.readOnly = false;
-        inp.classList.remove("scan-locked");
-        btn.classList.add("is-editing");
-        btn.textContent = "Selesai Koreksi";
-        state.ocrCorrected.transfer = true;
-        inp.focus();
-        inp.select();
-      } else {
-        inp.readOnly = true;
-        inp.classList.add("scan-locked");
-        btn.classList.remove("is-editing");
-        btn.textContent = "Koreksi Nominal";
-      }
+    const inp = document.getElementById(field === "omset" ? "inpOmsetTotal" : "inpOmsetTransfer");
+    const btn = document.getElementById(field === "omset" ? "btnKoreksiOmset" : "btnKoreksiTransfer");
+    if (inp.readOnly) {
+      inp.readOnly = false; inp.classList.remove("scan-locked");
+      btn.classList.add("is-editing"); btn.textContent = "Selesai Koreksi";
+      state.ocrCorrected[field] = true;
+      inp.focus(); inp.select();
+    } else {
+      inp.readOnly = true; inp.classList.add("scan-locked");
+      btn.classList.remove("is-editing"); btn.textContent = "Koreksi Nominal";
     }
     evaluateSalesMatch();
   }
@@ -1470,26 +1148,17 @@
 
     if (mode === "FULL") {
       lblTgl.textContent = "Tanggal Operasional (Hari H)";
-      wrapOmset.style.display = "block";
-      wrapTf.style.display = "block";
-      wrapStruk.style.display = "block";
-      wrapBoxTf.style.display = "block";
-      wrapBank.style.display = "block";
+      wrapOmset.style.display = "block"; wrapTf.style.display = "block";
+      wrapStruk.style.display = "block"; wrapBoxTf.style.display = "block"; wrapBank.style.display = "block";
     } else if (mode === "TUNDA_TF") {
       lblTgl.textContent = "Tanggal Closeshift (Hari H)";
-      wrapOmset.style.display = "block";
-      wrapTf.style.display = "none";
-      wrapStruk.style.display = "block";
-      wrapBoxTf.style.display = "none";
-      wrapBank.style.display = "none";
+      wrapOmset.style.display = "block"; wrapTf.style.display = "none";
+      wrapStruk.style.display = "block"; wrapBoxTf.style.display = "none"; wrapBank.style.display = "none";
       document.getElementById("inpOmsetTransfer").value = "";
     } else if (mode === "SUSUL_TF") {
       lblTgl.textContent = "Tanggal Omset yang Dilunasi (Kemarin)";
-      wrapOmset.style.display = "none";
-      wrapTf.style.display = "block";
-      wrapStruk.style.display = "none";
-      wrapBoxTf.style.display = "block";
-      wrapBank.style.display = "block";
+      wrapOmset.style.display = "none"; wrapTf.style.display = "block";
+      wrapStruk.style.display = "none"; wrapBoxTf.style.display = "block"; wrapBank.style.display = "block";
       document.getElementById("inpOmsetTotal").value = "";
     }
     evaluateSalesMatch();
@@ -1499,14 +1168,9 @@
     const mode = state.omsetMode;
     const omset = Number(document.getElementById("inpOmsetTotal").value) || 0;
     const tf = Number(document.getElementById("inpOmsetTransfer").value) || 0;
-
-    if (mode === "FULL") {
-      return Boolean(state.photos.fotoStruk && state.photos.fotoTransfer && omset > 0 && tf > 0 && omset === tf);
-    } else if (mode === "TUNDA_TF") {
-      return Boolean(state.photos.fotoStruk && omset > 0);
-    } else if (mode === "SUSUL_TF") {
-      return Boolean(state.photos.fotoTransfer && tf > 0);
-    }
+    if (mode === "FULL") return Boolean(state.photos.fotoStruk && state.photos.fotoTransfer && omset > 0 && tf > 0 && omset === tf);
+    if (mode === "TUNDA_TF") return Boolean(state.photos.fotoStruk && omset > 0);
+    if (mode === "SUSUL_TF") return Boolean(state.photos.fotoTransfer && tf > 0);
     return false;
   }
 
@@ -1519,7 +1183,6 @@
     document.getElementById("hintOmsetTransfer").textContent = formatRp(tf) + (state.ocrCorrected.transfer ? " (Dikoreksi)" : "");
 
     const box = document.getElementById("salesMatchBox");
-
     if (mode === "FULL") {
       if (!state.photos.fotoStruk || !state.photos.fotoTransfer) {
         box.className = "match-status-box";
@@ -1536,61 +1199,38 @@
         box.innerHTML = `✕ BELUM SESUAI (Selisih ${formatRp(diff)}) — Struk (${formatRp(omset)}) dan Transfer (${formatRp(tf)}) harus sama sebelum diupload.`;
       }
     } else if (mode === "TUNDA_TF") {
-      if (state.photos.fotoStruk && omset > 0) {
-        box.className = "match-status-box match-ok";
-        box.innerHTML = `✓ Struk Closeshift siap dilaporkan (${formatRp(omset)}) — Transfer menyusul H+1.`;
-      } else {
-        box.className = "match-status-box";
-        box.innerHTML = "Scan foto Struk Closeshift terlebih dahulu untuk mengaktifkan tombol upload.";
-      }
+      box.className = (state.photos.fotoStruk && omset > 0) ? "match-status-box match-ok" : "match-status-box";
+      box.innerHTML = (state.photos.fotoStruk && omset > 0)
+        ? `✓ Struk Closeshift siap dilaporkan (${formatRp(omset)}) — Transfer menyusul H+1.`
+        : "Scan foto Struk Closeshift terlebih dahulu untuk mengaktifkan tombol upload.";
     } else if (mode === "SUSUL_TF") {
-      if (state.photos.fotoTransfer && tf > 0) {
-        box.className = "match-status-box match-ok";
-        box.innerHTML = `✓ Bukti Transfer Susulan siap diupload (${formatRp(tf)}).`;
-      } else {
-        box.className = "match-status-box";
-        box.innerHTML = "Scan foto Bukti Transfer terlebih dahulu untuk mengaktifkan tombol upload.";
-      }
+      box.className = (state.photos.fotoTransfer && tf > 0) ? "match-status-box match-ok" : "match-status-box";
+      box.innerHTML = (state.photos.fotoTransfer && tf > 0)
+        ? `✓ Bukti Transfer Susulan siap diupload (${formatRp(tf)}).`
+        : "Scan foto Bukti Transfer terlebih dahulu untuk mengaktifkan tombol upload.";
     }
 
-    if (state.activeTab === "tab-omset") {
-      updateFloatingBar();
-    }
+    if (state.activeTab === "tab-omset") updateFloatingBar();
   }
 
-  // ==================== TAB 1: BARANG MASUK (DO) ====================
+  // TAB 1: BARANG MASUK
   function renderMasukCategoryChips() {
     const cats = ["ALL", ...new Set(state.masterBarang.map(b => b.Kategori))];
-    document.getElementById("masukCategoryChips").innerHTML = cats.map(c => {
-      const label = c === "ALL" ? "Semua" : c;
-      const active = state.masukCategory === c ? "active" : "";
-      return `<button type="button" class="chip ${active}" onclick="selectMasukCategory('${c}')">${label}</button>`;
-    }).join("");
+    document.getElementById("masukCategoryChips").innerHTML = cats.map(c => `<button type="button" class="chip ${state.masukCategory === c ? 'active' : ''}" onclick="selectMasukCategory('${c}')">${c === 'ALL' ? 'Semua' : c}</button>`).join("");
   }
 
   function selectMasukCategory(cat) {
     state.masukCategory = cat;
-    if (CAT_TO_SUPPLIER[cat]) {
-      state.selectedSupplier = CAT_TO_SUPPLIER[cat];
-      renderAllPills();
-    }
+    if (CAT_TO_SUPPLIER[cat]) { state.selectedSupplier = CAT_TO_SUPPLIER[cat]; renderAllPills(); }
     renderMasukCategoryChips();
     renderMasukItemList();
   }
 
   function renderMasukItemList() {
     const query = document.getElementById("searchBarangMasuk").value.toLowerCase();
-    const filtered = state.masterBarang.filter(b => {
-      const matchCat = state.masukCategory === "ALL" || b.Kategori === state.masukCategory;
-      const matchSearch = b.Nama_Barang.toLowerCase().includes(query) || b.Kategori.toLowerCase().includes(query);
-      return matchCat && matchSearch;
-    });
-
+    const filtered = state.masterBarang.filter(b => (state.masukCategory === "ALL" || b.Kategori === state.masukCategory) && (b.Nama_Barang.toLowerCase().includes(query) || b.Kategori.toLowerCase().includes(query)));
     const container = document.getElementById("masukItemListContainer");
-    if (filtered.length === 0) {
-      container.innerHTML = `<p style="font-size:13px; color:#64748b; text-align:center;">Barang tidak ditemukan di Master ASR.</p>`;
-      return;
-    }
+    if (filtered.length === 0) { container.innerHTML = `<p style="font-size:13px; color:#64748b; text-align:center;">Barang tidak ditemukan di Master ASR.</p>`; return; }
 
     container.innerHTML = filtered.map(b => {
       const val = state.quantitiesMasuk[b.Kode_Barang] !== undefined ? state.quantitiesMasuk[b.Kode_Barang] : "";
@@ -1608,9 +1248,7 @@
           </div>
           <div class="qty-control">
             <button type="button" class="btn-step" onclick="stepMasukQty('${b.Kode_Barang}', -1)">-</button>
-            <input type="number" min="0" inputmode="numeric" class="qty-input ${hasValClass}"
-              id="mqty_${b.Kode_Barang}" value="${val}" placeholder="0"
-              oninput="updateMasukQty('${b.Kode_Barang}', this.value)" />
+            <input type="number" min="0" inputmode="numeric" class="qty-input ${hasValClass}" id="mqty_${b.Kode_Barang}" value="${val}" placeholder="0" oninput="updateMasukQty('${b.Kode_Barang}', this.value)" />
             <button type="button" class="btn-step" onclick="stepMasukQty('${b.Kode_Barang}', 1)">+</button>
           </div>
         </div>
@@ -1620,22 +1258,15 @@
   }
 
   function stepMasukQty(code, delta) {
-    const curr = Number(state.quantitiesMasuk[code] || 0);
-    const next = Math.max(0, curr + delta);
-    if (next <= 0) delete state.quantitiesMasuk[code];
-    else state.quantitiesMasuk[code] = next;
-
+    const next = Math.max(0, Number(state.quantitiesMasuk[code] || 0) + delta);
+    if (next <= 0) delete state.quantitiesMasuk[code]; else state.quantitiesMasuk[code] = next;
     const inp = document.getElementById("mqty_" + code);
-    if (inp) {
-      inp.value = next > 0 ? next : "";
-      inp.classList.toggle("has-value", next > 0);
-    }
+    if (inp) { inp.value = next > 0 ? next : ""; inp.classList.toggle("has-value", next > 0); }
     updateMasukCount();
   }
 
   function updateMasukQty(code, rawVal) {
-    if (rawVal === "" || Number(rawVal) <= 0) delete state.quantitiesMasuk[code];
-    else state.quantitiesMasuk[code] = Number(rawVal);
+    if (rawVal === "" || Number(rawVal) <= 0) delete state.quantitiesMasuk[code]; else state.quantitiesMasuk[code] = Number(rawVal);
     const inp = document.getElementById("mqty_" + code);
     if (inp) inp.classList.toggle("has-value", Number(rawVal) > 0);
     updateMasukCount();
@@ -1652,43 +1283,24 @@
     for (const [code, qty] of Object.entries(state.quantitiesMasuk)) {
       if (!qty || Number(qty) <= 0) continue;
       const master = state.masterBarang.find(b => b.Kode_Barang === code);
-      if (master) {
-        itemsToSend.push({
-          kode_barang: master.Kode_Barang,
-          kategori: master.Kategori,
-          nama_barang: master.Nama_Barang,
-          satuan: master.Satuan,
-          jumlah: Number(qty)
-        });
-      }
+      if (master) itemsToSend.push({ kode_barang: master.Kode_Barang, kategori: master.Kategori, nama_barang: master.Nama_Barang, satuan: master.Satuan, jumlah: Number(qty) });
     }
-
     if (itemsToSend.length === 0) return showToast("Isi minimal 1 barang yang diterima!");
 
     const payload = {
-      action: "BARANG_MASUK",
-      tanggal: document.getElementById("masukTanggal").value,
-      kecamatan: state.profile.kecamatan,
-      nama_kdkmp: state.profile.nama_kdkmp,
-      manager: state.profile.manager,
-      supplier: state.selectedSupplier,
-      no_do: document.getElementById("masukNoDo").value.trim() || "-",
-      catatan: document.getElementById("masukCatatan").value.trim(),
-      foto_do_base64: state.photos.fotoDo,
-      items: itemsToSend
+      action: "BARANG_MASUK", tanggal: document.getElementById("masukTanggal").value,
+      kecamatan: state.profile.kecamatan, nama_kdkmp: state.profile.nama_kdkmp, manager: state.profile.manager,
+      supplier: state.selectedSupplier, no_do: document.getElementById("masukNoDo").value.trim() || "-",
+      catatan: document.getElementById("masukCatatan").value.trim(), foto_do_base64: state.photos.fotoDo, items: itemsToSend
     };
 
     const btn = document.getElementById("floatSubmitBtn");
-    btn.disabled = true;
-    btn.textContent = "Menyimpan DO...";
+    btn.disabled = true; btn.textContent = "Menyimpan DO...";
 
     try {
-      if (SCRIPT_URL) {
-        await postToBackend(payload);
-      }
+      if (SCRIPT_URL) await postToBackend(payload);
       saveMasukLocally(payload);
 
-      const summaryList = itemsToSend.map(i => `• ${i.nama_barang}: <strong>+${i.jumlah} ${i.satuan}</strong>`);
       showSuccessConfirmation(
         "Barang Masuk (DO) Tersimpan!",
         "Data penerimaan barang telah masuk ke antrean input mesin POS pusat ASR.",
@@ -1696,37 +1308,31 @@
           `<strong>Gerai:</strong> ${payload.nama_kdkmp}`,
           `<strong>Tanggal Terima:</strong> ${payload.tanggal}`,
           `<strong>Supplier / No. DO:</strong> ${payload.supplier} (${payload.no_do})`,
-          ...summaryList
+          ...itemsToSend.map(i => `• ${i.nama_barang}: <strong>+${i.jumlah} ${i.satuan}</strong>`)
         ]
       );
 
-      state.quantitiesMasuk = {};
-      state.photos.fotoDo = "";
-      document.getElementById("masukNoDo").value = "";
-      document.getElementById("masukCatatan").value = "";
-      document.getElementById("prevFotoDo").style.display = "none";
-      document.getElementById("infoFotoDo").textContent = "";
+      state.quantitiesMasuk = {}; state.photos.fotoDo = "";
+      document.getElementById("masukNoDo").value = ""; document.getElementById("masukCatatan").value = "";
+      document.getElementById("prevFotoDo").style.display = "none"; document.getElementById("infoFotoDo").textContent = "";
       renderMasukItemList();
     } catch (err) {
       alert("Gagal menyimpan Barang Masuk: " + err.message);
     } finally {
-      btn.disabled = false;
-      updateFloatingBar();
+      btn.disabled = false; updateFloatingBar();
     }
   }
 
   function saveMasukLocally(payload) {
     const logs = JSON.parse(localStorage.getItem("kdkmp_penerimaan_logs") || "[]");
     const nowStr = new Date().toLocaleString("id-ID");
-
     payload.items.forEach((item, idx) => {
       logs.unshift({
-        ID_Log: "DO-" + Date.now() + "-" + idx,
-        Waktu_Input: nowStr, Tanggal_Terima: payload.tanggal, Kecamatan: payload.kecamatan,
-        Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager, Kategori: item.kategori,
-        Supplier: payload.supplier, No_DO: payload.no_do, Kode_Barang: item.kode_barang,
-        Nama_Barang: item.nama_barang, Satuan: item.satuan, Jumlah: item.jumlah,
-        Link_Foto_DO: payload.foto_do_base64 ? "Sandbox_Foto_DO" : "-",
+        ID_Log: "DO-" + Date.now() + "-" + idx, Waktu_Input: nowStr, Tanggal_Terima: payload.tanggal,
+        Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager,
+        Kategori: item.kategori, Supplier: payload.supplier, No_DO: payload.no_do,
+        Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan,
+        Jumlah: item.jumlah, Link_Foto_DO: payload.foto_do_base64 ? "Sandbox_Foto_DO" : "-",
         Status_Input_POS: "Belum Input POS", Catatan: payload.catatan
       });
       const rIdx = state.rekapStok.findIndex(s => s.Nama_KDKMP === payload.nama_kdkmp && s.Kode_Barang === item.kode_barang);
@@ -1734,46 +1340,26 @@
         state.rekapStok[rIdx].Stok_Akhir = (Number(state.rekapStok[rIdx].Stok_Akhir) || 0) + item.jumlah;
         state.rekapStok[rIdx].Update_Terakhir = nowStr;
       } else {
-        state.rekapStok.push({
-          Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Kategori: item.kategori,
-          Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan,
-          Stok_Akhir: item.jumlah, Update_Terakhir: nowStr
-        });
+        state.rekapStok.push({ Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Kategori: item.kategori, Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan, Stok_Akhir: item.jumlah, Update_Terakhir: nowStr });
       }
     });
     localStorage.setItem("kdkmp_penerimaan_logs", JSON.stringify(logs.slice(0, 250)));
     localStorage.setItem("kdkmp_rekap_stok", JSON.stringify(state.rekapStok));
   }
 
-  // ==================== TAB 2: STOK SISA HARIAN ====================
+  // TAB 2: STOK SISA HARIAN
   function renderSisaCategoryChips() {
     const cats = ["ALL", ...new Set(state.masterBarang.map(b => b.Kategori))];
-    document.getElementById("sisaCategoryChips").innerHTML = cats.map(c => {
-      const label = c === "ALL" ? "Semua" : c;
-      const active = state.sisaCategory === c ? "active" : "";
-      return `<button type="button" class="chip ${active}" onclick="selectSisaCategory('${c}')">${label}</button>`;
-    }).join("");
+    document.getElementById("sisaCategoryChips").innerHTML = cats.map(c => `<button type="button" class="chip ${state.sisaCategory === c ? 'active' : ''}" onclick="selectSisaCategory('${c}')">${c === 'ALL' ? 'Semua' : c}</button>`).join("");
   }
 
-  function selectSisaCategory(cat) {
-    state.sisaCategory = cat;
-    renderSisaCategoryChips();
-    renderSisaItemList();
-  }
+  function selectSisaCategory(cat) { state.sisaCategory = cat; renderSisaCategoryChips(); renderSisaItemList(); }
 
   function renderSisaItemList() {
     const query = document.getElementById("searchBarangSisa").value.toLowerCase();
-    const filtered = state.masterBarang.filter(b => {
-      const matchCat = state.sisaCategory === "ALL" || b.Kategori === state.sisaCategory;
-      const matchSearch = b.Nama_Barang.toLowerCase().includes(query) || b.Kategori.toLowerCase().includes(query);
-      return matchCat && matchSearch;
-    });
-
+    const filtered = state.masterBarang.filter(b => (state.sisaCategory === "ALL" || b.Kategori === state.sisaCategory) && (b.Nama_Barang.toLowerCase().includes(query) || b.Kategori.toLowerCase().includes(query)));
     const container = document.getElementById("sisaItemListContainer");
-    if (filtered.length === 0) {
-      container.innerHTML = `<p style="font-size:13px; color:#64748b; text-align:center;">Barang tidak ditemukan di Master ASR.</p>`;
-      return;
-    }
+    if (filtered.length === 0) { container.innerHTML = `<p style="font-size:13px; color:#64748b; text-align:center;">Barang tidak ditemukan di Master ASR.</p>`; return; }
 
     container.innerHTML = filtered.map(b => {
       const val = state.quantitiesSisa[b.Kode_Barang] !== undefined ? state.quantitiesSisa[b.Kode_Barang] : "";
@@ -1791,9 +1377,7 @@
           </div>
           <div class="qty-control">
             <button type="button" class="btn-step" onclick="stepSisaQty('${b.Kode_Barang}', -1)">-</button>
-            <input type="number" min="0" inputmode="numeric" class="qty-input ${hasValClass}"
-              id="sqty_${b.Kode_Barang}" value="${val}" placeholder="0"
-              oninput="updateSisaQty('${b.Kode_Barang}', this.value)" />
+            <input type="number" min="0" inputmode="numeric" class="qty-input ${hasValClass}" id="sqty_${b.Kode_Barang}" value="${val}" placeholder="0" oninput="updateSisaQty('${b.Kode_Barang}', this.value)" />
             <button type="button" class="btn-step" onclick="stepSisaQty('${b.Kode_Barang}', 1)">+</button>
           </div>
         </div>
@@ -1803,8 +1387,7 @@
   }
 
   function stepSisaQty(code, delta) {
-    const curr = Number(state.quantitiesSisa[code] || 0);
-    const next = Math.max(0, curr + delta);
+    const next = Math.max(0, Number(state.quantitiesSisa[code] || 0) + delta);
     state.quantitiesSisa[code] = next;
     const inp = document.getElementById("sqty_" + code);
     if (inp) { inp.value = next; inp.classList.add("has-value"); }
@@ -1812,8 +1395,7 @@
   }
 
   function updateSisaQty(code, rawVal) {
-    if (rawVal === "") delete state.quantitiesSisa[code];
-    else state.quantitiesSisa[code] = Math.max(0, Number(rawVal));
+    if (rawVal === "") delete state.quantitiesSisa[code]; else state.quantitiesSisa[code] = Math.max(0, Number(rawVal));
     const inp = document.getElementById("sqty_" + code);
     if (inp) inp.classList.toggle("has-value", rawVal !== "");
     updateSisaCount();
@@ -1830,99 +1412,61 @@
     for (const [code, qty] of Object.entries(state.quantitiesSisa)) {
       if (qty === "" || qty === undefined) continue;
       const master = state.masterBarang.find(b => b.Kode_Barang === code);
-      if (master) {
-        itemsToSend.push({
-          kode_barang: master.Kode_Barang,
-          kategori: master.Kategori,
-          nama_barang: master.Nama_Barang,
-          satuan: master.Satuan,
-          jumlah: Number(qty)
-        });
-      }
+      if (master) itemsToSend.push({ kode_barang: master.Kode_Barang, kategori: master.Kategori, nama_barang: master.Nama_Barang, satuan: master.Satuan, jumlah: Number(qty) });
     }
-
     if (itemsToSend.length === 0) return showToast("Isi minimal 1 jumlah stok sisa!");
 
     const payload = {
-      action: "STOK_SISA",
-      tanggal: document.getElementById("sisaTanggal").value,
-      kecamatan: state.profile.kecamatan,
-      nama_kdkmp: state.profile.nama_kdkmp,
-      manager: state.profile.manager,
-      catatan: document.getElementById("sisaCatatan").value.trim(),
-      items: itemsToSend
+      action: "STOK_SISA", tanggal: document.getElementById("sisaTanggal").value,
+      kecamatan: state.profile.kecamatan, nama_kdkmp: state.profile.nama_kdkmp, manager: state.profile.manager,
+      catatan: document.getElementById("sisaCatatan").value.trim(), items: itemsToSend
     };
 
     const btn = document.getElementById("floatSubmitBtn");
-    btn.disabled = true;
-    btn.textContent = "Menyimpan Stok Sisa...";
+    btn.disabled = true; btn.textContent = "Menyimpan Stok Sisa...";
 
     try {
-      if (SCRIPT_URL) {
-        await postToBackend(payload);
-      }
+      if (SCRIPT_URL) await postToBackend(payload);
 
       const logs = JSON.parse(localStorage.getItem("kdkmp_stok_sisa_logs") || "[]");
       const nowStr = new Date().toLocaleString("id-ID");
       payload.items.forEach(item => {
-        logs.unshift({
-          Waktu_Input: nowStr, Tanggal: payload.tanggal, Kecamatan: payload.kecamatan,
-          Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager, Kategori: item.kategori,
-          Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan,
-          Jumlah: item.jumlah, Catatan: payload.catatan
-        });
+        logs.unshift({ Waktu_Input: nowStr, Tanggal: payload.tanggal, Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager, Kategori: item.kategori, Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan, Jumlah: item.jumlah, Catatan: payload.catatan });
         const rIdx = state.rekapStok.findIndex(s => s.Nama_KDKMP === payload.nama_kdkmp && s.Kode_Barang === item.kode_barang);
-        if (rIdx >= 0) {
-          state.rekapStok[rIdx].Stok_Akhir = item.jumlah;
-          state.rekapStok[rIdx].Update_Terakhir = nowStr;
-        } else {
-          state.rekapStok.push({
-            Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Kategori: item.kategori,
-            Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan,
-            Stok_Akhir: item.jumlah, Update_Terakhir: nowStr
-          });
-        }
+        if (rIdx >= 0) { state.rekapStok[rIdx].Stok_Akhir = item.jumlah; state.rekapStok[rIdx].Update_Terakhir = nowStr; }
+        else { state.rekapStok.push({ Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Kategori: item.kategori, Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan, Stok_Akhir: item.jumlah, Update_Terakhir: nowStr }); }
       });
       localStorage.setItem("kdkmp_stok_sisa_logs", JSON.stringify(logs.slice(0, 250)));
       localStorage.setItem("kdkmp_rekap_stok", JSON.stringify(state.rekapStok));
 
-      const summaryList = itemsToSend.map(i => `• ${i.nama_barang}: <strong>${i.jumlah} ${i.satuan}</strong>`);
       showSuccessConfirmation(
         "Stok Sisa Harian Tersimpan!",
         "Laporan audit fisik tutup gerai telah tercatat di sistem ASR.",
         [
           `<strong>Gerai:</strong> ${payload.nama_kdkmp}`,
           `<strong>Tanggal Stok Sisa:</strong> ${payload.tanggal}`,
-          ...summaryList
+          ...itemsToSend.map(i => `• ${i.nama_barang}: <strong>${i.jumlah} ${i.satuan}</strong>`)
         ]
       );
 
-      state.quantitiesSisa = {};
-      document.getElementById("sisaCatatan").value = "";
+      state.quantitiesSisa = {}; document.getElementById("sisaCatatan").value = "";
       renderSisaItemList();
     } catch (err) {
       alert("Gagal menyimpan Stok Sisa: " + err.message);
     } finally {
-      btn.disabled = false;
-      updateFloatingBar();
+      btn.disabled = false; updateFloatingBar();
     }
   }
 
-  // ==================== TAB 3: SUBMIT LAPORAN SALES ====================
+  // TAB 3: SUBMIT LAPORAN SALES
   async function submitOmsetReport() {
-    if (!isSalesReadyToUpload()) {
-      return showToast("Pastikan foto lengkap dan nominal struk & transfer sudah sesuai!");
-    }
+    if (!isSalesReadyToUpload()) return showToast("Pastikan foto lengkap dan nominal struk & transfer sudah sesuai!");
 
     const mode = state.omsetMode;
     const omset = mode === "SUSUL_TF" ? 0 : (Number(document.getElementById("inpOmsetTotal").value) || 0);
     const tf = mode === "TUNDA_TF" ? 0 : (Number(document.getElementById("inpOmsetTransfer").value) || 0);
 
-    const modeTags = {
-      FULL: "[SALES SESUAI & LUNAS]",
-      TUNDA_TF: "[CLOSESHIFT - TF MENYUSUL H+1]",
-      SUSUL_TF: "[PELUNASAN TF SUSULAN]"
-    };
+    const modeTags = { FULL: "[SALES SESUAI & LUNAS]", TUNDA_TF: "[CLOSESHIFT - TF MENYUSUL H+1]", SUSUL_TF: "[PELUNASAN TF SUSULAN]" };
     const auditTags = [];
     if (state.ocrCorrected.omset) auditTags.push("Koreksi Manual Struk");
     if (state.ocrCorrected.transfer) auditTags.push("Koreksi Manual Transfer");
@@ -1933,15 +1477,9 @@
     const combinedNote = [modeTags[mode], auditTags.join(", "), userNote].filter(Boolean).join(" • ");
 
     const payload = {
-      action: "SETOR_OMSET",
-      mode_setoran: mode,
-      tanggal: document.getElementById("omsetTanggal").value,
-      shift: state.selectedShift,
-      kecamatan: state.profile.kecamatan,
-      nama_kdkmp: state.profile.nama_kdkmp,
-      manager: state.profile.manager,
-      nominal_omset: omset,
-      nominal_transfer: tf,
+      action: "SETOR_OMSET", mode_setoran: mode, tanggal: document.getElementById("omsetTanggal").value,
+      shift: state.selectedShift, kecamatan: state.profile.kecamatan, nama_kdkmp: state.profile.nama_kdkmp,
+      manager: state.profile.manager, nominal_omset: omset, nominal_transfer: tf,
       metode_rekening: mode === "TUNDA_TF" ? "Menyusul (H+1)" : state.selectedBank,
       foto_struk_base64: mode === "SUSUL_TF" ? "" : state.photos.fotoStruk,
       foto_transfer_base64: mode === "TUNDA_TF" ? "" : state.photos.fotoTransfer,
@@ -1949,24 +1487,18 @@
     };
 
     const btn = document.getElementById("floatSubmitBtn");
-    btn.disabled = true;
-    btn.textContent = "Mengunggah Laporan...";
+    btn.disabled = true; btn.textContent = "Mengunggah Laporan...";
 
     try {
-      if (SCRIPT_URL) {
-        await postToBackend(payload);
-      }
+      if (SCRIPT_URL) await postToBackend(payload);
 
       const omsetLogs = JSON.parse(localStorage.getItem("kdkmp_omset_logs") || "[]");
       omsetLogs.unshift({
-        Waktu_Input: new Date().toLocaleString("id-ID"),
-        Tanggal: payload.tanggal, Shift: payload.shift, Kecamatan: payload.kecamatan,
-        Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager,
+        Waktu_Input: new Date().toLocaleString("id-ID"), Tanggal: payload.tanggal, Shift: payload.shift,
+        Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager,
         Nominal_Omset: omset, Nominal_Transfer: tf, Selisih_Tunai: mode === "FULL" ? (omset - tf) : 0,
-        Metode_Rekening: payload.metode_rekening,
-        Link_Struk_CloseShift: payload.foto_struk_base64 || "-",
-        Link_Bukti_Transfer: payload.foto_transfer_base64 || "-",
-        Catatan: payload.catatan
+        Metode_Rekening: payload.metode_rekening, Link_Struk_CloseShift: payload.foto_struk_base64 || "-",
+        Link_Bukti_Transfer: payload.foto_transfer_base64 || "-", Catatan: payload.catatan
       });
       localStorage.setItem("kdkmp_omset_logs", JSON.stringify(omsetLogs.slice(0, 200)));
 
@@ -1986,10 +1518,8 @@
         detailLines
       );
 
-      state.photos.fotoStruk = "";
-      state.photos.fotoTransfer = "";
-      state.ocrDates.fotoStruk = "";
-      state.ocrDates.fotoTransfer = "";
+      state.photos.fotoStruk = ""; state.photos.fotoTransfer = "";
+      state.ocrDates.fotoStruk = ""; state.ocrDates.fotoTransfer = "";
       document.getElementById("prevFotoStruk").style.display = "none";
       document.getElementById("prevFotoTransfer").style.display = "none";
       document.getElementById("infoFotoStruk").textContent = "";
@@ -1998,3 +1528,135 @@
       document.getElementById("ocrFotoTransfer").style.display = "none";
       document.getElementById("inpOmsetTotal").value = "";
       document.getElementById("inpOmsetTransfer").value = "";
+      document.getElementById("omsetCatatan").value = "";
+      lockInputAfterScan("omset");
+      lockInputAfterScan("transfer");
+      evaluateSalesMatch();
+    } catch (err) {
+      alert("Gagal mengunggah Laporan Sales: " + err.message);
+    } finally {
+      btn.disabled = false; updateFloatingBar();
+    }
+  }
+
+  // TAB 4: PERENCANAAN PO
+  function renderPoItemList() {
+    const container = document.getElementById("poItemListContainer");
+    if (!container) return;
+
+    container.innerHTML = state.masterBarang.map(b => {
+      const stokRec = state.rekapStok.find(s => s.Nama_KDKMP === state.profile.nama_kdkmp && s.Kode_Barang === b.Kode_Barang);
+      const stokNow = stokRec ? (Number(stokRec.Stok_Akhir) || 0) : 0;
+      const val = state.poQuantities[b.Kode_Barang] !== undefined ? state.poQuantities[b.Kode_Barang] : "";
+      const hasValClass = val !== "" && Number(val) > 0 ? "has-value" : "";
+
+      return `
+        <div class="item-row">
+          <div class="item-info">
+            <div class="item-name">${b.Nama_Barang}</div>
+            <div class="item-meta">${b.Kategori} • ${b.Satuan}</div>
+            <span class="stok-ref">Stok gerai saat ini: ${stokNow} ${b.Satuan}</span>
+            <div class="quick-add-row">
+              <button type="button" class="btn-qadd" onclick="stepPoQty('${b.Kode_Barang}', 10)">+10</button>
+              <button type="button" class="btn-qadd" onclick="stepPoQty('${b.Kode_Barang}', 50)">+50</button>
+              <button type="button" class="btn-qadd" onclick="stepPoQty('${b.Kode_Barang}', 100)">+100</button>
+            </div>
+          </div>
+          <div class="qty-control">
+            <button type="button" class="btn-step" onclick="stepPoQty('${b.Kode_Barang}', -1)">-</button>
+            <input type="number" min="0" inputmode="numeric" class="qty-input ${hasValClass}" id="poqty_${b.Kode_Barang}" value="${val}" placeholder="0" oninput="updatePoQty('${b.Kode_Barang}', this.value)" />
+            <button type="button" class="btn-step" onclick="stepPoQty('${b.Kode_Barang}', 1)">+</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+    if (state.activeTab === "tab-po") updateFloatingBar();
+  }
+
+  function stepPoQty(code, delta) {
+    const next = Math.max(0, Number(state.poQuantities[code] || 0) + delta);
+    if (next <= 0) delete state.poQuantities[code]; else state.poQuantities[code] = next;
+    const inp = document.getElementById("poqty_" + code);
+    if (inp) { inp.value = next > 0 ? next : ""; inp.classList.toggle("has-value", next > 0); }
+    if (state.activeTab === "tab-po") updateFloatingBar();
+  }
+
+  function updatePoQty(code, rawVal) {
+    if (rawVal === "" || Number(rawVal) <= 0) delete state.poQuantities[code]; else state.poQuantities[code] = Number(rawVal);
+    const inp = document.getElementById("poqty_" + code);
+    if (inp) inp.classList.toggle("has-value", Number(rawVal) > 0);
+    if (state.activeTab === "tab-po") updateFloatingBar();
+  }
+
+  async function submitPoReport() {
+    const itemsToSend = [];
+    for (const [code, qty] of Object.entries(state.poQuantities)) {
+      if (!qty || Number(qty) <= 0) continue;
+      const master = state.masterBarang.find(b => b.Kode_Barang === code);
+      if (master) {
+        const stokRec = state.rekapStok.find(s => s.Nama_KDKMP === state.profile.nama_kdkmp && s.Kode_Barang === code);
+        itemsToSend.push({ kode_barang: master.Kode_Barang, kategori: master.Kategori, nama_barang: master.Nama_Barang, satuan: master.Satuan, stok_saat_ini: stokRec ? (Number(stokRec.Stok_Akhir) || 0) : 0, jumlah_po: Number(qty) });
+      }
+    }
+    if (itemsToSend.length === 0) return showToast("Isi minimal 1 jumlah pesanan PO!");
+
+    const payload = {
+      action: "AJUKAN_PO", tanggal_kebutuhan: document.getElementById("poTanggal").value,
+      kecamatan: state.profile.kecamatan, nama_kdkmp: state.profile.nama_kdkmp, manager: state.profile.manager,
+      catatan: document.getElementById("poCatatan").value.trim(), items: itemsToSend
+    };
+
+    const btn = document.getElementById("floatSubmitBtn");
+    btn.disabled = true; btn.textContent = "Mengirim PO...";
+
+    try {
+      if (SCRIPT_URL) await postToBackend(payload);
+
+      const nowStr = new Date().toLocaleString("id-ID");
+      payload.items.forEach((item, idx) => {
+        state.poList.unshift({
+          ID_PO: "PO-" + Date.now() + "-" + idx, Waktu_Pengajuan: nowStr, Tanggal_Kebutuhan: payload.tanggal_kebutuhan,
+          Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager,
+          Kategori: item.kategori, Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang,
+          Satuan: item.satuan, Stok_Saat_Pengajuan: item.stok_saat_ini, Jumlah_PO: item.jumlah_po,
+          Status_PO: "Diajukan", Catatan: payload.catatan
+        });
+      });
+      localStorage.setItem("kdkmp_po_list", JSON.stringify(state.poList.slice(0, 200)));
+
+      showSuccessConfirmation(
+        "Pengajuan PO Terkirim!",
+        "Rencana kebutuhan barang telah masuk ke antrean approval pusat ASR.",
+        [
+          `<strong>Gerai:</strong> ${payload.nama_kdkmp}`,
+          `<strong>Target Kirim:</strong> ${payload.tanggal_kebutuhan}`,
+          ...itemsToSend.map(i => `• ${i.nama_barang}: <strong>${i.jumlah_po} ${i.satuan}</strong>`)
+        ]
+      );
+
+      state.poQuantities = {}; document.getElementById("poCatatan").value = "";
+      renderPoItemList(); renderMyPoTable();
+    } catch (err) {
+      alert("Gagal mengirim Pengajuan PO: " + err.message);
+    } finally {
+      btn.disabled = false; updateFloatingBar();
+    }
+  }
+
+  function renderMyPoTable() {
+    const tbody = document.getElementById("tblMyPoBody");
+    if (!tbody) return;
+    const myRows = state.poList.filter(p => p.Nama_KDKMP === state.profile.nama_kdkmp).slice(0, 20);
+    if (myRows.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b; padding:16px;">Belum ada riwayat pengajuan PO untuk gerai ini.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = myRows.map(p => {
+      const st = p.Status_PO || "Diajukan";
+      const badgeCls = st === "Selesai" || st === "Disetujui ASR" ? "tag-ok" : (st === "DO Terbit" ? "tag-info" : "tag-wait");
+      return `<tr><td>${String(p.Tanggal_Kebutuhan || "").slice(0, 10)}</td><td><strong>${p.Nama_Barang}</strong></td><td><strong>${Number(p.Jumlah_PO || 0).toLocaleString("id-ID")} ${p.Satuan}</strong></td><td><span class="tag ${badgeCls}">${st}</span></td></tr>`;
+    }).join("");
+  }
+</script>
+</body>
+</html>
