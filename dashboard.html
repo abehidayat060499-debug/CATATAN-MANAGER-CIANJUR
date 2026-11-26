@@ -77,7 +77,7 @@
     tr:last-child td { border-bottom: none; }
     tr.row-alert { background: #fef2f2; }
 
-    .reject-thumb { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1.5px solid #cbd5e1; cursor: pointer; display: block; transition: 0.15s; }
+    .reject-thumb { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1.5px solid #cbd5e1; cursor: pointer; display: block; transition: 0.15s; }
     .reject-thumb:hover { transform: scale(1.05); border-color: var(--danger); }
 
     .badge { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 800; white-space: nowrap; }
@@ -223,6 +223,7 @@
     <button class="tab-btn reject-btn" onclick="openTab('tab-reject', this)">7. Laporan Barang Reject</button>
   </div>
 
+  <!-- TAB 1: KEPATUHAN -->
   <div id="tab-kepatuhan" class="panel active">
     <div class="panel-head">
       <div>
@@ -261,11 +262,12 @@
     </div>
   </div>
 
+  <!-- TAB 2: BARANG MASUK (DO) -->
   <div id="tab-masuk" class="panel">
     <div class="panel-head">
       <div>
         <h3 class="panel-title">Log Penerimaan Barang Masuk (DO) & Antrean Input POS</h3>
-        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Validasi barang datang dari Bulog, Pertamina, Pupuk, Minyakita & ID FOOD</div>
+        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Validasi barang datang dari Bulog, Pertamina, Pupuk, Minyakita & ID FOOD (PDF menyertakan thumbnail foto DO)</div>
       </div>
       <div class="export-toolbar">
         <select id="fltStatusMasuk" onchange="renderMasukTab()" style="padding:7px 9px; border-radius:8px; border:1.5px solid #94a3b8; font-size:12px; font-weight:700;">
@@ -274,7 +276,7 @@
           <option value="Sudah Input POS">Sudah Input POS</option>
         </select>
         <button type="button" class="btn btn-success" onclick="exportTabToPng('masuk')">Export Foto WA (PNG)</button>
-        <button type="button" class="btn btn-dark" onclick="exportTabToPdf('masuk')">Export Laporan PDF</button>
+        <button type="button" class="btn btn-dark" onclick="exportTabToPdf('masuk')">Export PDF (+ Foto DO)</button>
       </div>
     </div>
     <div class="table-wrap">
@@ -283,7 +285,7 @@
           <tr>
             <th>Tanggal</th>
             <th>Gerai KDKMP</th>
-            <th>Supplier / No. DO</th>
+            <th>Supplier</th>
             <th>Nama Barang</th>
             <th>Jumlah</th>
             <th>Foto DO</th>
@@ -296,11 +298,12 @@
     </div>
   </div>
 
+  <!-- TAB 3: SALES & SETORAN -->
   <div id="tab-sales" class="panel">
     <div class="panel-head">
       <div>
         <h3 class="panel-title">Laporan Sales & Bukti Setoran Transfer Gerai</h3>
-        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Cocokkan omset closeshift dengan transfer masuk ke rekening PT Agrinas Pangan Nusantara</div>
+        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Cocokkan omset closeshift dengan transfer masuk (PDF menyertakan thumbnail foto struk & bukti TF)</div>
       </div>
       <div class="export-toolbar">
         <select id="fltStatusSales" onchange="renderSalesTab()" style="padding:7px 9px; border-radius:8px; border:1.5px solid #94a3b8; font-size:12px; font-weight:700;">
@@ -309,7 +312,7 @@
           <option value="LUNAS">Sudah Setor & Sesuai</option>
         </select>
         <button type="button" class="btn btn-success" onclick="exportTabToPng('sales')">Export Foto WA (PNG)</button>
-        <button type="button" class="btn btn-dark" onclick="exportTabToPdf('sales')">Export Laporan PDF</button>
+        <button type="button" class="btn btn-dark" onclick="exportTabToPdf('sales')">Export PDF (+ Foto Struk/TF)</button>
       </div>
     </div>
     <div class="table-wrap">
@@ -331,6 +334,7 @@
     </div>
   </div>
 
+  <!-- TAB 4: AUDIT STOK SISA -->
   <div id="tab-sisa" class="panel">
     <div class="panel-head">
       <div>
@@ -349,6 +353,7 @@
             <th>Tanggal</th>
             <th>Kecamatan</th>
             <th>Gerai KDKMP</th>
+            <th>Supplier</th>
             <th>Kategori</th>
             <th>Nama Barang</th>
             <th>Stok Sisa Fisik</th>
@@ -360,6 +365,7 @@
     </div>
   </div>
 
+  <!-- TAB 5: REKAP STOK GERAI -->
   <div id="tab-rekap" class="panel">
     <div class="panel-head">
       <div>
@@ -393,6 +399,7 @@
     </div>
   </div>
 
+  <!-- TAB 6: APPROVAL PO -->
   <div id="tab-po" class="panel">
     <div class="panel-head">
       <div>
@@ -429,12 +436,12 @@
     </div>
   </div>
 
-  <!-- TAB 7: LAPORAN PRODUK REJECT & EXPORT PDF DENGAN FOTO ASLI -->
+  <!-- TAB 7: LAPORAN PRODUK REJECT (THUMBNAIL FOTO RINGKAS DI PDF) -->
   <div id="tab-reject" class="panel">
     <div class="panel-head">
       <div>
         <h3 class="panel-title" style="color:var(--danger);">Laporan Produk Reject / Retur Kiriman Gerai KDKMP</h3>
-        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Verifikasi selisih Qty Kirim vs Qty Aktual beserta foto bukti fisik (PDF cetak menyertakan foto asli, bukan link)</div>
+        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Verifikasi selisih Qty Kirim vs Qty Aktual beserta thumbnail foto bukti fisik</div>
       </div>
       <div class="export-toolbar">
         <select id="fltStatusReject" onchange="renderRejectTab()" style="padding:7px 9px; border-radius:8px; border:1.5px solid #94a3b8; font-size:12px; font-weight:700;">
@@ -442,7 +449,7 @@
           <option value="PENDING">Menunggu Verifikasi / Retur</option>
           <option value="Selesai Diganti">Selesai Diganti Vendor</option>
         </select>
-        <button type="button" class="btn btn-danger" onclick="exportRejectPdfWithPhotos()">Export PDF Reject (Dengan Foto Asli)</button>
+        <button type="button" class="btn btn-danger" onclick="exportTabToPdf('reject')">Export PDF Reject (+ Thumbnail Foto)</button>
       </div>
     </div>
     <div class="table-wrap">
@@ -476,11 +483,7 @@
 
   const DEFAULT_KDKMP = [
     { Kecamatan: "Cibeber", Nama_KDKMP: "KDKMP Selagedang", Nama_Manager: "Abdurrahman Hidayatullah" },
-    { Kecamatan: "Cibeber", Nama_KDKMP: "KDKMP Cihaur", Nama_Manager: "Manager Cihaur" },
-    { Kecamatan: "Cibeber", Nama_KDKMP: "KDKMP Kanoman", Nama_Manager: "Manager Kanoman" },
-    { Kecamatan: "Karangtengah", Nama_KDKMP: "KDKMP Sabandar", Nama_Manager: "Manager Sabandar" },
-    { Kecamatan: "Ciranjang", Nama_KDKMP: "KDKMP Ciranjang", Nama_Manager: "Manager Ciranjang" },
-    { Kecamatan: "Cipanas", Nama_KDKMP: "KDKMP Cipanas", Nama_Manager: "Manager Cipanas" }
+    { Kecamatan: "Cibeber", Nama_KDKMP: "KDKMP Cihaur", Nama_Manager: "Manager Cihaur" }
   ];
 
   let db = {
@@ -621,7 +624,7 @@
       try {
         json = JSON.parse(rawText);
       } catch (parseErr) {
-        throw new Error("Respons bukan JSON (cek akses Web App ke Anyone)");
+        throw new Error("Respons bukan JSON");
       }
       if (!json || json.status !== "success") {
         throw new Error((json && json.message) || "Status gagal dari server");
@@ -710,6 +713,7 @@
     updateKpiCards();
   }
 
+  // TAB 1: KEPATUHAN
   function renderKepatuhanTab() {
     const f = getGlobalFilters();
     const tgl = f.tanggal;
@@ -789,6 +793,7 @@
     }).join("");
   }
 
+  // TAB 2: BARANG MASUK
   function renderMasukTab() {
     const f = getGlobalFilters();
     const stFlt = document.getElementById("fltStatusMasuk").value;
@@ -811,7 +816,7 @@
       return '<tr>' +
         '<td>' + normDate(r.Tanggal_Terima) + '</td>' +
         '<td><strong>' + r.Nama_KDKMP + '</strong><br><span style="font-size:11px; color:#64748b;">Kec. ' + r.Kecamatan + '</span></td>' +
-        '<td>' + r.Supplier + '<br><span style="font-size:11px; color:#1d4ed8; font-weight:700;">DO: ' + (r.No_DO || "-") + '</span></td>' +
+        '<td><strong>' + (r.Supplier || "-") + '</strong></td>' +
         '<td><strong>' + r.Nama_Barang + '</strong></td>' +
         '<td><strong>+' + Number(r.Jumlah || 0).toLocaleString("id-ID") + ' ' + r.Satuan + '</strong></td>' +
         '<td>' + (hasPhoto ? '<button class="btn btn-outline btn-sm" onclick="previewProof(\'' + r.Link_Foto_DO + '\', \'Surat Jalan ' + r.Nama_KDKMP + '\')">Lihat DO</button>' : "-") + '</td>' +
@@ -840,6 +845,7 @@
     }
   }
 
+  // TAB 3: SALES
   function renderSalesTab() {
     const f = getGlobalFilters();
     const stFlt = document.getElementById("fltStatusSales").value;
@@ -883,6 +889,7 @@
     }).join("");
   }
 
+  // TAB 4: STOK SISA
   function renderSisaTab() {
     const f = getGlobalFilters();
     const rows = db.stok_sisa.filter(function(r) { return matchGlobalRow(r, "Tanggal", f); });
@@ -890,7 +897,7 @@
 
     const tbody = document.getElementById("tbodySisa");
     if (rows.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:18px; color:#64748b;">Belum ada laporan stok sisa harian pada periode ini.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:18px; color:#64748b;">Belum ada laporan stok sisa harian pada periode ini.</td></tr>';
       return;
     }
 
@@ -899,6 +906,7 @@
         '<td>' + normDate(r.Tanggal) + '</td>' +
         '<td>' + r.Kecamatan + '</td>' +
         '<td><strong>' + r.Nama_KDKMP + '</strong></td>' +
+        '<td>' + (r.Supplier || "-") + '</td>' +
         '<td>' + r.Kategori + '</td>' +
         '<td><strong>' + r.Nama_Barang + '</strong></td>' +
         '<td><strong>' + Number(r.Jumlah || 0).toLocaleString("id-ID") + ' ' + r.Satuan + '</strong></td>' +
@@ -907,6 +915,7 @@
     }).join("");
   }
 
+  // TAB 5: REKAP STOK
   function renderRekapTab() {
     const f = getGlobalFilters();
     const stFlt = document.getElementById("fltStatusRekap").value;
@@ -944,6 +953,7 @@
     }).join("");
   }
 
+  // TAB 6: APPROVAL PO
   function renderPoTab() {
     const f = getGlobalFilters();
     const stFlt = document.getElementById("fltStatusPo").value;
@@ -1070,81 +1080,6 @@
     }
   }
 
-  function exportRejectPdfWithPhotos() {
-    const rows = viewCache.rejects || [];
-    if (rows.length === 0) return showToast("Tidak ada data produk reject untuk di-export ke PDF!");
-
-    const f = getGlobalFilters();
-    const periodeLabel = f.periode === "DAY" ? ("Tanggal " + f.tanggal) : "Semua Riwayat Data";
-    const kecLabel = f.kecamatan === "ALL" ? "Seluruh Kecamatan Kab. Cianjur" : ("Kecamatan " + f.kecamatan);
-    const validator = document.getElementById("asrValidatorName").value.trim() || "Admin Pusat ASR Cianjur";
-    const totalUnitReject = rows.reduce(function(acc, r) { return acc + (Number(r.Qty_Reject) || 0); }, 0);
-
-    const cardsHtml = rows.map(function(r, idx) {
-      const hasImg = r.Foto_Reject_Base64 && String(r.Foto_Reject_Base64).indexOf("data:image") === 0;
-      const qKirim = Number(r.Qty_Kirim || r.Qty_PO || 0);
-      const photoBlock = hasImg
-        ? '<img src="' + r.Foto_Reject_Base64 + '" style="width:175px; height:175px; object-fit:cover; border-radius:6px; border:1px solid #94a3b8;" />'
-        : '<div style="width:175px; height:175px; border:1px dashed #94a3b8; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; color:#64748b;">Tidak Ada Lampiran Foto</div>';
-
-      return '<div style="border:1.5px solid #cbd5e1; border-radius:8px; padding:12px 14px; margin-bottom:14px; page-break-inside:avoid; display:flex; justify-content:space-between; gap:14px; background:#ffffff;">' +
-        '<div style="flex:1; font-size:12px; line-height:1.55;">' +
-          '<div style="font-size:13.5px; font-weight:800; color:#991b1b; border-bottom:1px solid #fee2e2; padding-bottom:4px; margin-bottom:6px;">' +
-            '#' + (idx + 1) + ' • SUPPLIER: ' + (r.Supplier || "-") + ' • TANGGAL: ' + normDate(r.Tanggal_Kejadian) +
-          '</div>' +
-          '<div><strong>Gerai KDKMP:</strong> ' + r.Nama_KDKMP + ' (Kecamatan ' + r.Kecamatan + ')</div>' +
-          '<div><strong>Nama Manager:</strong> ' + (r.Manager || "-") + '</div>' +
-          '<div><strong>Produk Reject:</strong> ' + r.Nama_Barang + ' (' + r.Satuan + ')</div>' +
-          '<div style="margin-top:4px; background:#fef2f2; border:1px solid #fecaca; padding:5px 8px; border-radius:5px;">' +
-            'Qty Kirim: <strong>' + qKirim.toLocaleString("id-ID") + '</strong> &nbsp;|&nbsp; ' +
-            'Qty Aktual Bagus: <strong>' + Number(r.Qty_Aktual || 0).toLocaleString("id-ID") + '</strong> &nbsp;|&nbsp; ' +
-            '<span style="color:#dc2626;"><strong>Qty Reject: ' + Number(r.Qty_Reject || 0).toLocaleString("id-ID") + ' ' + r.Satuan + '</strong></span>' +
-          '</div>' +
-          '<div style="margin-top:5px;"><strong>Keterangan Kerusakan:</strong> ' + (r.Keterangan || "-") + '</div>' +
-          '<div><strong>Status Retur ASR:</strong> ' + (r.Status_Retur || "Menunggu Verifikasi ASR") + '</div>' +
-        '</div>' +
-        '<div style="width:180px; text-align:center; flex-shrink:0;">' +
-          photoBlock +
-          '<div style="font-size:10px; color:#475569; margin-top:4px; font-weight:700;">Dokumentasi Fisik Reject</div>' +
-        '</div>' +
-      '</div>';
-    }).join("");
-
-    const printWin = window.open("", "_blank");
-    if (!printWin) return showToast("Pop-up diblokir browser. Izinkan pop-up untuk mencetak PDF.");
-
-    printWin.document.write(
-      '<!DOCTYPE html><html><head><title>Berita Acara Produk Reject — KDKMP Cianjur</title>' +
-      '<style>' +
-        '@page { size: A4 portrait; margin: 14mm; }' +
-        'body { font-family: Arial, Helvetica, sans-serif; color: #0f172a; margin: 0; }' +
-        '@media print { .no-print { display: none !important; } }' +
-      '</style></head><body>' +
-      '<div class="no-print" style="background:#fef2f2; border:1px solid #fca5a5; padding:10px 14px; margin-bottom:14px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">' +
-        '<span style="font-size:12.5px; font-weight:700; color:#991b1b;">Pilih <strong>Save as PDF / Simpan sebagai PDF</strong> pada dialog cetak untuk menyimpan file PDF beserta foto dokumentasi.</span>' +
-        '<button onclick="window.print()" style="background:#dc2626; color:#fff; border:none; padding:8px 14px; border-radius:6px; font-weight:800; cursor:pointer;">Cetak / Simpan PDF</button>' +
-      '</div>' +
-      '<div style="border-bottom:3px solid #991b1b; padding-bottom:10px; margin-bottom:14px;">' +
-        '<div style="font-size:11px; font-weight:800; color:#1d4ed8; letter-spacing:0.5px;">PT AGRINAS PANGAN NUSANTARA — PUSAT OPERASIONAL ASR KABUPATEN CIANJUR</div>' +
-        '<h2 style="margin:4px 0; font-size:18px; color:#991b1b;">BERITA ACARA & DOKUMENTASI PRODUK REJECT KDKMP</h2>' +
-        '<div style="font-size:12px; color:#334155;">Periode: <strong>' + periodeLabel + '</strong> • Wilayah: <strong>' + kecLabel + '</strong> • Total Laporan: <strong>' + rows.length + ' Kasus (' + totalUnitReject.toLocaleString("id-ID") + ' Unit)</strong></div>' +
-      '</div>' +
-      cardsHtml +
-      '<div style="margin-top:24px; display:flex; justify-content:flex-end; page-break-inside:avoid;">' +
-        '<div style="text-align:center; width:240px; font-size:12px;">' +
-          '<div>Cianjur, ' + new Date().toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric" }) + '</div>' +
-          '<div style="margin-top:2px;">Divalidasi & Dilaporkan Oleh,</div>' +
-          '<div style="height:54px;"></div>' +
-          '<div style="font-weight:800; text-decoration:underline;">' + validator + '</div>' +
-          '<div style="font-size:11px; color:#475569;">Pusat Operasional ASR KDKMP Cianjur</div>' +
-        '</div>' +
-      '</div>' +
-      '<script>window.onload = function() { setTimeout(function() { window.print(); }, 450); };<\/script>' +
-      '</body></html>'
-    );
-    printWin.document.close();
-  }
-
   function updateKpiCards() {
     const allMatrix = viewCache.kepatuhan;
     const lengkap = allMatrix.filter(function(m) { return m.isComplete; }).length;
@@ -1177,6 +1112,10 @@
     document.getElementById("photoModalTitle").textContent = title;
     document.getElementById("photoModalImg").src = src;
     document.getElementById("photoModal").style.display = "flex";
+  }
+
+  function isBase64Image(val) {
+    return typeof val === "string" && val.indexOf("data:image") === 0;
   }
 
   function buildReportDataset(tabKey) {
@@ -1212,6 +1151,7 @@
             r.isComplete ? "LENGKAP" : "PENDING"
           ];
         }),
+        pdfPhotos: [],
         waCaption: "*UPDATE VALIDASI LAPORAN HARIAN KDKMP CIANJUR*\nPeriode: " + periodeLabel + " (" + kecLabel + ")\n✅ Lengkap: " + lengkap + " Gerai | ⚠️ Belum Lengkap: " + belum + " Gerai\n\n" + (belumNames.length ? "*Mohon segera melengkapi laporan berikut:*\n" + belumNames.join("\n") : "Terima kasih, seluruh gerai sudah melengkapi laporan hari ini.")
       };
     }
@@ -1219,6 +1159,17 @@
     if (tabKey === "masuk") {
       const rows = viewCache.masuk;
       const belumPos = rows.filter(function(r) { return (r.Status_Input_POS || "Belum Input POS") === "Belum Input POS"; }).length;
+      const photos = [];
+      rows.forEach(function(r, idx) {
+        if (isBase64Image(r.Link_Foto_DO)) {
+          photos.push({
+            caption: "#" + (idx + 1) + " • " + r.Nama_KDKMP + " (" + normDate(r.Tanggal_Terima) + ")",
+            sub: (r.Supplier || "-") + " — " + r.Nama_Barang + " (+" + r.Jumlah + " " + r.Satuan + ")",
+            src: r.Link_Foto_DO
+          });
+        }
+      });
+
       return {
         title: "LAPORAN PENERIMAAN BARANG MASUK (DO) & VALIDASI POS",
         subtitle: periodeLabel + " • " + kecLabel,
@@ -1227,15 +1178,16 @@
           { label: "Sudah Validasi POS", val: (rows.length - belumPos) + " Item" },
           { label: "Antrean Input POS", val: belumPos + " Item" }
         ],
-        headers: ["No", "Tanggal", "Gerai KDKMP", "Supplier & No. DO", "Nama Barang", "Jumlah", "Status POS ASR"],
+        headers: ["No", "Tanggal", "Gerai KDKMP", "Supplier", "Nama Barang", "Jumlah", "Status POS ASR"],
         body: rows.map(function(r, i) {
           return [
             i + 1, normDate(r.Tanggal_Terima), r.Nama_KDKMP,
-            r.Supplier + " (" + (r.No_DO || "-") + ")", r.Nama_Barang,
+            r.Supplier || "-", r.Nama_Barang,
             "+" + Number(r.Jumlah || 0).toLocaleString("id-ID") + " " + r.Satuan,
             r.Status_Input_POS || "Belum Input POS"
           ];
         }),
+        pdfPhotos: photos,
         waCaption: "*VALIDASI BARANG MASUK (DO) KDKMP CIANJUR*\nPeriode: " + periodeLabel + " (" + kecLabel + ")\nTotal DO Tercatat: " + rows.length + " item (" + (rows.length - belumPos) + " sudah masuk POS, " + belumPos + " proses validasi)."
       };
     }
@@ -1244,6 +1196,24 @@
       const rows = viewCache.sales;
       const totOmset = rows.reduce(function(s, r) { return s + (Number(r.Nominal_Omset) || 0); }, 0);
       const totTf = rows.reduce(function(s, r) { return s + (Number(r.Nominal_Transfer) || 0); }, 0);
+      const photos = [];
+      rows.forEach(function(r, idx) {
+        if (isBase64Image(r.Link_Struk_CloseShift)) {
+          photos.push({
+            caption: "#" + (idx + 1) + " Struk • " + r.Nama_KDKMP + " (" + normDate(r.Tanggal) + ")",
+            sub: "Omset Struk: " + formatRp(r.Nominal_Omset),
+            src: r.Link_Struk_CloseShift
+          });
+        }
+        if (isBase64Image(r.Link_Bukti_Transfer)) {
+          photos.push({
+            caption: "#" + (idx + 1) + " Bukti TF • " + r.Nama_KDKMP + " (" + normDate(r.Tanggal) + ")",
+            sub: "Transfer: " + formatRp(r.Nominal_Transfer) + " (" + (r.Metode_Rekening || "-") + ")",
+            src: r.Link_Bukti_Transfer
+          });
+        }
+      });
+
       return {
         title: "LAPORAN VALIDASI OMSET SALES & SETORAN TRANSFER",
         subtitle: periodeLabel + " • " + kecLabel,
@@ -1258,6 +1228,7 @@
           const tf = Number(r.Nominal_Transfer) || 0;
           return [i + 1, normDate(r.Tanggal), r.Nama_KDKMP, formatRp(om), formatRp(tf), om - tf === 0 ? "Sesuai" : formatRp(om - tf), r.Metode_Rekening || "-"];
         }),
+        pdfPhotos: photos,
         waCaption: "*VALIDASI SALES & SETORAN KDKMP CIANJUR*\nPeriode: " + periodeLabel + " (" + kecLabel + ")\nTotal Omset: " + formatRp(totOmset) + " | Total Transfer Masuk: " + formatRp(totTf) + "."
       };
     }
@@ -1272,13 +1243,14 @@
           { label: "Cakupan Wilayah", val: kecLabel },
           { label: "Status Data", val: "Tervalidasi ASR" }
         ],
-        headers: ["No", "Tanggal", "Kecamatan", "Gerai KDKMP", "Nama Barang", "Stok Sisa Fisik", "Catatan"],
+        headers: ["No", "Tanggal", "Kecamatan", "Gerai KDKMP", "Supplier", "Nama Barang", "Stok Sisa Fisik", "Catatan"],
         body: rows.map(function(r, i) {
           return [
-            i + 1, normDate(r.Tanggal), r.Kecamatan, r.Nama_KDKMP, r.Nama_Barang,
+            i + 1, normDate(r.Tanggal), r.Kecamatan, r.Nama_KDKMP, r.Supplier || "-", r.Nama_Barang,
             Number(r.Jumlah || 0).toLocaleString("id-ID") + " " + r.Satuan, r.Catatan || "-"
           ];
         }),
+        pdfPhotos: [],
         waCaption: "*LAPORAN STOK SISA HARIAN KDKMP CIANJUR*\nPeriode: " + periodeLabel + " (" + kecLabel + ")\nTotal " + rows.length + " item stok fisik tutup gerai telah tercatat di sistem ASR."
       };
     }
@@ -1303,7 +1275,52 @@
           const isKritis = (Number(r.Stok_Akhir) || 0) <= (m ? (Number(m.Batas_Kritis) || 10) : 10);
           return [i + 1, r.Kecamatan, r.Nama_KDKMP, r.Nama_Barang, Number(r.Stok_Akhir || 0).toLocaleString("id-ID") + " " + r.Satuan, isKritis ? "MENIPIS" : "AMAN", r.Update_Terakhir || "-"];
         }),
+        pdfPhotos: [],
         waCaption: "*UPDATE POSISI STOK GERAI KDKMP CIANJUR*\nWilayah: " + kecLabel + "\nTerdapat " + kritisCount + " item stok menipis yang perlu segera diajukan PO."
+      };
+    }
+
+    if (tabKey === "reject") {
+      const rows = viewCache.rejects || [];
+      const totRej = rows.reduce(function(s, r) { return s + (Number(r.Qty_Reject) || 0); }, 0);
+      const photos = [];
+      rows.forEach(function(r, idx) {
+        if (isBase64Image(r.Foto_Reject_Base64)) {
+          photos.push({
+            caption: "#" + (idx + 1) + " • " + r.Nama_KDKMP + " (" + normDate(r.Tanggal_Kejadian) + ")",
+            sub: (r.Supplier || "-") + " — " + r.Nama_Barang + " (Reject: " + r.Qty_Reject + " " + r.Satuan + ")",
+            src: r.Foto_Reject_Base64
+          });
+        }
+      });
+
+      return {
+        title: "LAPORAN PRODUK REJECT / RETUR KIRIMAN KDKMP",
+        subtitle: periodeLabel + " • " + kecLabel,
+        summaryBoxes: [
+          { label: "Total Laporan Reject", val: rows.length + " Kasus" },
+          { label: "Total Qty Reject", val: totRej.toLocaleString("id-ID") + " Unit" },
+          { label: "Status Verifikasi", val: "Pusat ASR Cianjur" }
+        ],
+        headers: ["No", "Tanggal", "Gerai KDKMP", "Manager", "Supplier", "Nama Produk", "Kirim", "Aktual", "Reject", "Keterangan", "Status"],
+        body: rows.map(function(r, i) {
+          const qKirim = Number(r.Qty_Kirim || r.Qty_PO || 0);
+          return [
+            i + 1,
+            normDate(r.Tanggal_Kejadian),
+            r.Nama_KDKMP + " (Kec. " + r.Kecamatan + ")",
+            r.Manager || "-",
+            r.Supplier || "-",
+            r.Nama_Barang,
+            qKirim + " " + r.Satuan,
+            (Number(r.Qty_Aktual) || 0) + " " + r.Satuan,
+            (Number(r.Qty_Reject) || 0) + " " + r.Satuan,
+            r.Keterangan || "-",
+            r.Status_Retur || "Menunggu Verifikasi ASR"
+          ];
+        }),
+        pdfPhotos: photos,
+        waCaption: "*LAPORAN PRODUK REJECT KDKMP CIANJUR*\nPeriode: " + periodeLabel + " (" + kecLabel + ")\nTotal: " + rows.length + " kasus (" + totRej + " unit reject)."
       };
     }
 
@@ -1326,6 +1343,7 @@
           r.Status_PO || "Diajukan"
         ];
       }),
+      pdfPhotos: [],
       waCaption: "*UPDATE PENGAJUAN & APPROVAL PO KDKMP CIANJUR*\nPeriode: " + periodeLabel + " (" + kecLabel + ")\nTotal Pengajuan: " + rows.length + " item (" + disetujui + " sudah disetujui ASR)."
     };
   }
@@ -1432,6 +1450,7 @@
     }
   }
 
+  // EXPORT PDF A4 LANDSCAPE + GRID THUMBNAIL FOTO RINGKAS (4 FOTO PER BARIS, UKURAN 26x26 MM)
   function exportTabToPdf(tabKey) {
     const rep = buildReportDataset(tabKey);
     if (!rep.body || rep.body.length === 0) return showToast("Tidak ada data pada tab ini untuk di-export!");
@@ -1439,8 +1458,9 @@
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
     const validator = document.getElementById("asrValidatorName").value.trim() || "Admin Pusat ASR Cianjur";
+    const isReject = tabKey === "reject";
 
-    doc.setFillColor(15, 23, 42);
+    doc.setFillColor(isReject ? 153 : 15, isReject ? 27 : 23, isReject ? 27 : 42);
     doc.rect(14, 12, 269, 20, "F");
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(10);
@@ -1464,16 +1484,16 @@
       head: [rep.headers],
       body: rep.body,
       theme: "grid",
-      styles: { fontSize: 8.5, cellPadding: 2.5, textColor: [15, 23, 42] },
-      headStyles: { fillColor: [30, 58, 138], textColor: [255, 255, 255], fontStyle: "bold" },
+      styles: { fontSize: 8, cellPadding: 2.2, textColor: [15, 23, 42] },
+      headStyles: { fillColor: isReject ? [185, 28, 28] : [30, 58, 138], textColor: [255, 255, 255], fontStyle: "bold" },
       alternateRowStyles: { fillColor: [248, 250, 252] },
       didParseCell: function(data) {
         if (data.section === "body") {
           const val = String(data.cell.raw || "");
-          if (/BELUM|PENDING|MENIPIS/.test(val)) {
+          if (/BELUM|PENDING|MENIPIS|Menunggu/.test(val)) {
             data.cell.styles.textColor = [220, 38, 38];
             data.cell.styles.fontStyle = "bold";
-          } else if (/SUDAH|LUNAS|LENGKAP|Disetujui|DO Terbit|AMAN|Sudah Input POS|Sesuai/.test(val)) {
+          } else if (/SUDAH|LUNAS|LENGKAP|Disetujui|DO Terbit|AMAN|Sudah Input POS|Sesuai|Selesai/.test(val)) {
             data.cell.styles.textColor = [5, 150, 105];
             data.cell.styles.fontStyle = "bold";
           }
@@ -1481,10 +1501,71 @@
       }
     });
 
-    const finalY = (doc.lastAutoTable && doc.lastAutoTable.finalY) ? doc.lastAutoTable.finalY + 10 : 160;
+    let cursorY = (doc.lastAutoTable && doc.lastAutoTable.finalY) ? doc.lastAutoTable.finalY + 8 : 150;
     const pageH = doc.internal.pageSize.getHeight();
-    const signY = finalY + 28 > pageH ? (doc.addPage(), 25) : finalY;
 
+    // LAMPIRAN THUMBNAIL FOTO PROPORSONAL (4 KOLOM PER BARIS, TIDAK TERLALU BESAR)
+    const photos = rep.pdfPhotos || [];
+    if (photos.length > 0) {
+      const cols = 4;
+      const boxW = 64;
+      const boxH = 38;
+      const imgSize = 24; // 24mm x 24mm (~90px), ringkas & jelas
+      const gapX = 4;
+      const gapY = 4;
+
+      if (cursorY + 14 + boxH > pageH - 12) {
+        doc.addPage();
+        cursorY = 16;
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9.5);
+      doc.setTextColor(15, 23, 42);
+      doc.text("LAMPIRAN DOKUMENTASI FOTO (" + photos.length + " LAMPIRAN):", 14, cursorY);
+      cursorY += 4;
+
+      photos.forEach(function(p, idx) {
+        const colIdx = idx % cols;
+        if (colIdx === 0 && idx > 0) {
+          cursorY += boxH + gapY;
+        }
+        if (cursorY + boxH > pageH - 12) {
+          doc.addPage();
+          cursorY = 16;
+        }
+
+        const x = 14 + colIdx * (boxW + gapX);
+        doc.setDrawColor(203, 213, 225);
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(x, cursorY, boxW, boxH, 1.5, 1.5, "FD");
+
+        try {
+          doc.addImage(p.src, "JPEG", x + 2, cursorY + 2, imgSize, imgSize);
+        } catch (err) {
+          doc.setFontSize(7);
+          doc.text("Foto", x + 6, cursorY + 14);
+        }
+
+        const textX = x + imgSize + 4;
+        const textMaxW = boxW - imgSize - 6;
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(7);
+        doc.setTextColor(15, 23, 42);
+        const capLines = doc.splitTextToSize(p.caption, textMaxW);
+        doc.text(capLines.slice(0, 3), textX, cursorY + 6);
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(6.5);
+        doc.setTextColor(71, 85, 105);
+        const subLines = doc.splitTextToSize(p.sub, textMaxW);
+        doc.text(subLines.slice(0, 4), textX, cursorY + 17);
+      });
+
+      cursorY += boxH + 8;
+    }
+
+    const signY = cursorY + 28 > pageH ? (doc.addPage(), 22) : cursorY;
     doc.setFontSize(9.5);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(15, 23, 42);
