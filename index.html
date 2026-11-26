@@ -22,7 +22,6 @@
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 92px; }
 
-    /* HEADER & GERAI PILL */
     header { background: linear-gradient(135deg, #0f172a, #1e3a8a); color: #fff; padding: 12px 14px; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
     .header-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
     .header-title { font-size: 14px; font-weight: 800; margin: 0; letter-spacing: 0.2px; }
@@ -35,10 +34,12 @@
     .gerai-strip-sub { font-size: 11px; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
     .btn-switch-gerai { background: #fff; color: var(--primary); border: none; border-radius: 7px; padding: 6px 10px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap; }
 
-    /* STICKY 4-TABS NAVIGATION */
-    .nav-tabs { display: flex; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 96px; z-index: 40; }
-    .nav-btn { flex: 1; padding: 11px 3px; border: none; background: none; font-size: 11.5px; font-weight: 800; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; line-height: 1.25; }
+    /* STICKY 5-TABS NAVIGATION */
+    .nav-tabs { display: flex; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 96px; z-index: 40; overflow-x: auto; scrollbar-width: none; }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-btn { flex: 1; min-width: 72px; padding: 10px 4px; border: none; background: none; font-size: 11px; font-weight: 800; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; line-height: 1.25; }
     .nav-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #eff6ff; }
+    .nav-btn.reject-tab.active { color: var(--danger); border-bottom-color: var(--danger); background: #fef2f2; }
 
     .container { max-width: 740px; margin: 0 auto; padding: 12px; }
     .section { display: none; }
@@ -48,14 +49,14 @@
     .card-title { font-size: 13px; font-weight: 800; margin: 0 0 10px 0; color: var(--primary); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
     @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
 
     label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.3px; }
-    input[type="text"], input[type="number"], input[type="date"], textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 9px; font-size: 14px; background: #fff; color: var(--text); }
-    input:focus, textarea:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,235,0.14); }
+    input[type="text"], input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 9px; font-size: 14px; background: #fff; color: var(--text); }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,235,0.14); }
     input[readonly].scan-locked { background: #f8fafc; color: #0f172a; font-weight: 800; border-color: #94a3b8; }
 
-    /* PILLS & CHIPS */
     .mode-3-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
     @media (max-width: 540px) { .mode-3-group { grid-template-columns: 1fr; } }
     .type-pill { padding: 10px 8px; border: 2px solid var(--border); border-radius: 10px; text-align: center; cursor: pointer; font-weight: 800; font-size: 12px; background: #f8fafc; transition: 0.12s; }
@@ -78,8 +79,8 @@
     .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
     .vendor-sub-banner { display: inline-block; background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 7px; margin-bottom: 8px; }
+    .id-readonly-strip { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 9px; padding: 9px 12px; font-size: 12px; color: #334155; margin-bottom: 10px; line-height: 1.5; }
 
-    /* ITEM ROWS & STEPPER */
     .item-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
     .item-row:last-child { border-bottom: none; }
     .item-info { flex: 1; min-width: 0; }
@@ -93,7 +94,6 @@
     .qty-input { width: 68px !important; text-align: center; font-weight: 800; font-size: 15px !important; padding: 7px 4px !important; }
     .qty-input.has-value { background: #eff6ff; border-color: var(--primary-light); color: var(--primary); }
 
-    /* PHOTO SCANNER & MATCHING BOXES */
     .photo-box { border: 2px dashed #94a3b8; border-radius: 10px; padding: 10px; text-align: center; background: #f8fafc; }
     .photo-btn-row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 7px; }
     .btn-cam { background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 11px 8px; font-size: 12px; font-weight: 800; cursor: pointer; }
@@ -114,7 +114,6 @@
     .match-ok { background: #dcfce7; border-color: #22c55e; color: #14532d; }
     .match-err { background: #fee2e2; border-color: #ef4444; color: #7f1d1d; }
 
-    /* MODALS (GERAI, CAMERA, & SUKSES) */
     .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.72); z-index: 9990; display: none; align-items: flex-end; justify-content: center; }
     @media (min-width: 640px) { .modal-overlay { align-items: center; padding: 16px; } }
     .modal-sheet { background: #fff; width: 100%; max-width: 560px; max-height: 86vh; border-radius: 18px 18px 0 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -10px 30px rgba(0,0,0,0.25); }
@@ -140,7 +139,6 @@
     .cam-guide span { background: rgba(0,0,0,0.75); color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 999px; }
     .cam-footer { padding: 16px; background: rgba(15, 23, 42, 0.94); display: flex; justify-content: center; }
 
-    /* STICKY BOTTOM SUBMIT BAR */
     .floating-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 10px 14px; z-index: 45; box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.08); }
     .floating-inner { max-width: 740px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .floating-summary { min-width: 0; }
@@ -149,10 +147,11 @@
 
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 18px; border-radius: 10px; border: none; font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.15s; }
     .btn-primary { background: var(--primary); color: #fff; }
-    .btn-primary:disabled, .btn-success:disabled, .btn-teal:disabled, .btn-purple:disabled { background: #94a3b8 !important; cursor: not-allowed; opacity: 0.75; }
+    .btn-primary:disabled, .btn-success:disabled, .btn-teal:disabled, .btn-purple:disabled, .btn-danger:disabled { background: #94a3b8 !important; cursor: not-allowed; opacity: 0.75; }
     .btn-success { background: var(--success); color: #fff; }
     .btn-teal { background: #0f766e; color: #fff; }
     .btn-purple { background: var(--purple); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
     .btn-outline { background: #fff; color: var(--primary); border: 1.5px solid var(--primary); }
     .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
 
@@ -165,6 +164,7 @@
     .tag-wait { background: #fef3c7; color: #92400e; }
     .tag-ok { background: #dcfce7; color: #166534; }
     .tag-info { background: #dbeafe; color: #1e40af; }
+    .tag-err { background: #fee2e2; color: #991b1b; }
 
     .toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); background: #0f172a; color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 13px; font-weight: 700; z-index: 10060; display: none; box-shadow: 0 6px 18px rgba(0,0,0,0.28); }
   </style>
@@ -235,12 +235,13 @@
 <input type="file" id="hiddenGalInput" accept="image/*" style="display:none;" onchange="onFileSelected(this)" />
 <input type="file" id="hiddenCamFallback" accept="image/*" capture="environment" style="display:none;" onchange="onFileSelected(this)" />
 
-<!-- NAVIGASI 4 MODUL OPERASIONAL MANAGER -->
+<!-- NAVIGASI 5 MODUL OPERASIONAL MANAGER -->
 <nav class="nav-tabs">
   <button class="nav-btn active" onclick="switchTab('tab-masuk', this)">1. Barang Masuk</button>
   <button class="nav-btn" onclick="switchTab('tab-sisa', this)">2. Stok Sisa</button>
   <button class="nav-btn" onclick="switchTab('tab-omset', this)">3. Laporan Sales</button>
   <button class="nav-btn" onclick="switchTab('tab-po', this)">4. Rencana PO</button>
+  <button class="nav-btn reject-tab" onclick="switchTab('tab-reject', this)">5. Produk Reject</button>
 </nav>
 
 <div class="container">
@@ -288,7 +289,7 @@
         <span>Jumlah Barang Diterima (Master Barang ASR)</span>
         <span id="masukCountBadge" style="font-size:12px; color:#1e3a8a;">0 item diisi</span>
       </div>
-      <div class="vendor-sub-banner" id="masukVendorBanner">Produk Vendor: -</div>
+      <div class="vendor-sub-banner" id="masukVendorBanner">Menampilkan produk vendor: -</div>
       <div style="margin-bottom:8px;">
         <input type="text" id="searchBarangMasuk" placeholder="Cari barang dari vendor terpilih..." oninput="renderMasukItemList()" />
       </div>
@@ -328,7 +329,7 @@
     </div>
   </section>
 
-  <!-- TAB 3: LAPORAN SALES (AUTO-SCAN + PENCOCOKAN + KOREKSI) -->
+  <!-- TAB 3: LAPORAN SALES -->
   <section id="tab-omset" class="section">
     <div class="card">
       <div class="card-title">
@@ -441,12 +442,105 @@
           <thead>
             <tr>
               <th>Tgl Kirim</th>
+              <th>No. PO ASR</th>
               <th>Barang</th>
               <th>Jumlah PO</th>
               <th>Status ASR</th>
             </tr>
           </thead>
           <tbody id="tblMyPoBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 5: LAPORAN PRODUK REJECT / RETUR -->
+  <section id="tab-reject" class="section">
+    <div class="card">
+      <div class="card-title" style="color:var(--danger);">
+        <span>Laporan Produk Reject / Rusak Kiriman</span>
+        <span style="font-size:11px; color:#991b1b;">Berita Acara Retur ASR</span>
+      </div>
+
+      <div class="id-readonly-strip" id="rejIdentityStrip">
+        <strong>Identitas Pelapor (Otomatis):</strong><br>-
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label>Tanggal Kejadian / Terima Barang</label>
+          <input type="date" id="rejTanggal" />
+        </div>
+        <div>
+          <label>Pilih Nomor PO dari ASR</label>
+          <select id="rejPoSelect" onchange="onSelectRejectPo(this.value)"></select>
+        </div>
+      </div>
+
+      <div id="wrapManualRejectBarang" style="margin-top:10px; display:none;">
+        <div class="grid-2">
+          <div>
+            <label>Nomor PO Manual (Jika Belum Terdaftar)</label>
+            <input type="text" id="rejManualNoPo" placeholder="Contoh: PO-ASR-2026-0099" />
+          </div>
+          <div>
+            <label>Pilih Produk Reject (Master Barang)</label>
+            <select id="rejManualBarang" onchange="onSelectManualRejectBarang()"></select>
+          </div>
+        </div>
+      </div>
+
+      <div id="rejSelectedBarangInfo" style="margin-top:10px; background:#fef2f2; border:1px solid #fecaca; border-radius:9px; padding:9px 12px; font-size:12px; color:#7f1d1d;">
+        Pilih Nomor PO ASR di atas untuk memuat detail produk & Qty PO.
+      </div>
+
+      <div class="grid-3" style="margin-top:12px;">
+        <div>
+          <label>Qty PO</label>
+          <input type="number" min="0" inputmode="numeric" id="rejQtyPo" placeholder="0" oninput="calcRejectQty()" />
+        </div>
+        <div>
+          <label>Qty Aktual Bagus</label>
+          <input type="number" min="0" inputmode="numeric" id="rejQtyAktual" placeholder="0" oninput="calcRejectQty()" />
+        </div>
+        <div>
+          <label>Qty Reject (Selisih)</label>
+          <input type="number" min="0" id="rejQtyReject" class="scan-locked" readonly value="0" style="color:#dc2626;" />
+        </div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <label>Keterangan / Detail Kerusakan Reject (Wajib)</label>
+        <textarea id="rejKeterangan" rows="2" placeholder="Contoh: 3 karung Beras SPHP sobek saat turun truk / 2 tabung gas bocor segel"></textarea>
+      </div>
+
+      <div style="margin-top:12px;">
+        <label>Dokumentasi Foto Barang Reject (Wajib untuk PDF BA)</label>
+        <div class="photo-box" style="border-color:#fca5a5; background:#fef2f2;">
+          <div class="photo-btn-row">
+            <button type="button" class="btn-cam" style="background:var(--danger);" onclick="triggerPhotoCapture('fotoReject', true, false)">Foto Barang Reject</button>
+            <button type="button" class="btn-gal" onclick="triggerPhotoCapture('fotoReject', false, false)">Pilih Galeri</button>
+          </div>
+          <div id="infoFotoReject" class="photo-info" style="color:#991b1b;"></div>
+          <img id="prevFotoReject" class="photo-preview" alt="Preview Barang Reject" />
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="color:var(--danger);">Riwayat Laporan Reject Gerai Ini</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>No. PO</th>
+              <th>Produk</th>
+              <th>PO / Aktual / Reject</th>
+              <th>Status Retur</th>
+            </tr>
+          </thead>
+          <tbody id="tblMyRejectBody"></tbody>
         </table>
       </div>
     </div>
@@ -471,28 +565,17 @@
 
 <script>
   // =========================================================================
-  // KONFIGURASI BACKEND: Ganti dengan URL Web App Google Apps Script (/exec) barumu jika berbeda
+  // KONFIGURASI BACKEND: Ganti dengan URL Web App Google Apps Script (/exec) kamu
   // =========================================================================
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfCK5cs_vIUUEUfSTlUamHoyy1mxGiHu76hwbegsyA76sOFAnlFvjAY7f-P_RqdUFOjA/exec";
 
-  const DEFAULT_SUPPLIER_LIST = [
-    "BULOG",
-    "PERTAMINA",
-    "PUPUK INDONESIA",
-    "ID FOOD",
-    "GONUSA"
-  ];
-
+  const DEFAULT_SUPPLIER_LIST = ["BULOG", "PERTAMINA", "PUPUK INDONESIA", "ID FOOD", "GONUSA"];
   const SHIFT_LIST = ["Full Day / Tutup Gerai", "Shift 1 (Pagi)", "Shift 2 (Malam)"];
   const BANK_LIST = ["BRI — PT AGRINAS PANGAN NUSANTARA", "BNI — PT AGRINAS PANGAN NUSANTARA"];
 
   const DEFAULT_KDKMP = [
     { Kecamatan: "Cibeber", Nama_KDKMP: "KDKMP Selagedang", Nama_Manager: "Abdurrahman Hidayatullah" },
-    { Kecamatan: "Cibeber", Nama_KDKMP: "KDKMP Cihaur", Nama_Manager: "Manager Cihaur" },
-    { Kecamatan: "Cibeber", Nama_KDKMP: "KDKMP Kanoman", Nama_Manager: "Manager Kanoman" },
-    { Kecamatan: "Karangtengah", Nama_KDKMP: "KDKMP Sabandar", Nama_Manager: "Manager Sabandar" },
-    { Kecamatan: "Ciranjang", Nama_KDKMP: "KDKMP Ciranjang", Nama_Manager: "Manager Ciranjang" },
-    { Kecamatan: "Cipanas", Nama_KDKMP: "KDKMP Cipanas", Nama_Manager: "Manager Cipanas" }
+    { Kecamatan: "Cibeber", Nama_KDKMP: "KDKMP Cihaur", Nama_Manager: "Manager Cihaur" }
   ];
 
   const DEFAULT_BARANG = [
@@ -516,23 +599,23 @@
     quantitiesMasuk: {},
     quantitiesSisa: {},
     poQuantities: {},
-    photos: { fotoDo: "", fotoStruk: "", fotoTransfer: "" },
+    photos: { fotoDo: "", fotoStruk: "", fotoTransfer: "", fotoReject: "" },
     ocrDates: { fotoStruk: "", fotoTransfer: "" },
     ocrCorrected: { omset: false, transfer: false },
     activePhotoTarget: "fotoStruk",
     activeRunOcr: true,
     camStream: null,
+    selectedRejectItem: null,
     masterKdkmp: JSON.parse(localStorage.getItem("kdkmp_master_gerai") || "null") || DEFAULT_KDKMP,
     masterBarang: JSON.parse(localStorage.getItem("kdkmp_master_barang") || "null") || DEFAULT_BARANG,
     rekapStok: JSON.parse(localStorage.getItem("kdkmp_rekap_stok") || "[]"),
-    poList: JSON.parse(localStorage.getItem("kdkmp_po_list") || "[]")
+    poList: JSON.parse(localStorage.getItem("kdkmp_po_list") || "[]"),
+    rejectLogs: JSON.parse(localStorage.getItem("kdkmp_reject_logs") || "[]")
   };
 
   function getDynamicSuppliers() {
     const dariSheet = [...new Set(
-      (state.masterBarang || [])
-        .map(b => String(b.Supplier || "").trim())
-        .filter(Boolean)
+      (state.masterBarang || []).map(b => String(b.Supplier || "").trim()).filter(Boolean)
     )];
     return dariSheet.length > 0 ? dariSheet : DEFAULT_SUPPLIER_LIST;
   }
@@ -542,6 +625,7 @@
     document.getElementById("masukTanggal").value = today;
     document.getElementById("sisaTanggal").value = today;
     document.getElementById("omsetTanggal").value = today;
+    document.getElementById("rejTanggal").value = today;
 
     const tomorrow = new Date(Date.now() + 86400000 * 2).toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
     document.getElementById("poTanggal").value = tomorrow;
@@ -570,12 +654,13 @@
     renderSisaItemList();
     renderPoItemList();
     renderMyPoTable();
+    initRejectForm();
+    renderMyRejectTable();
     evaluateSalesMatch();
 
     if (SCRIPT_URL) syncFromServer();
   });
 
-  // KOMUNIKASI BACKEND TAHAN BANTING (iOS & ANDROID)
   async function postToBackend(payload) {
     const options = {
       method: "POST",
@@ -616,8 +701,10 @@
         }
         state.rekapStok = data.rekap_stok || [];
         state.poList = data.po_list || [];
+        state.rejectLogs = data.reject_logs || [];
         localStorage.setItem("kdkmp_rekap_stok", JSON.stringify(state.rekapStok));
         localStorage.setItem("kdkmp_po_list", JSON.stringify(state.poList));
+        localStorage.setItem("kdkmp_reject_logs", JSON.stringify(state.rejectLogs));
 
         const found = state.masterKdkmp.find(g => g.Nama_KDKMP === state.profile.nama_kdkmp);
         if (found && found.Nama_Manager) {
@@ -628,15 +715,15 @@
         }
 
         const supList = getDynamicSuppliers();
-        if (!supList.includes(state.selectedSupplier)) {
-          state.selectedSupplier = supList[0];
-        }
+        if (!supList.includes(state.selectedSupplier)) state.selectedSupplier = supList[0];
         renderAllPills();
         renderSisaCategoryChips();
         renderMasukItemList();
         renderSisaItemList();
         renderPoItemList();
         renderMyPoTable();
+        initRejectForm();
+        renderMyRejectTable();
       }
     } catch (e) {
       console.warn("Memakai cache lokal:", e);
@@ -665,6 +752,10 @@
   function updateGeraiStrip() {
     document.getElementById("dispGeraiTitle").textContent = `${state.profile.nama_kdkmp} (Kec. ${state.profile.kecamatan})`;
     document.getElementById("dispManagerSub").textContent = `Manager: ${state.profile.manager || "-"}`;
+    const rejStrip = document.getElementById("rejIdentityStrip");
+    if (rejStrip) {
+      rejStrip.innerHTML = `<strong>Identitas Pelapor (Otomatis dari Sistem):</strong><br>Gerai: <strong>${state.profile.nama_kdkmp}</strong> • Kec. <strong>${state.profile.kecamatan}</strong> • Manager: <strong>${state.profile.manager || "-"}</strong>`;
+    }
   }
 
   function openGeraiModal() {
@@ -727,10 +818,11 @@
     closeGeraiModal();
     renderPoItemList();
     renderMyPoTable();
+    initRejectForm();
+    renderMyRejectTable();
     showToast("Gerai aktif: " + kdkmp);
   }
 
-  // PILLS & NAVIGASI
   function renderAllPills() {
     const supList = getDynamicSuppliers();
     if (!supList.includes(state.selectedSupplier)) state.selectedSupplier = supList[0];
@@ -742,11 +834,7 @@
     document.getElementById("bankPills").innerHTML = BANK_LIST.map(bk => `<button type="button" class="bank-pill ${state.selectedBank === bk ? 'active' : ''}" onclick="selectBank('${bk}')">${bk}</button>`).join("");
   }
 
-  function selectSupplier(s) {
-    state.selectedSupplier = s;
-    renderAllPills();
-    renderMasukItemList();
-  }
+  function selectSupplier(s) { state.selectedSupplier = s; renderAllPills(); renderMasukItemList(); }
   function selectShift(sh) { state.selectedShift = sh; renderAllPills(); }
   function selectBank(bk) { state.selectedBank = bk; renderAllPills(); }
 
@@ -757,6 +845,7 @@
     document.getElementById(tabId).classList.add("active");
     btn.classList.add("active");
     if (tabId === "tab-po") { renderPoItemList(); renderMyPoTable(); }
+    if (tabId === "tab-reject") { initRejectForm(); renderMyRejectTable(); }
     updateFloatingBar();
   }
 
@@ -794,6 +883,13 @@
       btnEl.className = "btn btn-purple";
       btnEl.textContent = "Kirim Pengajuan PO";
       btnEl.disabled = false;
+    } else if (state.activeTab === "tab-reject") {
+      const qtyRej = Number(document.getElementById("rejQtyReject").value) || 0;
+      lblEl.textContent = "Laporan Produk Reject";
+      valEl.textContent = `${qtyRej} unit reject`;
+      btnEl.className = "btn btn-danger";
+      btnEl.textContent = "Kirim Laporan Reject";
+      btnEl.disabled = false;
     }
   }
 
@@ -802,9 +898,10 @@
     else if (state.activeTab === "tab-sisa") submitStokSisa();
     else if (state.activeTab === "tab-omset") submitOmsetReport();
     else if (state.activeTab === "tab-po") submitPoReport();
+    else if (state.activeTab === "tab-reject") submitRejectReport();
   }
 
-  // KAMERA & SMART OCR SALES
+  // KAMERA & FOTO
   async function triggerPhotoCapture(targetKey, useCamera, runOcr) {
     state.activePhotoTarget = targetKey;
     state.activeRunOcr = Boolean(runOcr);
@@ -825,10 +922,10 @@
         state.camStream = stream;
         const video = document.getElementById("camVideo");
         video.srcObject = stream;
-        const titleMap = { fotoStruk: "Scan Struk Closeshift", fotoTransfer: "Scan Bukti Transfer", fotoDo: "Foto Surat Jalan / DO" };
+        const titleMap = { fotoStruk: "Scan Struk Closeshift", fotoTransfer: "Scan Bukti Transfer", fotoDo: "Foto Surat Jalan / DO", fotoReject: "Foto Bukti Barang Reject" };
         document.getElementById("camModalTitle").textContent = titleMap[targetKey] || "Kamera Dokumen";
-        document.getElementById("camGuideText").textContent = runOcr ? "Pastikan seluruh tulisan & angka nominal terlihat jelas di dalam bingkai" : "Posisikan lembar Surat Jalan / DO di dalam bingkai";
-        document.getElementById("btnCamCapture").textContent = runOcr ? "Jepret & Baca Nominal" : "Jepret Foto DO";
+        document.getElementById("camGuideText").textContent = runOcr ? "Pastikan seluruh tulisan & angka nominal terlihat jelas di dalam bingkai" : "Posisikan barang rusak / dokumen di dalam bingkai";
+        document.getElementById("btnCamCapture").textContent = runOcr ? "Jepret & Baca Nominal" : "Jepret Foto";
         document.getElementById("cameraModal").style.display = "flex";
         return;
       } catch (err) {
@@ -870,25 +967,26 @@
     const mapIds = {
       fotoDo: { prev: "prevFotoDo", info: "infoFotoDo", ocr: null },
       fotoStruk: { prev: "prevFotoStruk", info: "infoFotoStruk", ocr: "ocrFotoStruk" },
-      fotoTransfer: { prev: "prevFotoTransfer", info: "infoFotoTransfer", ocr: "ocrFotoTransfer" }
+      fotoTransfer: { prev: "prevFotoTransfer", info: "infoFotoTransfer", ocr: "ocrFotoTransfer" },
+      fotoReject: { prev: "prevFotoReject", info: "infoFotoReject", ocr: null }
     };
     const ui = mapIds[targetKey];
     const infoEl = document.getElementById(ui.info);
     const prevEl = document.getElementById(ui.prev);
 
-    infoEl.textContent = runOcr ? "Memproses foto & memindai nominal..." : "Memproses foto surat jalan...";
+    infoEl.textContent = runOcr ? "Memproses foto & memindai nominal..." : "Memproses foto dokumentasi...";
 
     const img = new Image();
     img.onload = function() {
       const uploadCanvas = document.createElement("canvas");
-      const maxUploadW = 850;
+      const maxUploadW = targetKey === "fotoReject" ? 720 : 850;
       let uW = img.width, uH = img.height;
       if (uW > maxUploadW) { uH = Math.round((uH * maxUploadW) / uW); uW = maxUploadW; }
       uploadCanvas.width = uW;
       uploadCanvas.height = uH;
       uploadCanvas.getContext("2d").drawImage(img, 0, 0, uW, uH);
 
-      const compressedDataUrl = uploadCanvas.toDataURL("image/jpeg", 0.72);
+      const compressedDataUrl = uploadCanvas.toDataURL("image/jpeg", 0.68);
       state.photos[targetKey] = compressedDataUrl;
 
       const approxKb = Math.round((compressedDataUrl.length * 3) / 4 / 1024);
@@ -896,7 +994,7 @@
       prevEl.src = compressedDataUrl;
       prevEl.style.display = "inline-block";
 
-      evaluateSalesMatch();
+      if (targetKey === "fotoStruk" || targetKey === "fotoTransfer") evaluateSalesMatch();
 
       if (runOcr && ui.ocr) {
         const ocrCanvas = buildHighContrastCanvas(img);
@@ -912,10 +1010,8 @@
     const scale = targetW / img.width;
     canvas.width = targetW;
     canvas.height = Math.round(img.height * scale);
-
     const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
     const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const d = imgData.data;
     for (let i = 0; i < d.length; i += 4) {
@@ -931,18 +1027,15 @@
     const ocrEl = document.getElementById(ocrBoxId);
     ocrEl.className = "ocr-box ocr-scanning";
     ocrEl.style.display = "block";
-    ocrEl.textContent = targetKey === "fotoStruk" ? "Membaca nominal omset (di antara Kas Awal & Total)..." : "Membaca nominal transfer & mengurangi biaya admin...";
-
+    ocrEl.textContent = targetKey === "fotoStruk" ? "Membaca nominal omset..." : "Membaca nominal transfer...";
     if (typeof Tesseract === "undefined") {
       ocrEl.className = "ocr-box ocr-warn";
-      ocrEl.innerHTML = `Pemindai offline — ketuk <strong>Koreksi Nominal</strong> untuk mengisi angka sesuai foto.`;
+      ocrEl.innerHTML = `Pemindai offline — ketuk <strong>Koreksi Nominal</strong>.`;
       return;
     }
-
     try {
       const result = await Tesseract.recognize(canvas, "eng");
       const rawText = (result && result.data && result.data.text) ? result.data.text : "";
-
       const detectedDate = extractDateFromReceiptText(rawText);
       if (detectedDate) state.ocrDates[targetKey] = detectedDate;
 
@@ -951,41 +1044,28 @@
         if (parsed.omsetSales > 0) {
           document.getElementById("inpOmsetTotal").value = parsed.omsetSales;
           lockInputAfterScan("omset");
-
-          let breakdownHtml = `<strong>Omset Sales Terbaca: ${formatRp(parsed.omsetSales)}</strong>`;
-          if (parsed.kasAwal > 0 || parsed.grandTotal > 0) {
-            breakdownHtml += `<br><span style="font-size:11px;">(Kas Awal: ${formatRp(parsed.kasAwal)} • Total Bawah: ${formatRp(parsed.grandTotal)})</span>`;
-          }
-          if (detectedDate) breakdownHtml += `<br><span style="font-size:11px;">Tanggal Struk: ${detectedDate.split("-").reverse().join("/")}</span>`;
           ocrEl.className = "ocr-box ocr-ok";
-          ocrEl.innerHTML = breakdownHtml;
+          ocrEl.innerHTML = `<strong>Omset Sales Terbaca: ${formatRp(parsed.omsetSales)}</strong>`;
         } else {
           ocrEl.className = "ocr-box ocr-warn";
-          ocrEl.innerHTML = `Nominal omset belum terbaca otomatis. Ketuk <strong>Koreksi Nominal</strong> di bawah untuk mengisi sesuai foto struk.`;
+          ocrEl.innerHTML = `Nominal belum terbaca otomatis. Ketuk <strong>Koreksi Nominal</strong>.`;
         }
       } else if (targetKey === "fotoTransfer") {
         const parsedTf = extractTransferFromReceipt(rawText);
         if (parsedTf.netTransfer > 0) {
           document.getElementById("inpOmsetTransfer").value = parsedTf.netTransfer;
           lockInputAfterScan("transfer");
-
-          let tfHtml = `<strong>Nominal Transfer Bersih: ${formatRp(parsedTf.netTransfer)}</strong>`;
-          if (parsedTf.biayaAdmin > 0) {
-            tfHtml += `<br><span style="font-size:11px;">(Tertera: ${formatRp(parsedTf.grossAmount)} − Biaya Admin: ${formatRp(parsedTf.biayaAdmin)})</span>`;
-          }
-          if (detectedDate) tfHtml += `<br><span style="font-size:11px;">Tanggal Bukti: ${detectedDate.split("-").reverse().join("/")}</span>`;
           ocrEl.className = "ocr-box ocr-ok";
-          ocrEl.innerHTML = tfHtml;
+          ocrEl.innerHTML = `<strong>Nominal Transfer Bersih: ${formatRp(parsedTf.netTransfer)}</strong>`;
         } else {
           ocrEl.className = "ocr-box ocr-warn";
-          ocrEl.innerHTML = `Nominal transfer belum terbaca otomatis. Ketuk <strong>Koreksi Nominal</strong> di bawah untuk mengisi sesuai bukti transfer.`;
+          ocrEl.innerHTML = `Nominal transfer belum terbaca otomatis. Ketuk <strong>Koreksi Nominal</strong>.`;
         }
       }
-
       evaluateSalesMatch();
     } catch (err) {
       ocrEl.className = "ocr-box ocr-warn";
-      ocrEl.innerHTML = `Gagal memindai foto. Ketuk <strong>Koreksi Nominal</strong> untuk mengisi manual.`;
+      ocrEl.innerHTML = `Gagal memindai foto. Ketuk <strong>Koreksi Nominal</strong>.`;
     }
   }
 
@@ -1006,45 +1086,25 @@
     const lines = String(rawText || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     let kasAwal = 0, idxKasAwal = -1, grandTotal = 0, idxGrandTotal = lines.length, middleExplicitSales = 0;
     const lineItems = [];
-
     lines.forEach((line, idx) => {
       const nums = parseMoneyTokensFromLine(line);
       const maxNum = nums.length ? Math.max(...nums) : 0;
       lineItems.push({ idx, line, nums, maxNum });
-
-      if (/kas\s*awal|modal\s*awal|saldo\s*awal|opening/i.test(line) && maxNum > 0) {
-        kasAwal = maxNum;
-        idxKasAwal = idx;
-      } else if (/grand\s*total|total\s*akhir|total\s*keseluruhan|total\s*kas|total\s*setor|^total\b/i.test(line) && maxNum > 0) {
-        grandTotal = maxNum;
-        idxGrandTotal = idx;
-      } else if (/omset|total\s*penjualan|penjualan|total\s*sales|net\s*sales|sales\b|pendapatan/i.test(line) && maxNum > 0) {
-        middleExplicitSales = maxNum;
-      }
+      if (/kas\s*awal|modal\s*awal|saldo\s*awal|opening/i.test(line) && maxNum > 0) { kasAwal = maxNum; idxKasAwal = idx; }
+      else if (/grand\s*total|total\s*akhir|total\s*keseluruhan|total\s*kas|total\s*setor|^total\b/i.test(line) && maxNum > 0) { grandTotal = maxNum; idxGrandTotal = idx; }
+      else if (/omset|total\s*penjualan|penjualan|total\s*sales|net\s*sales|sales\b|pendapatan/i.test(line) && maxNum > 0) { middleExplicitSales = maxNum; }
     });
-
-    const betweenLines = lineItems.filter(it =>
-      it.maxNum > 0 && it.idx > idxKasAwal && it.idx < idxGrandTotal &&
-      !/kas\s*awal|modal\s*awal|saldo\s*awal|tunai\s*fisik|selisih/i.test(it.line)
-    );
-
+    const betweenLines = lineItems.filter(it => it.maxNum > 0 && it.idx > idxKasAwal && it.idx < idxGrandTotal && !/kas\s*awal|modal\s*awal|saldo\s*awal|tunai\s*fisik|selisih/i.test(it.line));
     let omsetSales = 0;
-    if (middleExplicitSales > 0) {
-      omsetSales = middleExplicitSales;
-    } else if (betweenLines.length > 0) {
+    if (middleExplicitSales > 0) omsetSales = middleExplicitSales;
+    else if (betweenLines.length > 0) {
       if (grandTotal > kasAwal && kasAwal > 0) {
         const expected = grandTotal - kasAwal;
         const exactBetween = betweenLines.find(b => b.maxNum === expected);
         omsetSales = exactBetween ? exactBetween.maxNum : betweenLines[betweenLines.length - 1].maxNum;
-      } else {
-        omsetSales = betweenLines[betweenLines.length - 1].maxNum;
-      }
-    } else if (grandTotal > kasAwal && kasAwal > 0) {
-      omsetSales = grandTotal - kasAwal;
-    } else if (grandTotal > 0) {
-      omsetSales = grandTotal;
-    }
-
+      } else omsetSales = betweenLines[betweenLines.length - 1].maxNum;
+    } else if (grandTotal > kasAwal && kasAwal > 0) omsetSales = grandTotal - kasAwal;
+    else if (grandTotal > 0) omsetSales = grandTotal;
     return { kasAwal, omsetSales, grandTotal };
   }
 
@@ -1052,66 +1112,33 @@
     const lines = String(rawText || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     let nominalTransfer = 0, biayaAdmin = 0, totalDebet = 0;
     const allNums = [];
-
     lines.forEach(line => {
       const nums = parseMoneyTokensFromLine(line);
       const maxNum = nums.length ? Math.max(...nums) : 0;
       if (maxNum > 0) allNums.push(maxNum);
-
       if (/biaya\s*admin|admin(\s*bank)?|biaya\s*transaksi|biaya\s*layanan|fee\b/i.test(line)) {
         if (/gratis|free|\b0\b/i.test(line) && maxNum === 0) biayaAdmin = 0;
         else if (maxNum > 0 && maxNum <= 50000) biayaAdmin = maxNum;
-      } else if (/nominal(\s*transfer)?|jumlah(\s*transfer)?|amount|nilai\s*transfer/i.test(line) && !/total/i.test(line) && maxNum > 0) {
-        nominalTransfer = maxNum;
-      } else if (/total(\s*debet|\s*bayar|\s*transaksi|\s*pembayaran)?/i.test(line) && maxNum > 0) {
-        totalDebet = maxNum;
-      }
+      } else if (/nominal(\s*transfer)?|jumlah(\s*transfer)?|amount|nilai\s*transfer/i.test(line) && !/total/i.test(line) && maxNum > 0) nominalTransfer = maxNum;
+      else if (/total(\s*debet|\s*bayar|\s*transaksi|\s*pembayaran)?/i.test(line) && maxNum > 0) totalDebet = maxNum;
     });
-
     let grossAmount = nominalTransfer || totalDebet || (allNums.length ? Math.max(...allNums) : 0);
     let netTransfer = grossAmount;
-
     if (nominalTransfer > 0 && totalDebet > nominalTransfer && biayaAdmin > 0 && (totalDebet - nominalTransfer === biayaAdmin)) {
-      grossAmount = totalDebet;
-      netTransfer = nominalTransfer;
-    } else if (grossAmount > biayaAdmin && biayaAdmin > 0) {
-      netTransfer = grossAmount - biayaAdmin;
-    }
-
+      grossAmount = totalDebet; netTransfer = nominalTransfer;
+    } else if (grossAmount > biayaAdmin && biayaAdmin > 0) netTransfer = grossAmount - biayaAdmin;
     return { grossAmount, biayaAdmin, netTransfer };
   }
 
   function extractDateFromReceiptText(rawText) {
     if (!rawText) return null;
-    const MONTH_MAP = { jan:"01",januari:"01",january:"01",feb:"02",februari:"02",february:"02",mar:"03",maret:"03",march:"03",apr:"04",april:"04",mei:"05",may:"05",jun:"06",juni:"06",june:"06",jul:"07",juli:"07",july:"07",agu:"08",ags:"08",agustus:"08",aug:"08",august:"08",sep:"09",sept:"09",september:"09",okt:"10",oktober:"10",oct:"10",october:"10",nov:"11",nop:"11",november:"11",nopember:"11",des:"12",desember:"12",dec:"12",december:"12" };
-    const clean = rawText.replace(/\s+/g, " ");
-    const m1 = clean.match(/\b(\d{1,2})[\s\/\-\.]+(jan(?:uari|uary)?|feb(?:ruari|ruary)?|mar(?:et|ch)?|apr(?:il)?|mei|may|jun(?:i|e)?|jul(?:i|y)?|agu(?:stus)?|ags|aug(?:ust)?|sep(?:t|tember)?|okt(?:ober)?|oct(?:ober)?|no[vp](?:ember)?|des(?:ember)?|dec(?:ember)?)[\s\/\-\.,]+(\d{2,4})\b/i);
-    if (m1) {
-      const dd = m1[1].padStart(2, "0"), mm = MONTH_MAP[m1[2].toLowerCase()], yyyy = m1[3].length === 2 ? "20" + m1[3] : m1[3];
-      if (isValidDateParts(yyyy, mm, dd)) return `${yyyy}-${mm}-${dd}`;
-    }
-    const m2 = clean.match(/\b(20\d{2})[\-\/\.](\d{1,2})[\-\/\.](\d{1,2})\b/);
-    if (m2) {
-      const yyyy = m2[1], mm = m2[2].padStart(2, "0"), dd = m2[3].padStart(2, "0");
-      if (isValidDateParts(yyyy, mm, dd)) return `${yyyy}-${mm}-${dd}`;
-    }
-    const numRegex = /\b(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})\b/g;
-    let match;
-    while ((match = numRegex.exec(clean)) !== null) {
-      const dd = match[1].padStart(2, "0"), mm = match[2].padStart(2, "0"), yyyy = match[3].length === 2 ? "20" + match[3] : match[3];
-      if (isValidDateParts(yyyy, mm, dd)) return `${yyyy}-${mm}-${dd}`;
-    }
+    const m2 = rawText.match(/\b(20\d{2})[\-\/\.](\d{1,2})[\-\/\.](\d{1,2})\b/);
+    if (m2) return `${m2[1]}-${m2[2].padStart(2, "0")}-${m2[3].padStart(2, "0")}`;
     return null;
-  }
-
-  function isValidDateParts(yyyy, mm, dd) {
-    const y = Number(yyyy), m = Number(mm), d = Number(dd);
-    return y >= 2024 && y <= 2032 && m >= 1 && m <= 12 && d >= 1 && d <= 31;
   }
 
   function recheckOmsetDates() { evaluateSalesMatch(); }
 
-  // KOREKSI MANUAL & PENCOCOKAN STRICT SALES
   function lockInputAfterScan(field) {
     if (field === "omset") {
       state.ocrCorrected.omset = false;
@@ -1148,14 +1175,12 @@
     document.getElementById("modeOmsetFull").className = mode === "FULL" ? "type-pill active-stock" : "type-pill";
     document.getElementById("modeOmsetTunda").className = mode === "TUNDA_TF" ? "type-pill active-warn" : "type-pill";
     document.getElementById("modeOmsetSusul").className = mode === "SUSUL_TF" ? "type-pill active-in" : "type-pill";
-
     const lblTgl = document.getElementById("lblOmsetTanggal");
     const wrapOmset = document.getElementById("wrapInputOmsetTotal");
     const wrapTf = document.getElementById("wrapInputOmsetTransfer");
     const wrapStruk = document.getElementById("wrapBoxStruk");
     const wrapBoxTf = document.getElementById("wrapBoxTransfer");
     const wrapBank = document.getElementById("wrapOmsetBank");
-
     if (mode === "FULL") {
       lblTgl.textContent = "Tanggal Operasional (Hari H)";
       wrapOmset.style.display = "block"; wrapTf.style.display = "block";
@@ -1188,42 +1213,34 @@
     const mode = state.omsetMode;
     const omset = Number(document.getElementById("inpOmsetTotal").value) || 0;
     const tf = Number(document.getElementById("inpOmsetTransfer").value) || 0;
-
     document.getElementById("hintOmsetTotal").textContent = formatRp(omset) + (state.ocrCorrected.omset ? " (Dikoreksi)" : "");
     document.getElementById("hintOmsetTransfer").textContent = formatRp(tf) + (state.ocrCorrected.transfer ? " (Dikoreksi)" : "");
-
     const box = document.getElementById("salesMatchBox");
     if (mode === "FULL") {
       if (!state.photos.fotoStruk || !state.photos.fotoTransfer) {
         box.className = "match-status-box";
-        box.innerHTML = "Lengkapi <strong>Foto Struk Closeshift</strong> dan <strong>Foto Bukti Transfer</strong> untuk mencocokkan nominal.";
+        box.innerHTML = "Lengkapi <strong>Foto Struk Closeshift</strong> dan <strong>Foto Bukti Transfer</strong>.";
       } else if (omset <= 0 || tf <= 0) {
         box.className = "match-status-box match-err";
-        box.innerHTML = "Nominal belum terisi. Gunakan tombol <strong>Koreksi Nominal</strong> jika hasil pindai kosong.";
+        box.innerHTML = "Nominal belum terisi. Gunakan tombol <strong>Koreksi Nominal</strong>.";
       } else if (omset === tf) {
         box.className = "match-status-box match-ok";
-        box.innerHTML = `✓ NOMINAL SESUAI (${formatRp(omset)} = ${formatRp(tf)}) — Laporan Sales siap diupload.`;
+        box.innerHTML = `✓ NOMINAL SESUAI (${formatRp(omset)} = ${formatRp(tf)}) — Siap diupload.`;
       } else {
-        const diff = Math.abs(omset - tf);
         box.className = "match-status-box match-err";
-        box.innerHTML = `✕ BELUM SESUAI (Selisih ${formatRp(diff)}) — Struk (${formatRp(omset)}) dan Transfer (${formatRp(tf)}) harus sama sebelum diupload.`;
+        box.innerHTML = `✕ BELUM SESUAI (Selisih ${formatRp(Math.abs(omset - tf))})`;
       }
     } else if (mode === "TUNDA_TF") {
       box.className = (state.photos.fotoStruk && omset > 0) ? "match-status-box match-ok" : "match-status-box";
-      box.innerHTML = (state.photos.fotoStruk && omset > 0)
-        ? `✓ Struk Closeshift siap dilaporkan (${formatRp(omset)}) — Transfer menyusul H+1.`
-        : "Scan foto Struk Closeshift terlebih dahulu untuk mengaktifkan tombol upload.";
+      box.innerHTML = (state.photos.fotoStruk && omset > 0) ? `✓ Struk siap dilaporkan (${formatRp(omset)})` : "Scan foto Struk Closeshift terlebih dahulu.";
     } else if (mode === "SUSUL_TF") {
       box.className = (state.photos.fotoTransfer && tf > 0) ? "match-status-box match-ok" : "match-status-box";
-      box.innerHTML = (state.photos.fotoTransfer && tf > 0)
-        ? `✓ Bukti Transfer Susulan siap diupload (${formatRp(tf)}).`
-        : "Scan foto Bukti Transfer terlebih dahulu untuk mengaktifkan tombol upload.";
+      box.innerHTML = (state.photos.fotoTransfer && tf > 0) ? `✓ Bukti Transfer Susulan siap diupload (${formatRp(tf)}).` : "Scan foto Bukti Transfer terlebih dahulu.";
     }
-
     if (state.activeTab === "tab-omset") updateFloatingBar();
   }
 
-  // TAB 1: BARANG MASUK (FILTER OTOMATIS SESUAI SUPPLIER/VENDOR TERPILIH)
+  // TAB 1: BARANG MASUK
   function renderMasukItemList() {
     const query = document.getElementById("searchBarangMasuk").value.toLowerCase();
     const activeSup = String(state.selectedSupplier || "").trim().toLowerCase();
@@ -1308,71 +1325,29 @@
 
     const btn = document.getElementById("floatSubmitBtn");
     btn.disabled = true; btn.textContent = "Menyimpan DO...";
-
     try {
       if (SCRIPT_URL) await postToBackend(payload);
-      saveMasukLocally(payload);
-
-      showSuccessConfirmation(
-        "Barang Masuk (DO) Tersimpan!",
-        "Data penerimaan barang telah masuk ke antrean input mesin POS pusat ASR.",
-        [
-          `<strong>Gerai:</strong> ${payload.nama_kdkmp}`,
-          `<strong>Tanggal Terima:</strong> ${payload.tanggal}`,
-          `<strong>Supplier / No. DO:</strong> ${payload.supplier} (${payload.no_do})`,
-          ...itemsToSend.map(i => `• ${i.nama_barang}: <strong>+${i.jumlah} ${i.satuan}</strong>`)
-        ]
-      );
-
+      showSuccessConfirmation("Barang Masuk (DO) Tersimpan!", "Data penerimaan barang telah masuk ke sistem ASR.", [`<strong>Gerai:</strong> ${payload.nama_kdkmp}`, `<strong>Tanggal:</strong> ${payload.tanggal}`, `<strong>Supplier / DO:</strong> ${payload.supplier} (${payload.no_do})`, ...itemsToSend.map(i => `• ${i.nama_barang}: <strong>+${i.jumlah} ${i.satuan}</strong>`)]);
       state.quantitiesMasuk = {}; state.photos.fotoDo = "";
       document.getElementById("masukNoDo").value = ""; document.getElementById("masukCatatan").value = "";
       document.getElementById("prevFotoDo").style.display = "none"; document.getElementById("infoFotoDo").textContent = "";
       renderMasukItemList();
-    } catch (err) {
-      alert("Gagal menyimpan Barang Masuk: " + err.message);
-    } finally {
-      btn.disabled = false; updateFloatingBar();
-    }
+    } catch (err) { alert("Gagal menyimpan Barang Masuk: " + err.message); }
+    finally { btn.disabled = false; updateFloatingBar(); }
   }
 
-  function saveMasukLocally(payload) {
-    const logs = JSON.parse(localStorage.getItem("kdkmp_penerimaan_logs") || "[]");
-    const nowStr = new Date().toLocaleString("id-ID");
-    payload.items.forEach((item, idx) => {
-      logs.unshift({
-        ID_Log: "DO-" + Date.now() + "-" + idx, Waktu_Input: nowStr, Tanggal_Terima: payload.tanggal,
-        Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager,
-        Kategori: item.kategori, Supplier: payload.supplier, No_DO: payload.no_do,
-        Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan,
-        Jumlah: item.jumlah, Link_Foto_DO: payload.foto_do_base64 ? "Sandbox_Foto_DO" : "-",
-        Status_Input_POS: "Belum Input POS", Catatan: payload.catatan
-      });
-      const rIdx = state.rekapStok.findIndex(s => s.Nama_KDKMP === payload.nama_kdkmp && s.Kode_Barang === item.kode_barang);
-      if (rIdx >= 0) {
-        state.rekapStok[rIdx].Stok_Akhir = (Number(state.rekapStok[rIdx].Stok_Akhir) || 0) + item.jumlah;
-        state.rekapStok[rIdx].Update_Terakhir = nowStr;
-      } else {
-        state.rekapStok.push({ Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Kategori: item.kategori, Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan, Stok_Akhir: item.jumlah, Update_Terakhir: nowStr });
-      }
-    });
-    localStorage.setItem("kdkmp_penerimaan_logs", JSON.stringify(logs.slice(0, 250)));
-    localStorage.setItem("kdkmp_rekap_stok", JSON.stringify(state.rekapStok));
-  }
-
-  // TAB 2: STOK SISA HARIAN
+  // TAB 2: STOK SISA
   function renderSisaCategoryChips() {
     const cats = ["ALL", ...new Set(state.masterBarang.map(b => b.Kategori))];
     document.getElementById("sisaCategoryChips").innerHTML = cats.map(c => `<button type="button" class="chip ${state.sisaCategory === c ? 'active' : ''}" onclick="selectSisaCategory('${c}')">${c === 'ALL' ? 'Semua' : c}</button>`).join("");
   }
-
   function selectSisaCategory(cat) { state.sisaCategory = cat; renderSisaCategoryChips(); renderSisaItemList(); }
 
   function renderSisaItemList() {
     const query = document.getElementById("searchBarangSisa").value.toLowerCase();
     const filtered = state.masterBarang.filter(b => (state.sisaCategory === "ALL" || b.Kategori === state.sisaCategory) && (b.Nama_Barang.toLowerCase().includes(query) || b.Kategori.toLowerCase().includes(query)));
     const container = document.getElementById("sisaItemListContainer");
-    if (filtered.length === 0) { container.innerHTML = `<p style="font-size:13px; color:#64748b; text-align:center;">Barang tidak ditemukan di Master ASR.</p>`; return; }
-
+    if (filtered.length === 0) { container.innerHTML = `<p style="font-size:13px; color:#64748b; text-align:center;">Barang tidak ditemukan.</p>`; return; }
     container.innerHTML = filtered.map(b => {
       const val = state.quantitiesSisa[b.Kode_Barang] !== undefined ? state.quantitiesSisa[b.Kode_Barang] : "";
       const hasValClass = val !== "" && Number(val) >= 0 ? "has-value" : "";
@@ -1405,14 +1380,12 @@
     if (inp) { inp.value = next; inp.classList.add("has-value"); }
     updateSisaCount();
   }
-
   function updateSisaQty(code, rawVal) {
     if (rawVal === "") delete state.quantitiesSisa[code]; else state.quantitiesSisa[code] = Math.max(0, Number(rawVal));
     const inp = document.getElementById("sqty_" + code);
     if (inp) inp.classList.toggle("has-value", rawVal !== "");
     updateSisaCount();
   }
-
   function updateSisaCount() {
     const count = Object.keys(state.quantitiesSisa).filter(k => state.quantitiesSisa[k] !== "" && state.quantitiesSisa[k] !== undefined).length;
     document.getElementById("sisaCountBadge").textContent = `${count} item diisi`;
@@ -1427,67 +1400,24 @@
       if (master) itemsToSend.push({ kode_barang: master.Kode_Barang, kategori: master.Kategori, nama_barang: master.Nama_Barang, satuan: master.Satuan, jumlah: Number(qty) });
     }
     if (itemsToSend.length === 0) return showToast("Isi minimal 1 jumlah stok sisa!");
-
-    const payload = {
-      action: "STOK_SISA", tanggal: document.getElementById("sisaTanggal").value,
-      kecamatan: state.profile.kecamatan, nama_kdkmp: state.profile.nama_kdkmp, manager: state.profile.manager,
-      catatan: document.getElementById("sisaCatatan").value.trim(), items: itemsToSend
-    };
-
+    const payload = { action: "STOK_SISA", tanggal: document.getElementById("sisaTanggal").value, kecamatan: state.profile.kecamatan, nama_kdkmp: state.profile.nama_kdkmp, manager: state.profile.manager, catatan: document.getElementById("sisaCatatan").value.trim(), items: itemsToSend };
     const btn = document.getElementById("floatSubmitBtn");
     btn.disabled = true; btn.textContent = "Menyimpan Stok Sisa...";
-
     try {
       if (SCRIPT_URL) await postToBackend(payload);
-
-      const logs = JSON.parse(localStorage.getItem("kdkmp_stok_sisa_logs") || "[]");
-      const nowStr = new Date().toLocaleString("id-ID");
-      payload.items.forEach(item => {
-        logs.unshift({ Waktu_Input: nowStr, Tanggal: payload.tanggal, Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager, Kategori: item.kategori, Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan, Jumlah: item.jumlah, Catatan: payload.catatan });
-        const rIdx = state.rekapStok.findIndex(s => s.Nama_KDKMP === payload.nama_kdkmp && s.Kode_Barang === item.kode_barang);
-        if (rIdx >= 0) { state.rekapStok[rIdx].Stok_Akhir = item.jumlah; state.rekapStok[rIdx].Update_Terakhir = nowStr; }
-        else { state.rekapStok.push({ Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Kategori: item.kategori, Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang, Satuan: item.satuan, Stok_Akhir: item.jumlah, Update_Terakhir: nowStr }); }
-      });
-      localStorage.setItem("kdkmp_stok_sisa_logs", JSON.stringify(logs.slice(0, 250)));
-      localStorage.setItem("kdkmp_rekap_stok", JSON.stringify(state.rekapStok));
-
-      showSuccessConfirmation(
-        "Stok Sisa Harian Tersimpan!",
-        "Laporan audit fisik tutup gerai telah tercatat di sistem ASR.",
-        [
-          `<strong>Gerai:</strong> ${payload.nama_kdkmp}`,
-          `<strong>Tanggal Stok Sisa:</strong> ${payload.tanggal}`,
-          ...itemsToSend.map(i => `• ${i.nama_barang}: <strong>${i.jumlah} ${i.satuan}</strong>`)
-        ]
-      );
-
+      showSuccessConfirmation("Stok Sisa Harian Tersimpan!", "Laporan audit fisik tutup gerai telah tercatat.", [`<strong>Gerai:</strong> ${payload.nama_kdkmp}`, `<strong>Tanggal:</strong> ${payload.tanggal}`, ...itemsToSend.map(i => `• ${i.nama_barang}: <strong>${i.jumlah} ${i.satuan}</strong>`)]);
       state.quantitiesSisa = {}; document.getElementById("sisaCatatan").value = "";
       renderSisaItemList();
-    } catch (err) {
-      alert("Gagal menyimpan Stok Sisa: " + err.message);
-    } finally {
-      btn.disabled = false; updateFloatingBar();
-    }
+    } catch (err) { alert("Gagal menyimpan Stok Sisa: " + err.message); }
+    finally { btn.disabled = false; updateFloatingBar(); }
   }
 
-  // TAB 3: SUBMIT LAPORAN SALES
+  // TAB 3: SALES
   async function submitOmsetReport() {
-    if (!isSalesReadyToUpload()) return showToast("Pastikan foto lengkap dan nominal struk & transfer sudah sesuai!");
-
+    if (!isSalesReadyToUpload()) return showToast("Pastikan foto lengkap dan nominal sesuai!");
     const mode = state.omsetMode;
     const omset = mode === "SUSUL_TF" ? 0 : (Number(document.getElementById("inpOmsetTotal").value) || 0);
     const tf = mode === "TUNDA_TF" ? 0 : (Number(document.getElementById("inpOmsetTransfer").value) || 0);
-
-    const modeTags = { FULL: "[SALES SESUAI & LUNAS]", TUNDA_TF: "[CLOSESHIFT - TF MENYUSUL H+1]", SUSUL_TF: "[PELUNASAN TF SUSULAN]" };
-    const auditTags = [];
-    if (state.ocrCorrected.omset) auditTags.push("Koreksi Manual Struk");
-    if (state.ocrCorrected.transfer) auditTags.push("Koreksi Manual Transfer");
-    if (state.ocrDates.fotoStruk) auditTags.push(`Tgl Struk: ${state.ocrDates.fotoStruk}`);
-    if (state.ocrDates.fotoTransfer) auditTags.push(`Tgl TF: ${state.ocrDates.fotoTransfer}`);
-
-    const userNote = document.getElementById("omsetCatatan").value.trim();
-    const combinedNote = [modeTags[mode], auditTags.join(", "), userNote].filter(Boolean).join(" • ");
-
     const payload = {
       action: "SETOR_OMSET", mode_setoran: mode, tanggal: document.getElementById("omsetTanggal").value,
       shift: state.selectedShift, kecamatan: state.profile.kecamatan, nama_kdkmp: state.profile.nama_kdkmp,
@@ -1495,73 +1425,30 @@
       metode_rekening: mode === "TUNDA_TF" ? "Menyusul (H+1)" : state.selectedBank,
       foto_struk_base64: mode === "SUSUL_TF" ? "" : state.photos.fotoStruk,
       foto_transfer_base64: mode === "TUNDA_TF" ? "" : state.photos.fotoTransfer,
-      catatan: combinedNote
+      catatan: document.getElementById("omsetCatatan").value.trim()
     };
-
     const btn = document.getElementById("floatSubmitBtn");
     btn.disabled = true; btn.textContent = "Mengunggah Laporan...";
-
     try {
       if (SCRIPT_URL) await postToBackend(payload);
-
-      const omsetLogs = JSON.parse(localStorage.getItem("kdkmp_omset_logs") || "[]");
-      omsetLogs.unshift({
-        Waktu_Input: new Date().toLocaleString("id-ID"), Tanggal: payload.tanggal, Shift: payload.shift,
-        Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager,
-        Nominal_Omset: omset, Nominal_Transfer: tf, Selisih_Tunai: mode === "FULL" ? (omset - tf) : 0,
-        Metode_Rekening: payload.metode_rekening, Link_Struk_CloseShift: payload.foto_struk_base64 || "-",
-        Link_Bukti_Transfer: payload.foto_transfer_base64 || "-", Catatan: payload.catatan
-      });
-      localStorage.setItem("kdkmp_omset_logs", JSON.stringify(omsetLogs.slice(0, 200)));
-
-      const detailLines = [
-        `<strong>Gerai:</strong> ${payload.nama_kdkmp}`,
-        `<strong>Tanggal / Shift:</strong> ${payload.tanggal} (${payload.shift})`
-      ];
-      if (mode !== "SUSUL_TF") detailLines.push(`<strong>Omset Sales Struk:</strong> ${formatRp(omset)}`);
-      if (mode !== "TUNDA_TF") {
-        detailLines.push(`<strong>Nominal Transfer:</strong> ${formatRp(tf)}`);
-        detailLines.push(`<strong>Rekening Tujuan:</strong> ${payload.metode_rekening}`);
-      }
-
-      showSuccessConfirmation(
-        "Laporan Sales Berhasil Diupload!",
-        "Bukti foto dan nominal sales telah tersimpan ke pusat ASR Cianjur.",
-        detailLines
-      );
-
+      showSuccessConfirmation("Laporan Sales Berhasil Diupload!", "Bukti foto dan nominal sales telah tersimpan.", [`<strong>Gerai:</strong> ${payload.nama_kdkmp}`, `<strong>Tanggal:</strong> ${payload.tanggal}`, `<strong>Omset / TF:</strong> ${formatRp(omset)} / ${formatRp(tf)}`]);
       state.photos.fotoStruk = ""; state.photos.fotoTransfer = "";
-      state.ocrDates.fotoStruk = ""; state.ocrDates.fotoTransfer = "";
-      document.getElementById("prevFotoStruk").style.display = "none";
-      document.getElementById("prevFotoTransfer").style.display = "none";
-      document.getElementById("infoFotoStruk").textContent = "";
-      document.getElementById("infoFotoTransfer").textContent = "";
-      document.getElementById("ocrFotoStruk").style.display = "none";
-      document.getElementById("ocrFotoTransfer").style.display = "none";
-      document.getElementById("inpOmsetTotal").value = "";
-      document.getElementById("inpOmsetTransfer").value = "";
-      document.getElementById("omsetCatatan").value = "";
-      lockInputAfterScan("omset");
-      lockInputAfterScan("transfer");
-      evaluateSalesMatch();
-    } catch (err) {
-      alert("Gagal mengunggah Laporan Sales: " + err.message);
-    } finally {
-      btn.disabled = false; updateFloatingBar();
-    }
+      document.getElementById("prevFotoStruk").style.display = "none"; document.getElementById("prevFotoTransfer").style.display = "none";
+      document.getElementById("inpOmsetTotal").value = ""; document.getElementById("inpOmsetTransfer").value = ""; document.getElementById("omsetCatatan").value = "";
+      lockInputAfterScan("omset"); lockInputAfterScan("transfer"); evaluateSalesMatch();
+    } catch (err) { alert("Gagal mengunggah Laporan Sales: " + err.message); }
+    finally { btn.disabled = false; updateFloatingBar(); }
   }
 
-  // TAB 4: PERENCANAAN PO
+  // TAB 4: PO
   function renderPoItemList() {
     const container = document.getElementById("poItemListContainer");
     if (!container) return;
-
     container.innerHTML = state.masterBarang.map(b => {
       const stokRec = state.rekapStok.find(s => s.Nama_KDKMP === state.profile.nama_kdkmp && s.Kode_Barang === b.Kode_Barang);
       const stokNow = stokRec ? (Number(stokRec.Stok_Akhir) || 0) : 0;
       const val = state.poQuantities[b.Kode_Barang] !== undefined ? state.poQuantities[b.Kode_Barang] : "";
       const hasValClass = val !== "" && Number(val) > 0 ? "has-value" : "";
-
       return `
         <div class="item-row">
           <div class="item-info">
@@ -1584,7 +1471,6 @@
     }).join("");
     if (state.activeTab === "tab-po") updateFloatingBar();
   }
-
   function stepPoQty(code, delta) {
     const next = Math.max(0, Number(state.poQuantities[code] || 0) + delta);
     if (next <= 0) delete state.poQuantities[code]; else state.poQuantities[code] = next;
@@ -1592,14 +1478,12 @@
     if (inp) { inp.value = next > 0 ? next : ""; inp.classList.toggle("has-value", next > 0); }
     if (state.activeTab === "tab-po") updateFloatingBar();
   }
-
   function updatePoQty(code, rawVal) {
     if (rawVal === "" || Number(rawVal) <= 0) delete state.poQuantities[code]; else state.poQuantities[code] = Number(rawVal);
     const inp = document.getElementById("poqty_" + code);
     if (inp) inp.classList.toggle("has-value", Number(rawVal) > 0);
     if (state.activeTab === "tab-po") updateFloatingBar();
   }
-
   async function submitPoReport() {
     const itemsToSend = [];
     for (const [code, qty] of Object.entries(state.poQuantities)) {
@@ -1611,62 +1495,208 @@
       }
     }
     if (itemsToSend.length === 0) return showToast("Isi minimal 1 jumlah pesanan PO!");
-
-    const payload = {
-      action: "AJUKAN_PO", tanggal_kebutuhan: document.getElementById("poTanggal").value,
-      kecamatan: state.profile.kecamatan, nama_kdkmp: state.profile.nama_kdkmp, manager: state.profile.manager,
-      catatan: document.getElementById("poCatatan").value.trim(), items: itemsToSend
-    };
-
+    const payload = { action: "AJUKAN_PO", tanggal_kebutuhan: document.getElementById("poTanggal").value, kecamatan: state.profile.kecamatan, nama_kdkmp: state.profile.nama_kdkmp, manager: state.profile.manager, catatan: document.getElementById("poCatatan").value.trim(), items: itemsToSend };
     const btn = document.getElementById("floatSubmitBtn");
     btn.disabled = true; btn.textContent = "Mengirim PO...";
-
     try {
       if (SCRIPT_URL) await postToBackend(payload);
-
-      const nowStr = new Date().toLocaleString("id-ID");
-      payload.items.forEach((item, idx) => {
-        state.poList.unshift({
-          ID_PO: "PO-" + Date.now() + "-" + idx, Waktu_Pengajuan: nowStr, Tanggal_Kebutuhan: payload.tanggal_kebutuhan,
-          Kecamatan: payload.kecamatan, Nama_KDKMP: payload.nama_kdkmp, Manager: payload.manager,
-          Kategori: item.kategori, Kode_Barang: item.kode_barang, Nama_Barang: item.nama_barang,
-          Satuan: item.satuan, Stok_Saat_Pengajuan: item.stok_saat_ini, Jumlah_PO: item.jumlah_po,
-          Status_PO: "Diajukan", Catatan: payload.catatan
-        });
-      });
-      localStorage.setItem("kdkmp_po_list", JSON.stringify(state.poList.slice(0, 200)));
-
-      showSuccessConfirmation(
-        "Pengajuan PO Terkirim!",
-        "Rencana kebutuhan barang telah masuk ke antrean approval pusat ASR.",
-        [
-          `<strong>Gerai:</strong> ${payload.nama_kdkmp}`,
-          `<strong>Target Kirim:</strong> ${payload.tanggal_kebutuhan}`,
-          ...itemsToSend.map(i => `• ${i.nama_barang}: <strong>${i.jumlah_po} ${i.satuan}</strong>`)
-        ]
-      );
-
+      showSuccessConfirmation("Pengajuan PO Terkirim!", "Rencana kebutuhan barang telah masuk ke antrean approval pusat ASR.", [`<strong>Gerai:</strong> ${payload.nama_kdkmp}`, `<strong>Target Kirim:</strong> ${payload.tanggal_kebutuhan}`, ...itemsToSend.map(i => `• ${i.nama_barang}: <strong>${i.jumlah_po} ${i.satuan}</strong>`)]);
       state.poQuantities = {}; document.getElementById("poCatatan").value = "";
-      renderPoItemList(); renderMyPoTable();
-    } catch (err) {
-      alert("Gagal mengirim Pengajuan PO: " + err.message);
-    } finally {
-      btn.disabled = false; updateFloatingBar();
-    }
+      renderPoItemList(); syncFromServer();
+    } catch (err) { alert("Gagal mengirim Pengajuan PO: " + err.message); }
+    finally { btn.disabled = false; updateFloatingBar(); }
   }
-
   function renderMyPoTable() {
     const tbody = document.getElementById("tblMyPoBody");
     if (!tbody) return;
     const myRows = state.poList.filter(p => p.Nama_KDKMP === state.profile.nama_kdkmp).slice(0, 20);
     if (myRows.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b; padding:16px;">Belum ada riwayat pengajuan PO untuk gerai ini.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b; padding:16px;">Belum ada riwayat pengajuan PO untuk gerai ini.</td></tr>`;
       return;
     }
     tbody.innerHTML = myRows.map(p => {
       const st = p.Status_PO || "Diajukan";
+      const noPo = (p.No_PO_ASR && p.No_PO_ASR !== "-") ? p.No_PO_ASR : "-";
       const badgeCls = st === "Selesai" || st === "Disetujui ASR" ? "tag-ok" : (st === "DO Terbit" ? "tag-info" : "tag-wait");
-      return `<tr><td>${String(p.Tanggal_Kebutuhan || "").slice(0, 10)}</td><td><strong>${p.Nama_Barang}</strong></td><td><strong>${Number(p.Jumlah_PO || 0).toLocaleString("id-ID")} ${p.Satuan}</strong></td><td><span class="tag ${badgeCls}">${st}</span></td></tr>`;
+      return `<tr><td>${String(p.Tanggal_Kebutuhan || "").slice(0, 10)}</td><td><strong>${noPo}</strong></td><td>${p.Nama_Barang}</td><td><strong>${Number(p.Jumlah_PO || 0).toLocaleString("id-ID")} ${p.Satuan}</strong></td><td><span class="tag ${badgeCls}">${st}</span></td></tr>`;
+    }).join("");
+  }
+
+  // TAB 5: LAPORAN PRODUK REJECT
+  function initRejectForm() {
+    updateGeraiStrip();
+    const selPo = document.getElementById("rejPoSelect");
+    const selBrg = document.getElementById("rejManualBarang");
+    if (!selPo || !selBrg) return;
+
+    selBrg.innerHTML = state.masterBarang.map(b => `<option value="${b.Kode_Barang}">${b.Nama_Barang} (${b.Satuan})</option>`).join("");
+
+    const myPos = state.poList.filter(p => p.Nama_KDKMP === state.profile.nama_kdkmp);
+    let opts = `<option value="">-- Pilih Nomor PO dari ASR --</option>`;
+    myPos.forEach((p, idx) => {
+      const displayNoPo = (p.No_PO_ASR && p.No_PO_ASR !== "-") ? p.No_PO_ASR : p.ID_PO;
+      opts += `<option value="${idx}">${displayNoPo} • ${p.Nama_Barang} (PO: ${p.Jumlah_PO} ${p.Satuan})</option>`;
+    });
+    opts += `<option value="MANUAL">+ Input Nomor PO Manual / Lainnya</option>`;
+    selPo.innerHTML = opts;
+    onSelectRejectPo("");
+  }
+
+  function onSelectRejectPo(val) {
+    const manualWrap = document.getElementById("wrapManualRejectBarang");
+    const infoBox = document.getElementById("rejSelectedBarangInfo");
+    const myPos = state.poList.filter(p => p.Nama_KDKMP === state.profile.nama_kdkmp);
+
+    if (val === "") {
+      manualWrap.style.display = "none";
+      state.selectedRejectItem = null;
+      infoBox.innerHTML = "Pilih Nomor PO ASR di atas untuk memuat detail produk & Qty PO.";
+      document.getElementById("rejQtyPo").value = "";
+      document.getElementById("rejQtyAktual").value = "";
+      calcRejectQty();
+      return;
+    }
+
+    if (val === "MANUAL") {
+      manualWrap.style.display = "block";
+      onSelectManualRejectBarang();
+      return;
+    }
+
+    manualWrap.style.display = "none";
+    const poObj = myPos[Number(val)];
+    if (!poObj) return;
+    const noPo = (poObj.No_PO_ASR && poObj.No_PO_ASR !== "-") ? poObj.No_PO_ASR : poObj.ID_PO;
+    state.selectedRejectItem = {
+      no_po: noPo,
+      kode_barang: poObj.Kode_Barang,
+      nama_barang: poObj.Nama_Barang,
+      satuan: poObj.Satuan,
+      qty_po: Number(poObj.Jumlah_PO) || 0
+    };
+    document.getElementById("rejQtyPo").value = state.selectedRejectItem.qty_po;
+    document.getElementById("rejQtyAktual").value = "";
+    infoBox.innerHTML = `<strong>No. PO: ${noPo}</strong><br>Produk: <strong>${poObj.Nama_Barang}</strong> (${poObj.Satuan}) • Qty PO: <strong>${poObj.Jumlah_PO} ${poObj.Satuan}</strong>`;
+    calcRejectQty();
+  }
+
+  function onSelectManualRejectBarang() {
+    const code = document.getElementById("rejManualBarang").value;
+    const brg = state.masterBarang.find(b => b.Kode_Barang === code) || state.masterBarang[0];
+    const manualNo = document.getElementById("rejManualNoPo").value.trim() || "-";
+    if (brg) {
+      state.selectedRejectItem = {
+        no_po: manualNo,
+        kode_barang: brg.Kode_Barang,
+        nama_barang: brg.Nama_Barang,
+        satuan: brg.Satuan,
+        qty_po: Number(document.getElementById("rejQtyPo").value) || 0
+      };
+      document.getElementById("rejSelectedBarangInfo").innerHTML = `Mode Input Manual • Produk: <strong>${brg.Nama_Barang}</strong> (${brg.Satuan})`;
+    }
+  }
+
+  function calcRejectQty() {
+    const qPo = Number(document.getElementById("rejQtyPo").value) || 0;
+    const qAct = Number(document.getElementById("rejQtyAktual").value) || 0;
+    const qRej = Math.max(0, qPo - qAct);
+    document.getElementById("rejQtyReject").value = qRej;
+    if (state.activeTab === "tab-reject") updateFloatingBar();
+  }
+
+  async function submitRejectReport() {
+    const selVal = document.getElementById("rejPoSelect").value;
+    if (!selVal) return showToast("Pilih Nomor PO terlebih dahulu!");
+
+    if (selVal === "MANUAL") onSelectManualRejectBarang();
+    if (!state.selectedRejectItem) return showToast("Data produk reject belum lengkap!");
+
+    const noPo = selVal === "MANUAL"
+      ? (document.getElementById("rejManualNoPo").value.trim() || "-")
+      : state.selectedRejectItem.no_po;
+    const qtyPo = Number(document.getElementById("rejQtyPo").value) || 0;
+    const qtyAktual = Number(document.getElementById("rejQtyAktual").value) || 0;
+    const qtyReject = Math.max(0, qtyPo - qtyAktual);
+    const ket = document.getElementById("rejKeterangan").value.trim();
+
+    if (qtyPo <= 0) return showToast("Isi Qty PO terlebih dahulu!");
+    if (qtyReject <= 0) return showToast("Qty Aktual sama dengan Qty PO (tidak ada selisih reject).");
+    if (!ket) return showToast("Isi keterangan / detail kerusakan produk reject!");
+    if (!state.photos.fotoReject) return showToast("Ambil foto dokumentasi barang reject terlebih dahulu!");
+
+    const payload = {
+      action: "LAPOR_REJECT",
+      tanggal: document.getElementById("rejTanggal").value,
+      kecamatan: state.profile.kecamatan,
+      nama_kdkmp: state.profile.nama_kdkmp,
+      manager: state.profile.manager,
+      no_po: noPo,
+      kode_barang: state.selectedRejectItem.kode_barang,
+      nama_barang: state.selectedRejectItem.nama_barang,
+      satuan: state.selectedRejectItem.satuan,
+      qty_po: qtyPo,
+      qty_aktual: qtyAktual,
+      qty_reject: qtyReject,
+      keterangan: ket,
+      foto_reject_base64: state.photos.fotoReject
+    };
+
+    const btn = document.getElementById("floatSubmitBtn");
+    btn.disabled = true; btn.textContent = "Mengirim Laporan Reject...";
+
+    try {
+      if (SCRIPT_URL) await postToBackend(payload);
+
+      showSuccessConfirmation(
+        "Laporan Produk Reject Terkirim!",
+        "Data dan foto bukti barang reject telah masuk ke Dashboard Pusat ASR.",
+        [
+          `<strong>Gerai:</strong> ${payload.nama_kdkmp} (Kec. ${payload.kecamatan})`,
+          `<strong>Manager:</strong> ${payload.manager}`,
+          `<strong>No. PO:</strong> ${payload.no_po}`,
+          `<strong>Produk:</strong> ${payload.nama_barang}`,
+          `<strong>Qty PO / Aktual / Reject:</strong> ${qtyPo} / ${qtyAktual} / <strong style="color:#dc2626;">${qtyReject} ${payload.satuan}</strong>`,
+          `<strong>Keterangan:</strong> ${payload.keterangan}`
+        ]
+      );
+
+      document.getElementById("rejPoSelect").value = "";
+      document.getElementById("rejManualNoPo").value = "";
+      document.getElementById("rejQtyPo").value = "";
+      document.getElementById("rejQtyAktual").value = "";
+      document.getElementById("rejQtyReject").value = "0";
+      document.getElementById("rejKeterangan").value = "";
+      state.photos.fotoReject = "";
+      document.getElementById("prevFotoReject").style.display = "none";
+      document.getElementById("infoFotoReject").textContent = "";
+      onSelectRejectPo("");
+      syncFromServer();
+    } catch (err) {
+      alert("Gagal mengirim Laporan Reject: " + err.message);
+    } finally {
+      btn.disabled = false;
+      updateFloatingBar();
+    }
+  }
+
+  function renderMyRejectTable() {
+    const tbody = document.getElementById("tblMyRejectBody");
+    if (!tbody) return;
+    const myRows = state.rejectLogs.filter(r => r.Nama_KDKMP === state.profile.nama_kdkmp).slice(0, 20);
+    if (myRows.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b; padding:16px;">Belum ada laporan produk reject untuk gerai ini.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = myRows.map(r => {
+      const st = r.Status_Retur || "Menunggu Verifikasi ASR";
+      const badgeCls = st === "Selesai Diganti" ? "tag-ok" : "tag-err";
+      return `<tr>
+        <td>${String(r.Tanggal_Kejadian || "").slice(0, 10)}</td>
+        <td><strong>${r.No_PO || "-"}</strong></td>
+        <td>${r.Nama_Barang}</td>
+        <td>${r.Qty_PO} / ${r.Qty_Aktual} / <strong style="color:#dc2626;">${r.Qty_Reject} ${r.Satuan}</strong></td>
+        <td><span class="tag ${badgeCls}">${st}</span></td>
+      </tr>`;
     }).join("");
   }
 </script>
