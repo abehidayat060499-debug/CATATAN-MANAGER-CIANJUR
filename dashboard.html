@@ -162,8 +162,8 @@
     </select>
   </div>
   <div class="f-group">
-    <label>Cari Gerai / No. PO / Barang</label>
-    <input type="text" id="fltSearch" placeholder="Ketik KDKMP / No. PO / barang..." oninput="renderAllTabs()" />
+    <label>Cari Gerai / Supplier / Barang</label>
+    <input type="text" id="fltSearch" placeholder="Ketik KDKMP / supplier / barang..." oninput="renderAllTabs()" />
   </div>
   <div class="f-group">
     <label>Max Baris / Foto PNG</label>
@@ -396,8 +396,8 @@
   <div id="tab-po" class="panel">
     <div class="panel-head">
       <div>
-        <h3 class="panel-title">Daftar Pengajuan Perencanaan PO & Penerbitan Nomor PO ASR</h3>
-        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Setujui pengajuan PO dan isi Nomor PO resmi ASR agar otomatis terbaca di form Reject Manager</div>
+        <h3 class="panel-title">Daftar Pengajuan Perencanaan PO & Persetujuan Pusat ASR</h3>
+        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Validasi dan setujui rencana order barang dari gerai KDKMP</div>
       </div>
       <div class="export-toolbar">
         <select id="fltStatusPo" onchange="renderPoTab()" style="padding:7px 9px; border-radius:8px; border:1.5px solid #94a3b8; font-size:12px; font-weight:700;">
@@ -415,8 +415,8 @@
         <thead>
           <tr>
             <th>Target Kirim</th>
-            <th>No. PO ASR</th>
             <th>Gerai KDKMP</th>
+            <th>Supplier</th>
             <th>Nama Barang</th>
             <th>Stok Saat PO</th>
             <th>Jumlah PO</th>
@@ -434,7 +434,7 @@
     <div class="panel-head">
       <div>
         <h3 class="panel-title" style="color:var(--danger);">Laporan Produk Reject / Retur Kiriman Gerai KDKMP</h3>
-        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Verifikasi selisih Qty PO vs Qty Aktual beserta foto bukti fisik (PDF cetak menyertakan foto asli, bukan link)</div>
+        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Verifikasi selisih Qty Kirim vs Qty Aktual beserta foto bukti fisik (PDF cetak menyertakan foto asli, bukan link)</div>
       </div>
       <div class="export-toolbar">
         <select id="fltStatusReject" onchange="renderRejectTab()" style="padding:7px 9px; border-radius:8px; border:1.5px solid #94a3b8; font-size:12px; font-weight:700;">
@@ -452,9 +452,9 @@
             <th>Tanggal</th>
             <th>Gerai & Kecamatan</th>
             <th>Manager</th>
-            <th>No. PO ASR</th>
+            <th>Supplier</th>
             <th>Produk</th>
-            <th>Qty PO</th>
+            <th>Qty Kirim</th>
             <th>Qty Aktual</th>
             <th>Qty Reject</th>
             <th>Keterangan Kerusakan</th>
@@ -693,7 +693,7 @@
     }
     if (f.kecamatan !== "ALL" && normStr(row.Kecamatan) !== normStr(f.kecamatan)) return false;
     if (f.search) {
-      const hay = [row.Nama_KDKMP, row.Kecamatan, row.Manager, row.Nama_Barang, row.No_DO, row.No_PO, row.No_PO_ASR, row.Supplier].join(" ").toLowerCase();
+      const hay = [row.Nama_KDKMP, row.Kecamatan, row.Manager, row.Nama_Barang, row.No_DO, row.Supplier].join(" ").toLowerCase();
       if (hay.indexOf(f.search) === -1) return false;
     }
     return true;
@@ -966,52 +966,38 @@
 
     tbody.innerHTML = rows.map(function(r) {
       const st = r.Status_PO || "Diajukan";
-      const noPo = (r.No_PO_ASR && r.No_PO_ASR !== "-") ? r.No_PO_ASR : "-";
       const cls = st === "Disetujui ASR" ? "b-ok" : (st === "DO Terbit" ? "b-info" : "b-warn");
       return '<tr>' +
         '<td><strong>' + normDate(r.Tanggal_Kebutuhan) + '</strong></td>' +
-        '<td><strong style="color:#1d4ed8;">' + noPo + '</strong></td>' +
         '<td><strong>' + r.Nama_KDKMP + '</strong><br><span style="font-size:11px; color:#64748b;">Kec. ' + r.Kecamatan + '</span></td>' +
+        '<td><span style="font-size:11.5px; font-weight:700; color:#475569;">' + (r.Supplier || "-") + '</span></td>' +
         '<td><strong>' + r.Nama_Barang + '</strong></td>' +
         '<td>' + Number(r.Stok_Saat_Pengajuan || 0).toLocaleString("id-ID") + ' ' + r.Satuan + '</td>' +
         '<td><strong style="color:#1d4ed8;">' + Number(r.Jumlah_PO || 0).toLocaleString("id-ID") + ' ' + r.Satuan + '</strong></td>' +
         '<td><span class="badge ' + cls + '">' + st + '</span></td>' +
         '<td><div style="display:flex; gap:4px;">' +
-          (st === "Diajukan" ? '<button class="btn btn-success btn-sm" onclick="approvePoWithNumber(\'' + r.ID_PO + '\')">Setujui & Isi No. PO</button>' : "") +
-          (st === "Disetujui ASR" ? '<button class="btn btn-primary btn-sm" onclick="updatePoStatus(\'' + r.ID_PO + '\', \'DO Terbit\', \'\')">Terbitkan DO</button>' : "") +
+          (st === "Diajukan" ? '<button class="btn btn-success btn-sm" onclick="updatePoStatus(\'' + r.ID_PO + '\', \'Disetujui ASR\')">Setujui</button>' : "") +
+          (st === "Disetujui ASR" ? '<button class="btn btn-primary btn-sm" onclick="updatePoStatus(\'' + r.ID_PO + '\', \'DO Terbit\')">Terbitkan DO</button>' : "") +
           (st === "DO Terbit" ? '<span style="font-size:11px; color:#059669; font-weight:800;">✓ Selesai</span>' : "") +
         '</div></td>' +
       '</tr>';
     }).join("");
   }
 
-  function approvePoWithNumber(idPo) {
-    const defaultPrefix = "PO-ASR-" + new Date().getFullYear() + "-";
-    const noPoInput = prompt("Masukkan Nomor PO Resmi dari ASR (Contoh: " + defaultPrefix + "0105):", defaultPrefix);
-    if (noPoInput === null) return;
-    const cleanNoPo = noPoInput.trim() || "-";
-    updatePoStatus(idPo, "Disetujui ASR", cleanNoPo);
-  }
-
-  async function updatePoStatus(idPo, newStatus, noPoAsr) {
+  async function updatePoStatus(idPo, newStatus) {
     const idx = db.po_list.findIndex(function(x) { return String(x.ID_PO).trim() === String(idPo).trim(); });
-    if (idx >= 0) {
-      db.po_list[idx].Status_PO = newStatus;
-      if (noPoAsr) db.po_list[idx].No_PO_ASR = noPoAsr;
-    }
+    if (idx >= 0) db.po_list[idx].Status_PO = newStatus;
     localStorage.setItem("kdkmp_po_list", JSON.stringify(db.po_list));
     renderAllTabs();
-    showToast("Status PO diperbarui: " + newStatus + (noPoAsr ? (" (" + noPoAsr + ")") : ""));
+    showToast("Status PO diperbarui: " + newStatus);
 
     if (SCRIPT_URL) {
       try {
-        const bodyPayload = { action: "UPDATE_PO_STATUS", id_po: idPo, status_baru: newStatus };
-        if (noPoAsr) bodyPayload.no_po_asr = noPoAsr;
         await fetch(SCRIPT_URL, {
           method: "POST",
           redirect: "follow",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(bodyPayload)
+          body: JSON.stringify({ action: "UPDATE_PO_STATUS", id_po: idPo, status_baru: newStatus })
         });
       } catch (e) { console.warn(e); }
     }
@@ -1040,18 +1026,19 @@
     tbody.innerHTML = rows.map(function(r) {
       const hasImg = r.Foto_Reject_Base64 && String(r.Foto_Reject_Base64).indexOf("data:image") === 0;
       const imgCell = hasImg
-        ? '<img src="' + r.Foto_Reject_Base64 + '" class="reject-thumb" alt="Foto Reject" onclick="previewProof(\'' + r.Foto_Reject_Base64 + '\', \'Bukti Reject ' + r.Nama_KDKMP + ' - ' + (r.No_PO || "-") + '\')" />'
+        ? '<img src="' + r.Foto_Reject_Base64 + '" class="reject-thumb" alt="Foto Reject" onclick="previewProof(\'' + r.Foto_Reject_Base64 + '\', \'Bukti Reject ' + r.Nama_KDKMP + ' - ' + r.Nama_Barang + '\')" />'
         : '<span style="font-size:11px; color:#94a3b8;">Tanpa foto</span>';
       const st = r.Status_Retur || "Menunggu Verifikasi ASR";
       const isDone = st === "Selesai Diganti";
+      const qKirim = Number(r.Qty_Kirim || r.Qty_PO || 0);
 
       return '<tr class="' + (isDone ? "" : "row-alert") + '">' +
         '<td><strong>' + normDate(r.Tanggal_Kejadian) + '</strong></td>' +
         '<td><strong>' + r.Nama_KDKMP + '</strong><br><span style="font-size:11px; color:#64748b;">Kec. ' + r.Kecamatan + '</span></td>' +
         '<td>' + (r.Manager || "-") + '</td>' +
-        '<td><strong style="color:#1d4ed8;">' + (r.No_PO || "-") + '</strong></td>' +
+        '<td><strong style="color:#1d4ed8;">' + (r.Supplier || "-") + '</strong></td>' +
         '<td><strong>' + r.Nama_Barang + '</strong></td>' +
-        '<td>' + Number(r.Qty_PO || 0).toLocaleString("id-ID") + ' ' + r.Satuan + '</td>' +
+        '<td>' + qKirim.toLocaleString("id-ID") + ' ' + r.Satuan + '</td>' +
         '<td>' + Number(r.Qty_Aktual || 0).toLocaleString("id-ID") + ' ' + r.Satuan + '</td>' +
         '<td><strong style="color:#dc2626; font-size:13.5px;">' + Number(r.Qty_Reject || 0).toLocaleString("id-ID") + ' ' + r.Satuan + '</strong></td>' +
         '<td style="min-width:160px; max-width:230px; font-size:12px;">' + (r.Keterangan || "-") + '</td>' +
@@ -1095,6 +1082,7 @@
 
     const cardsHtml = rows.map(function(r, idx) {
       const hasImg = r.Foto_Reject_Base64 && String(r.Foto_Reject_Base64).indexOf("data:image") === 0;
+      const qKirim = Number(r.Qty_Kirim || r.Qty_PO || 0);
       const photoBlock = hasImg
         ? '<img src="' + r.Foto_Reject_Base64 + '" style="width:175px; height:175px; object-fit:cover; border-radius:6px; border:1px solid #94a3b8;" />'
         : '<div style="width:175px; height:175px; border:1px dashed #94a3b8; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; color:#64748b;">Tidak Ada Lampiran Foto</div>';
@@ -1102,13 +1090,13 @@
       return '<div style="border:1.5px solid #cbd5e1; border-radius:8px; padding:12px 14px; margin-bottom:14px; page-break-inside:avoid; display:flex; justify-content:space-between; gap:14px; background:#ffffff;">' +
         '<div style="flex:1; font-size:12px; line-height:1.55;">' +
           '<div style="font-size:13.5px; font-weight:800; color:#991b1b; border-bottom:1px solid #fee2e2; padding-bottom:4px; margin-bottom:6px;">' +
-            '#' + (idx + 1) + ' • NO. PO ASR: ' + (r.No_PO || "-") + ' • TANGGAL: ' + normDate(r.Tanggal_Kejadian) +
+            '#' + (idx + 1) + ' • SUPPLIER: ' + (r.Supplier || "-") + ' • TANGGAL: ' + normDate(r.Tanggal_Kejadian) +
           '</div>' +
           '<div><strong>Gerai KDKMP:</strong> ' + r.Nama_KDKMP + ' (Kecamatan ' + r.Kecamatan + ')</div>' +
           '<div><strong>Nama Manager:</strong> ' + (r.Manager || "-") + '</div>' +
           '<div><strong>Produk Reject:</strong> ' + r.Nama_Barang + ' (' + r.Satuan + ')</div>' +
           '<div style="margin-top:4px; background:#fef2f2; border:1px solid #fecaca; padding:5px 8px; border-radius:5px;">' +
-            'Qty PO: <strong>' + Number(r.Qty_PO || 0).toLocaleString("id-ID") + '</strong> &nbsp;|&nbsp; ' +
+            'Qty Kirim: <strong>' + qKirim.toLocaleString("id-ID") + '</strong> &nbsp;|&nbsp; ' +
             'Qty Aktual Bagus: <strong>' + Number(r.Qty_Aktual || 0).toLocaleString("id-ID") + '</strong> &nbsp;|&nbsp; ' +
             '<span style="color:#dc2626;"><strong>Qty Reject: ' + Number(r.Qty_Reject || 0).toLocaleString("id-ID") + ' ' + r.Satuan + '</strong></span>' +
           '</div>' +
@@ -1329,10 +1317,10 @@
         { label: "Disetujui / DO Terbit", val: disetujui + " Item" },
         { label: "Menunggu Approval", val: (rows.length - disetujui) + " Item" }
       ],
-      headers: ["No", "Target Kirim", "No. PO ASR", "Gerai KDKMP", "Nama Barang", "Stok Saat PO", "Jumlah PO", "Status ASR"],
+      headers: ["No", "Target Kirim", "Gerai KDKMP", "Supplier", "Nama Barang", "Stok Saat PO", "Jumlah PO", "Status ASR"],
       body: rows.map(function(r, i) {
         return [
-          i + 1, normDate(r.Tanggal_Kebutuhan), r.No_PO_ASR || "-", r.Nama_KDKMP, r.Nama_Barang,
+          i + 1, normDate(r.Tanggal_Kebutuhan), r.Nama_KDKMP, r.Supplier || "-", r.Nama_Barang,
           Number(r.Stok_Saat_Pengajuan || 0).toLocaleString("id-ID") + " " + r.Satuan,
           Number(r.Jumlah_PO || 0).toLocaleString("id-ID") + " " + r.Satuan,
           r.Status_PO || "Diajukan"
