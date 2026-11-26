@@ -77,6 +77,8 @@
     .chip { padding: 7px 13px; border-radius: 999px; border: 1.5px solid var(--border); background: #fff; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer; }
     .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
+    .vendor-sub-banner { display: inline-block; background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 7px; margin-bottom: 8px; }
+
     /* ITEM ROWS & STEPPER */
     .item-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
     .item-row:last-child { border-bottom: none; }
@@ -286,9 +288,9 @@
         <span>Jumlah Barang Diterima (Master Barang ASR)</span>
         <span id="masukCountBadge" style="font-size:12px; color:#1e3a8a;">0 item diisi</span>
       </div>
-      <div class="chip-bar" id="masukCategoryChips"></div>
+      <div class="vendor-sub-banner" id="masukVendorBanner">Produk Vendor: -</div>
       <div style="margin-bottom:8px;">
-        <input type="text" id="searchBarangMasuk" placeholder="Cari barang dari master (SPHP, Gas, Urea, Minyakita, ID FOOD)..." oninput="renderMasukItemList()" />
+        <input type="text" id="searchBarangMasuk" placeholder="Cari barang dari vendor terpilih..." oninput="renderMasukItemList()" />
       </div>
       <div id="masukItemListContainer"></div>
     </div>
@@ -474,12 +476,11 @@
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfCK5cs_vIUUEUfSTlUamHoyy1mxGiHu76hwbegsyA76sOFAnlFvjAY7f-P_RqdUFOjA/exec";
 
   const DEFAULT_SUPPLIER_LIST = [
-    "Perum Bulog (SPHP)",
-    "Agen Pertamina (LPG 3kg)",
-    "Distributor Pupuk Subsidi",
-    "Distributor Minyakita",
-    "ID FOOD / RNI",
-    "Supplier Lainnya"
+    "BULOG",
+    "PERTAMINA",
+    "PUPUK INDONESIA",
+    "ID FOOD",
+    "GONUSA"
   ];
 
   const SHIFT_LIST = ["Full Day / Tutup Gerai", "Shift 1 (Pagi)", "Shift 2 (Malam)"];
@@ -495,26 +496,22 @@
   ];
 
   const DEFAULT_BARANG = [
-    { Kode_Barang: "SPHP-01", Kategori: "Beras SPHP", Nama_Barang: "Beras SPHP Bulog (5 Kg)", Satuan: "Sak" },
-    { Kode_Barang: "GAS-01", Kategori: "Gas LPG 3kg", Nama_Barang: "Tabung Gas LPG 3 Kg", Satuan: "Tabung" },
-    { Kode_Barang: "PPK-01", Kategori: "Pupuk Subsidi", Nama_Barang: "Pupuk Urea Subsidi (50 Kg)", Satuan: "Zak" },
-    { Kode_Barang: "PPK-02", Kategori: "Pupuk Subsidi", Nama_Barang: "Pupuk NPK Phonska (50 Kg)", Satuan: "Zak" },
-    { Kode_Barang: "MYK-01", Kategori: "Minyakita", Nama_Barang: "Minyakita Pouch / Botol 1L", Satuan: "Liter" },
-    { Kode_Barang: "IDF-01", Kategori: "Produk ID FOOD", Nama_Barang: "Gula Pasir Kristal Putih 1 Kg", Satuan: "Kg" },
-    { Kode_Barang: "IDF-02", Kategori: "Produk ID FOOD", Nama_Barang: "Minyak Goreng ID FOOD 1L", Satuan: "Liter" },
-    { Kode_Barang: "IDF-03", Kategori: "Produk ID FOOD", Nama_Barang: "Tepung Terigu ID FOOD 1 Kg", Satuan: "Kg" },
-    { Kode_Barang: "IDF-04", Kategori: "Produk ID FOOD", Nama_Barang: "Daging Kerbau / Ayam Beku", Satuan: "Kg" }
+    { Kode_Barang: "SPHP-01", Kategori: "Beras SPHP", Nama_Barang: "Beras SPHP Bulog (5 Kg)", Satuan: "Sak", Supplier: "BULOG" },
+    { Kode_Barang: "GAS-01", Kategori: "Gas LPG 3kg", Nama_Barang: "Tabung Gas LPG 3 Kg", Satuan: "Tabung", Supplier: "PERTAMINA" },
+    { Kode_Barang: "PPK-01", Kategori: "Pupuk Subsidi", Nama_Barang: "Pupuk Urea Subsidi (50 Kg)", Satuan: "Zak", Supplier: "PUPUK INDONESIA" },
+    { Kode_Barang: "PPK-02", Kategori: "Pupuk Subsidi", Nama_Barang: "Pupuk NPK Phonska (50 Kg)", Satuan: "Zak", Supplier: "PUPUK INDONESIA" },
+    { Kode_Barang: "MYK-01", Kategori: "Minyakita", Nama_Barang: "Minyakita Pouch / Botol 1L", Satuan: "Liter", Supplier: "ID FOOD" },
+    { Kode_Barang: "IDF-01", Kategori: "Produk ID FOOD", Nama_Barang: "Gula Pasir Kristal Putih 1 Kg", Satuan: "Kg", Supplier: "ID FOOD" }
   ];
 
   let state = {
     activeTab: "tab-masuk",
     profile: JSON.parse(localStorage.getItem("kdkmp_profile") || "null"),
     modalSelectedKec: "ALL",
-    selectedSupplier: "Perum Bulog (SPHP)",
+    selectedSupplier: "BULOG",
     omsetMode: "FULL",
     selectedShift: "Full Day / Tutup Gerai",
     selectedBank: BANK_LIST[0],
-    masukCategory: "ALL",
     sisaCategory: "ALL",
     quantitiesMasuk: {},
     quantitiesSisa: {},
@@ -538,13 +535,6 @@
         .filter(Boolean)
     )];
     return dariSheet.length > 0 ? dariSheet : DEFAULT_SUPPLIER_LIST;
-  }
-
-  function getSupplierForCategory(cat) {
-    const found = (state.masterBarang || []).find(
-      b => String(b.Kategori || "").trim() === String(cat || "").trim() && String(b.Supplier || "").trim()
-    );
-    return found ? String(found.Supplier).trim() : null;
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
@@ -575,7 +565,6 @@
     }
 
     renderAllPills();
-    renderMasukCategoryChips();
     renderSisaCategoryChips();
     renderMasukItemList();
     renderSisaItemList();
@@ -643,7 +632,6 @@
           state.selectedSupplier = supList[0];
         }
         renderAllPills();
-        renderMasukCategoryChips();
         renderSisaCategoryChips();
         renderMasukItemList();
         renderSisaItemList();
@@ -754,7 +742,11 @@
     document.getElementById("bankPills").innerHTML = BANK_LIST.map(bk => `<button type="button" class="bank-pill ${state.selectedBank === bk ? 'active' : ''}" onclick="selectBank('${bk}')">${bk}</button>`).join("");
   }
 
-  function selectSupplier(s) { state.selectedSupplier = s; renderAllPills(); }
+  function selectSupplier(s) {
+    state.selectedSupplier = s;
+    renderAllPills();
+    renderMasukItemList();
+  }
   function selectShift(sh) { state.selectedShift = sh; renderAllPills(); }
   function selectBank(bk) { state.selectedBank = bk; renderAllPills(); }
 
@@ -1231,25 +1223,26 @@
     if (state.activeTab === "tab-omset") updateFloatingBar();
   }
 
-  // TAB 1: BARANG MASUK
-  function renderMasukCategoryChips() {
-    const cats = ["ALL", ...new Set(state.masterBarang.map(b => b.Kategori))];
-    document.getElementById("masukCategoryChips").innerHTML = cats.map(c => `<button type="button" class="chip ${state.masukCategory === c ? 'active' : ''}" onclick="selectMasukCategory('${c}')">${c === 'ALL' ? 'Semua' : c}</button>`).join("");
-  }
-
-  function selectMasukCategory(cat) {
-    state.masukCategory = cat;
-    const autoSup = getSupplierForCategory(cat);
-    if (autoSup) { state.selectedSupplier = autoSup; renderAllPills(); }
-    renderMasukCategoryChips();
-    renderMasukItemList();
-  }
-
+  // TAB 1: BARANG MASUK (FILTER OTOMATIS SESUAI SUPPLIER/VENDOR TERPILIH)
   function renderMasukItemList() {
     const query = document.getElementById("searchBarangMasuk").value.toLowerCase();
-    const filtered = state.masterBarang.filter(b => (state.masukCategory === "ALL" || b.Kategori === state.masukCategory) && (b.Nama_Barang.toLowerCase().includes(query) || b.Kategori.toLowerCase().includes(query)));
+    const activeSup = String(state.selectedSupplier || "").trim().toLowerCase();
+    const bannerEl = document.getElementById("masukVendorBanner");
+    if (bannerEl) bannerEl.textContent = `Menampilkan produk vendor: ${state.selectedSupplier}`;
+
+    const hasSupplierCol = state.masterBarang.some(b => String(b.Supplier || "").trim() !== "");
+    const filtered = state.masterBarang.filter(b => {
+      const matchSup = !hasSupplierCol || String(b.Supplier || "").trim().toLowerCase() === activeSup;
+      const matchQ = !query || (b.Nama_Barang || "").toLowerCase().includes(query) || (b.Kategori || "").toLowerCase().includes(query);
+      return matchSup && matchQ;
+    });
+
     const container = document.getElementById("masukItemListContainer");
-    if (filtered.length === 0) { container.innerHTML = `<p style="font-size:13px; color:#64748b; text-align:center;">Barang tidak ditemukan di Master ASR.</p>`; return; }
+    if (filtered.length === 0) {
+      container.innerHTML = `<p style="font-size:13px; color:#64748b; text-align:center;">Tidak ada barang terdaftar untuk supplier <strong>${state.selectedSupplier}</strong>.</p>`;
+      updateMasukCount();
+      return;
+    }
 
     container.innerHTML = filtered.map(b => {
       const val = state.quantitiesMasuk[b.Kode_Barang] !== undefined ? state.quantitiesMasuk[b.Kode_Barang] : "";
