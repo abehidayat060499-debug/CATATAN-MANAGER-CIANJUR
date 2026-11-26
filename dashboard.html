@@ -23,28 +23,24 @@
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { margin: 0; background: var(--bg); color: var(--text); }
 
-    /* PIN LOCK SCREEN */
     #pinGate { position: fixed; inset: 0; background: linear-gradient(135deg, #0f172a, #1e3a8a); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 16px; }
     .pin-card { background: #fff; width: 100%; max-width: 360px; border-radius: 18px; padding: 26px 22px; text-align: center; box-shadow: 0 20px 45px rgba(0,0,0,0.35); }
     .pin-input { width: 100%; text-align: center; font-size: 24px; letter-spacing: 8px; font-weight: 800; padding: 12px; border: 2px solid #cbd5e1; border-radius: 12px; margin: 14px 0; }
     .pin-input:focus { outline: none; border-color: var(--accent); }
 
-    /* HEADER */
     header { background: linear-gradient(135deg, #0f172a, #1e3a8a); color: #fff; padding: 14px 18px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.18); }
     .h-title { font-size: 16px; font-weight: 800; margin: 0; letter-spacing: 0.2px; }
     .h-sub { font-size: 11.5px; color: #cbd5e1; margin-top: 2px; }
     .h-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    .badge-conn { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; max-width: 340px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .badge-conn { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; max-width: 360px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .conn-ok { background: #065f46; border: 1px solid #34d399; color: #ecfdf5; }
     .conn-local { background: #92400e; border: 1px solid #fbbf24; color: #fef3c7; }
 
-    /* FILTER BAR */
     .filter-bar { background: #fff; border-bottom: 1px solid var(--border); padding: 12px 18px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
     .f-group { display: flex; flex-direction: column; gap: 4px; min-width: 145px; flex: 1; }
     .f-group label { font-size: 10.5px; font-weight: 800; color: #475569; text-transform: uppercase; }
     .f-group input, .f-group select { padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; background: #fff; font-weight: 600; color: var(--text); }
 
-    /* KPI GRID */
     .container { max-width: 1280px; margin: 0 auto; padding: 14px 16px 48px; }
     .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 14px; }
     @media (max-width: 960px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -53,12 +49,10 @@
     .kpi-val { font-size: 20px; font-weight: 800; color: var(--text); margin-top: 4px; }
     .kpi-sub { font-size: 11px; color: #475569; margin-top: 2px; }
 
-    /* TABS */
     .tab-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; }
     .tab-btn { padding: 10px 14px; border-radius: 10px; border: 1.5px solid var(--border); background: #fff; color: #334155; font-size: 12.5px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: 0.12s; }
     .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(29,78,216,0.25); }
 
-    /* PANEL & EXPORT TOOLBAR */
     .panel { display: none; background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
     .panel.active { display: block; }
     .panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9; }
@@ -73,7 +67,6 @@
     .btn-outline { background: #fff; color: #0f172a; border: 1.5px solid #94a3b8; }
     .btn-sm { padding: 5px 9px; font-size: 11px; border-radius: 6px; }
 
-    /* TABLE & BADGES */
     .table-wrap { overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 10px; }
     table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
     th, td { padding: 9px 11px; text-align: left; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
@@ -87,7 +80,6 @@
     .b-warn { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
     .b-info { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
 
-    /* HIDDEN OFFSCREEN EXPORT STUDIO (UNTUK PNG ANTI-TERPOTONG & MULTI-FOTO) */
     #pngExportStage { position: fixed; left: -9999px; top: 0; width: 980px; background: #ffffff; color: #0f172a; padding: 24px 28px; z-index: -1; }
     .png-header { border-bottom: 3px solid #0f172a; padding-bottom: 12px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
     .png-org { font-size: 11px; font-weight: 800; color: #1d4ed8; letter-spacing: 0.6px; text-transform: uppercase; }
@@ -102,7 +94,6 @@
     .png-table td { padding: 7px 10px; border-bottom: 1px solid #cbd5e1; }
     .png-footer { margin-top: 14px; padding-top: 10px; border-top: 1px dashed #94a3b8; display: flex; justify-content: space-between; font-size: 11px; color: #475569; font-weight: 700; }
 
-    /* MODAL PREVIEW FOTO & BUKTI */
     #photoModal { position: fixed; inset: 0; background: rgba(15,23,42,0.82); z-index: 9995; display: none; align-items: center; justify-content: center; padding: 16px; }
     .photo-modal-box { background: #fff; max-width: 540px; width: 100%; border-radius: 14px; padding: 14px; text-align: center; }
     .photo-modal-box img { max-width: 100%; max-height: 70vh; border-radius: 8px; border: 1px solid #cbd5e1; }
@@ -112,7 +103,6 @@
 </head>
 <body>
 
-<!-- GERBANG PIN ADMIN ASR -->
 <div id="pinGate">
   <div class="pin-card">
     <div style="font-size:11px; font-weight:800; color:#1d4ed8; letter-spacing:0.6px;">PT AGRINAS PANGAN NUSANTARA</div>
@@ -123,7 +113,6 @@
   </div>
 </div>
 
-<!-- MODAL LIHAT FOTO BUKTI -->
 <div id="photoModal" onclick="if(event.target===this) this.style.display='none'">
   <div class="photo-modal-box">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -134,7 +123,6 @@
   </div>
 </div>
 
-<!-- STUDIO RENDER PNG OFFSCREEN -->
 <div id="pngExportStage"></div>
 
 <header>
@@ -144,11 +132,11 @@
   </div>
   <div class="h-actions">
     <span id="connStatus" class="badge-conn conn-local" title="Status Koneksi">Mode Lokal</span>
+    <button type="button" class="btn btn-outline btn-sm" style="background:#fff;" onclick="window.open(SCRIPT_URL, '_blank')">Uji Link /exec</button>
     <button type="button" class="btn btn-outline btn-sm" style="background:#fff;" onclick="loadAllData(true)">↻ Muat Ulang Data</button>
   </div>
 </header>
 
-<!-- FILTER GLOBAL -->
 <div class="filter-bar">
   <div class="f-group">
     <label>Tanggal Pantauan</label>
@@ -186,7 +174,6 @@
 </div>
 
 <div class="container">
-  <!-- 5 KARTU RINGKASAN KPI -->
   <div class="kpi-grid">
     <div class="kpi-card">
       <div class="kpi-lbl">Kepatuhan Gerai</div>
@@ -215,7 +202,6 @@
     </div>
   </div>
 
-  <!-- 6 TAB NAVIGASI -->
   <div class="tab-bar">
     <button class="tab-btn active" onclick="openTab('tab-kepatuhan', this)">1. Matriks Kepatuhan Gerai</button>
     <button class="tab-btn" onclick="openTab('tab-masuk', this)">2. Barang Masuk (DO)</button>
@@ -225,7 +211,6 @@
     <button class="tab-btn" onclick="openTab('tab-po', this)">6. Approval PO</button>
   </div>
 
-  <!-- TAB 1: MATRIKS KEPATUHAN HARIAN GERAI -->
   <div id="tab-kepatuhan" class="panel active">
     <div class="panel-head">
       <div>
@@ -264,7 +249,6 @@
     </div>
   </div>
 
-  <!-- TAB 2: BARANG MASUK (DO) -->
   <div id="tab-masuk" class="panel">
     <div class="panel-head">
       <div>
@@ -300,7 +284,6 @@
     </div>
   </div>
 
-  <!-- TAB 3: VALIDASI SALES & SETORAN -->
   <div id="tab-sales" class="panel">
     <div class="panel-head">
       <div>
@@ -336,7 +319,6 @@
     </div>
   </div>
 
-  <!-- TAB 4: AUDIT STOK SISA -->
   <div id="tab-sisa" class="panel">
     <div class="panel-head">
       <div>
@@ -366,7 +348,6 @@
     </div>
   </div>
 
-  <!-- TAB 5: REKAP STOK GERAI -->
   <div id="tab-rekap" class="panel">
     <div class="panel-head">
       <div>
@@ -400,7 +381,6 @@
     </div>
   </div>
 
-  <!-- TAB 6: APPROVAL PO -->
   <div id="tab-po" class="panel">
     <div class="panel-head">
       <div>
@@ -440,9 +420,6 @@
 <div id="toast" class="toast"></div>
 
 <script>
-  // =========================================================================
-  // KONFIGURASI BACKEND & PIN ADMIN ASR
-  // =========================================================================
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz_s04woby5TsycaIbP7FVe05CUY2cJXzHXop30wATtDP3lpQc6gHMbNxesocJd6S1QKQ/exec";
   const ADMIN_PIN = "123456";
 
@@ -546,39 +523,6 @@
     badge.title = titleText || text;
   }
 
-  // Fallback JSONP apabila fetch() terblokir browser/jaringan
-  function fetchJsonp(url, timeoutMs = 12000) {
-    return new Promise((resolve, reject) => {
-      const cbName = "asrJsonpCb_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
-      const sep = url.includes("?") ? "&" : "?";
-      const script = document.createElement("script");
-
-      const timer = setTimeout(() => {
-        cleanup();
-        reject(new Error("Timeout JSONP"));
-      }, timeoutMs);
-
-      function cleanup() {
-        clearTimeout(timer);
-        if (script.parentNode) script.parentNode.removeChild(script);
-        try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
-      }
-
-      window[cbName] = function(data) {
-        cleanup();
-        resolve(data);
-      };
-
-      script.onerror = function() {
-        cleanup();
-        reject(new Error("Gagal memuat skrip JSONP"));
-      };
-
-      script.src = `${url}${sep}callback=${cbName}`;
-      document.body.appendChild(script);
-    });
-  }
-
   async function loadAllData(forceFresh = false) {
     const cachedAsr = localStorage.getItem("asr_full_snapshot");
     if (cachedAsr) {
@@ -598,38 +542,28 @@
     }
 
     setConnBadge("local", "Menyinkronkan...", cleanUrl);
-    const baseUrl = forceFresh ? `${cleanUrl}${cleanUrl.includes("?") ? "&" : "?"}nocache=1&t=${Date.now()}` : cleanUrl;
+    const fetchUrl = forceFresh ? `${cleanUrl}${cleanUrl.includes("?") ? "&" : "?"}nocache=1&t=${Date.now()}` : cleanUrl;
 
     try {
-      const res = await fetch(baseUrl, { method: "GET", redirect: "follow", cache: "no-store" });
+      const res = await fetch(fetchUrl, { method: "GET", redirect: "follow", cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const rawText = await res.text();
       let json;
       try {
         json = JSON.parse(rawText);
       } catch (parseErr) {
-        throw new Error("Respons bukan JSON (cek izin akses Web App ke Anyone)");
+        throw new Error("Respons bukan JSON (cek akses Web App ke Anyone)");
       }
       if (!json || json.status !== "success") {
         throw new Error((json && json.message) || "Status gagal dari server");
       }
       applyServerSnapshot(json);
       localStorage.setItem("asr_full_snapshot", JSON.stringify(json));
-      setConnBadge("ok", "Terhubung Pusat ASR", "Sinkron via Fetch API");
+      setConnBadge("ok", "Terhubung Pusat ASR", "Sinkron berhasil");
     } catch (fetchErr) {
-      try {
-        const jsonpData = await fetchJsonp(baseUrl);
-        if (!jsonpData || jsonpData.status !== "success") {
-          throw new Error((jsonpData && jsonpData.message) || "JSONP gagal");
-        }
-        applyServerSnapshot(jsonpData);
-        localStorage.setItem("asr_full_snapshot", JSON.stringify(jsonpData));
-        setConnBadge("ok", "Terhubung (JSONP)", "Sinkron via jalur alternatif JSONP");
-      } catch (jsonpErr) {
-        console.warn("Gagal sinkron:", fetchErr, jsonpErr);
-        if (!cachedAsr) loadFromLocalFallback(fetchErr.message);
-        setConnBadge("local", `Gagal Sync: ${fetchErr.message}`, `Fetch: ${fetchErr.message} | JSONP: ${jsonpErr.message}`);
-      }
+      console.warn("Gagal sinkron:", fetchErr);
+      if (!cachedAsr) loadFromLocalFallback(fetchErr.message);
+      setConnBadge("local", `Gagal Sync: ${fetchErr.message}`, fetchErr.message);
     }
 
     populateKecamatanFilter();
@@ -704,7 +638,6 @@
     updateKpiCards();
   }
 
-  // ==================== 1. TAB MATRIKS KEPATUHAN ====================
   function renderKepatuhanTab() {
     const f = getGlobalFilters();
     const tgl = f.tanggal;
@@ -786,7 +719,6 @@
     }).join("");
   }
 
-  // ==================== 2. TAB BARANG MASUK ====================
   function renderMasukTab() {
     const f = getGlobalFilters();
     const stFlt = document.getElementById("fltStatusMasuk").value;
@@ -840,7 +772,6 @@
     }
   }
 
-  // ==================== 3. TAB VALIDASI SALES ====================
   function renderSalesTab() {
     const f = getGlobalFilters();
     const stFlt = document.getElementById("fltStatusSales").value;
@@ -888,7 +819,6 @@
     }).join("");
   }
 
-  // ==================== 4. TAB STOK SISA ====================
   function renderSisaTab() {
     const f = getGlobalFilters();
     const rows = db.stok_sisa.filter(r => matchGlobalRow(r, "Tanggal", f));
@@ -913,7 +843,6 @@
     `).join("");
   }
 
-  // ==================== 5. TAB REKAP STOK ====================
   function renderRekapTab() {
     const f = getGlobalFilters();
     const stFlt = document.getElementById("fltStatusRekap").value;
@@ -953,7 +882,6 @@
     }).join("");
   }
 
-  // ==================== 6. TAB APPROVAL PO ====================
   function renderPoTab() {
     const f = getGlobalFilters();
     const stFlt = document.getElementById("fltStatusPo").value;
@@ -1047,9 +975,6 @@
     document.getElementById("photoModal").style.display = "flex";
   }
 
-  // =========================================================================
-  // ENGINE EXPORT DATA (MULTI-FOTO PNG OTOMATIS + CAPTION WA & PDF A4 RESMI)
-  // =========================================================================
   function buildReportDataset(tabKey) {
     const f = getGlobalFilters();
     const periodeLabel = f.periode === "DAY" ? `Tanggal ${f.tanggal}` : "Semua Riwayat Data";
