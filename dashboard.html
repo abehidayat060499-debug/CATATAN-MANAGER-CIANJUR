@@ -3,522 +3,427 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Pusat ASR Cianjur — Monitoring KDKMP</title>
+  <title>Dashboard Pusat ASR — Monitoring & Validasi KDKMP Cianjur</title>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
   <style>
     :root {
-      --navy: #0f172a;
-      --primary: #1e3a8a;
-      --primary-light: #2563eb;
+      --primary: #0f172a;
+      --accent: #1d4ed8;
       --success: #059669;
-      --success-bg: #dcfce7;
-      --warning: #d97706;
-      --warning-bg: #fef3c7;
       --danger: #dc2626;
-      --danger-bg: #fee2e2;
-      --teal: #0f766e;
+      --warning: #d97706;
       --bg: #f1f5f9;
       --card: #ffffff;
+      --border: #cbd5e1;
       --text: #0f172a;
       --muted: #64748b;
-      --border: #cbd5e1;
     }
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 40px; }
+    body { margin: 0; background: var(--bg); color: var(--text); }
 
-    /* ==================== PIN LOCK OVERLAY ==================== */
-    #pinOverlay {
-      position: fixed; inset: 0;
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
-      z-index: 99999;
-      display: flex; align-items: center; justify-content: center; padding: 16px;
-    }
-    .pin-card {
-      background: #ffffff; width: 100%; max-width: 390px;
-      border-radius: 16px; padding: 26px 22px;
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
-      text-align: center;
-    }
-    .pin-badge {
-      display: inline-block; background: #eff6ff; color: var(--primary);
-      font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 999px;
-      margin-bottom: 10px; border: 1px solid #bfdbfe;
-    }
-    .pin-title { font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; }
-    .pin-sub { font-size: 12.5px; color: #64748b; margin: 0 0 18px 0; line-height: 1.45; }
-    .pin-input {
-      width: 100%; padding: 13px; font-size: 22px; font-weight: 800;
-      letter-spacing: 8px; text-align: center;
-      border: 2px solid var(--border); border-radius: 10px; margin-bottom: 10px;
-    }
-    .pin-input:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,235,0.16); }
-    .pin-error {
-      color: var(--danger); font-size: 12px; font-weight: 700;
-      min-height: 18px; margin-bottom: 10px;
-    }
+    /* PIN LOCK SCREEN */
+    #pinGate { position: fixed; inset: 0; background: linear-gradient(135deg, #0f172a, #1e3a8a); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .pin-card { background: #fff; width: 100%; max-width: 360px; border-radius: 18px; padding: 26px 22px; text-align: center; box-shadow: 0 20px 45px rgba(0,0,0,0.35); }
+    .pin-input { width: 100%; text-align: center; font-size: 24px; letter-spacing: 8px; font-weight: 800; padding: 12px; border: 2px solid #cbd5e1; border-radius: 12px; margin: 14px 0; }
+    .pin-input:focus { outline: none; border-color: var(--accent); }
 
-    /* ==================== HEADER ==================== */
-    header {
-      background: linear-gradient(135deg, #0f172a, #1e3a8a);
-      color: #fff; padding: 14px 20px; position: sticky; top: 0; z-index: 50;
-      box-shadow: 0 2px 12px rgba(15, 23, 42, 0.25);
-    }
-    .header-inner {
-      max-width: 1360px; margin: 0 auto;
-      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;
-    }
-    .brand-title { font-size: 16px; font-weight: 800; margin: 0; letter-spacing: 0.3px; }
-    .brand-sub { font-size: 12px; color: #cbd5e1; margin-top: 2px; }
-    .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    /* HEADER */
+    header { background: linear-gradient(135deg, #0f172a, #1e3a8a); color: #fff; padding: 14px 18px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.18); }
+    .h-title { font-size: 16px; font-weight: 800; margin: 0; letter-spacing: 0.2px; }
+    .h-sub { font-size: 11.5px; color: #cbd5e1; margin-top: 2px; }
+    .h-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .badge-conn { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+    .conn-ok { background: #065f46; border: 1px solid #34d399; color: #ecfdf5; }
+    .conn-local { background: #92400e; border: 1px solid #fbbf24; color: #fef3c7; }
 
-    .badge-conn {
-      font-size: 11px; font-weight: 700; padding: 5px 11px; border-radius: 999px;
-    }
-    .conn-live { background: #065f46; border: 1px solid #34d399; color: #ecfdf5; }
-    .conn-sandbox { background: #92400e; border: 1px solid #fbbf24; color: #fef3c7; }
+    /* FILTER BAR */
+    .filter-bar { background: #fff; border-bottom: 1px solid var(--border); padding: 12px 18px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+    .f-group { display: flex; flex-direction: column; gap: 4px; min-width: 145px; flex: 1; }
+    .f-group label { font-size: 10.5px; font-weight: 800; color: #475569; text-transform: uppercase; }
+    .f-group input, .f-group select { padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; background: #fff; font-weight: 600; color: var(--text); }
 
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 8px 14px; border-radius: 8px; border: none; font-size: 12px; font-weight: 700;
-      cursor: pointer; transition: 0.15s; white-space: nowrap;
-    }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .btn-primary { background: var(--primary-light); color: #fff; }
-    .btn-primary:hover { background: #1d4ed8; }
-    .btn-success { background: var(--success); color: #fff; }
-    .btn-success:hover { background: #047857; }
-    .btn-danger-soft { background: rgba(220, 38, 38, 0.2); color: #fecaca; border: 1px solid rgba(248, 113, 113, 0.45); }
-    .btn-danger-soft:hover { background: rgba(220, 38, 38, 0.35); color: #fff; }
-    .btn-outline-light { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
-    .btn-outline-light:hover { background: rgba(255,255,255,0.22); }
-    .btn-outline { background: #fff; color: var(--text); border: 1px solid var(--border); }
-    .btn-outline:hover { background: #f8fafc; }
-    .btn-xs { padding: 5px 10px; font-size: 11px; border-radius: 6px; }
-
-    .container { max-width: 1360px; margin: 0 auto; padding: 16px 20px; }
-
-    /* ==================== KPI CARDS ==================== */
-    .kpi-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;
-    }
+    /* KPI GRID */
+    .container { max-width: 1280px; margin: 0 auto; padding: 14px 16px 48px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 14px; }
     @media (max-width: 960px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 520px) { .kpi-grid { grid-template-columns: 1fr; } }
+    .kpi-card { background: #fff; border-radius: 12px; padding: 12px 14px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .kpi-lbl { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+    .kpi-val { font-size: 20px; font-weight: 800; color: var(--text); margin-top: 4px; }
+    .kpi-sub { font-size: 11px; color: #475569; margin-top: 2px; }
 
-    .kpi-card {
-      background: var(--card); border-radius: 12px; padding: 14px 16px;
-      border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-      cursor: pointer; transition: 0.15s; position: relative; overflow: hidden;
-    }
-    .kpi-card:hover { border-color: var(--primary-light); transform: translateY(-1px); }
-    .kpi-card::before {
-      content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
-    }
-    .kpi-amber::before { background: var(--warning); }
-    .kpi-blue::before { background: var(--primary-light); }
-    .kpi-green::before { background: var(--success); }
-    .kpi-purple::before { background: #7c3aed; }
+    /* TABS */
+    .tab-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; }
+    .tab-btn { padding: 10px 14px; border-radius: 10px; border: 1.5px solid var(--border); background: #fff; color: #334155; font-size: 12.5px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: 0.12s; }
+    .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(29,78,216,0.25); }
 
-    .kpi-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
-    .kpi-val { font-size: 22px; font-weight: 800; color: var(--text); margin: 4px 0; }
-    .kpi-sub { font-size: 11.5px; color: var(--muted); }
-
-    /* ==================== GLOBAL FILTER BAR ==================== */
-    .filter-card {
-      background: var(--card); border-radius: 12px; padding: 12px 16px;
-      border: 1px solid #e2e8f0; margin-bottom: 14px;
-      display: grid; grid-template-columns: 1.1fr 1.3fr 1.1fr 1fr 1.5fr auto; gap: 10px; align-items: end;
-    }
-    @media (max-width: 1100px) { .filter-card { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 640px) { .filter-card { grid-template-columns: 1fr; } }
-
-    .filter-group label {
-      display: block; font-size: 10.5px; font-weight: 700; color: var(--muted);
-      text-transform: uppercase; margin-bottom: 4px;
-    }
-    select, input[type="text"], input[type="date"] {
-      width: 100%; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 8px;
-      font-size: 13px; background: #fff; color: var(--text);
-    }
-    select:focus, input:focus { outline: none; border-color: var(--primary-light); }
-
-    /* ==================== MAIN TABS ==================== */
-    .tabs-bar {
-      display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 12px;
-      border-bottom: 2px solid #e2e8f0;
-    }
-    .tab-btn {
-      padding: 10px 16px; border: none; background: transparent; font-size: 13px; font-weight: 800;
-      color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent;
-      margin-bottom: -2px; white-space: nowrap; display: inline-flex; align-items: center; gap: 7px;
-    }
-    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #eff6ff; border-radius: 8px 8px 0 0; }
-    .tab-badge {
-      font-size: 11px; padding: 2px 7px; border-radius: 999px; font-weight: 800;
-      background: #e2e8f0; color: #334155;
-    }
-    .tab-badge-alert { background: var(--warning-bg); color: #92400e; }
-
-    /* ==================== PANEL & SUB-FILTERS ==================== */
-    .panel { display: none; }
+    /* PANEL & EXPORT TOOLBAR */
+    .panel { display: none; background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
     .panel.active { display: block; }
+    .panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9; }
+    .panel-title { font-size: 15px; font-weight: 800; color: var(--primary); margin: 0; }
+    .export-toolbar { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
 
-    .card-panel {
-      background: var(--card); border-radius: 12px; border: 1px solid #e2e8f0;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04); overflow: hidden;
-    }
-    .panel-toolbar {
-      padding: 12px 16px; border-bottom: 1px solid #e2e8f0; background: #f8fafc;
-      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;
-    }
-    .pill-group { display: flex; flex-wrap: wrap; gap: 6px; }
-    .sub-pill {
-      padding: 6px 12px; border-radius: 999px; border: 1.5px solid var(--border);
-      background: #fff; font-size: 12px; font-weight: 700; color: #475569; cursor: pointer;
-    }
-    .sub-pill.active { background: var(--primary); border-color: var(--primary); color: #fff; }
-    .sub-pill.active-warn { background: var(--warning); border-color: var(--warning); color: #fff; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 13px; border-radius: 8px; border: none; font-size: 12px; font-weight: 800; cursor: pointer; transition: 0.12s; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-dark { background: #0f172a; color: #fff; }
+    .btn-outline { background: #fff; color: #0f172a; border: 1.5px solid #94a3b8; }
+    .btn-sm { padding: 5px 9px; font-size: 11px; border-radius: 6px; }
 
-    /* ==================== DATA TABLE ==================== */
-    .table-wrap { overflow-x: auto; max-height: 68vh; }
+    /* TABLE & BADGES */
+    .table-wrap { overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 10px; }
     table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
-    th {
-      background: #f8fafc; font-weight: 800; color: #334155; font-size: 11px;
-      text-transform: uppercase; letter-spacing: 0.3px; position: sticky; top: 0; z-index: 10;
-      white-space: nowrap;
-    }
-    tbody tr:hover { background: #f8fafc; }
-    tr.row-pending-pos { background: #fffbeb; }
-    tr.row-pending-pos:hover { background: #fef3c7; }
+    th, td { padding: 9px 11px; text-align: left; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+    th { background: #f8fafc; font-weight: 800; color: #334155; font-size: 11.5px; text-transform: uppercase; white-space: nowrap; }
+    tr:last-child td { border-bottom: none; }
+    tr.row-alert { background: #fef2f2; }
 
-    .tag {
-      display: inline-block; padding: 3px 9px; border-radius: 999px;
-      font-size: 11px; font-weight: 800; white-space: nowrap;
-    }
-    .tag-wait { background: var(--warning-bg); color: #92400e; }
-    .tag-ok { background: var(--success-bg); color: #166534; }
-    .tag-danger { background: var(--danger-bg); color: #991b1b; }
-    .tag-info { background: #dbeafe; color: #1e40af; }
-    .tag-neutral { background: #f1f5f9; color: #475569; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 800; white-space: nowrap; }
+    .b-ok { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .b-no { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .b-warn { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    .b-info { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
 
-    .num-right { text-align: right; font-variant-numeric: tabular-nums; }
-    .bold { font-weight: 700; }
-    .sub-text { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
+    /* HIDDEN OFFSCREEN EXPORT STUDIO (UNTUK PNG ANTI-TERPOTONG) */
+    #pngExportStage { position: fixed; left: -9999px; top: 0; width: 980px; background: #ffffff; color: #0f172a; padding: 24px 28px; z-index: -1; }
+    .png-header { border-bottom: 3px solid #0f172a; padding-bottom: 12px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: flex-start; }
+    .png-org { font-size: 11px; font-weight: 800; color: #1d4ed8; letter-spacing: 0.6px; text-transform: uppercase; }
+    .png-title { font-size: 20px; font-weight: 900; color: #0f172a; margin: 3px 0; }
+    .png-meta { font-size: 12px; color: #475569; font-weight: 600; }
+    .png-stamp { text-align: right; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; }
+    .png-summary-strip { display: flex; gap: 10px; margin-bottom: 14px; }
+    .png-sum-box { flex: 1; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; }
+    .png-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .png-table th { background: #0f172a; color: #fff; padding: 8px 10px; text-align: left; font-size: 11px; }
+    .png-table td { padding: 7px 10px; border-bottom: 1px solid #cbd5e1; }
+    .png-footer { margin-top: 14px; padding-top: 10px; border-top: 1px dashed #94a3b8; display: flex; justify-content: space-between; font-size: 11px; color: #475569; font-weight: 700; }
 
-    /* ==================== MODAL PREVIEW FOTO ==================== */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.78); z-index: 9990;
-      display: none; align-items: center; justify-content: center; padding: 16px;
-    }
-    .modal-box {
-      background: #fff; border-radius: 14px; max-width: 680px; width: 100%;
-      overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.35);
-    }
-    .modal-head {
-      padding: 12px 16px; border-bottom: 1px solid #e2e8f0;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .modal-body { padding: 16px; text-align: center; background: #0f172a; }
-    .modal-body img { max-width: 100%; max-height: 72vh; border-radius: 8px; }
+    /* MODAL PREVIEW FOTO & BUKTI */
+    #photoModal { position: fixed; inset: 0; background: rgba(15,23,42,0.82); z-index: 9995; display: none; align-items: center; justify-content: center; padding: 16px; }
+    .photo-modal-box { background: #fff; max-width: 540px; width: 100%; border-radius: 14px; padding: 14px; text-align: center; }
+    .photo-modal-box img { max-width: 100%; max-height: 70vh; border-radius: 8px; border: 1px solid #cbd5e1; }
 
-    .toast {
-      position: fixed; bottom: 20px; right: 20px; background: #0f172a; color: #fff;
-      padding: 11px 18px; border-radius: 10px; font-size: 13px; font-weight: 700;
-      z-index: 10000; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.28);
-    }
+    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #0f172a; color: #fff; padding: 11px 20px; border-radius: 999px; font-size: 13px; font-weight: 700; z-index: 10000; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.3); max-width: 92vw; text-align: center; }
   </style>
 </head>
 <body>
 
-<!-- LAYAR KUNCI PIN ADMIN PUSAT ASR -->
-<div id="pinOverlay">
+<!-- GERBANG PIN ADMIN ASR -->
+<div id="pinGate">
   <div class="pin-card">
-    <span class="pin-badge">AKSES TERBATAS ADMIN ASR</span>
-    <h2 class="pin-title">Dashboard Pusat ASR Cianjur</h2>
-    <p class="pin-sub">Masukkan PIN Admin untuk membuka antrean POS, stok gerai, setoran omset & approval PO.</p>
-    <input
-      type="password"
-      inputmode="numeric"
-      maxlength="12"
-      id="pinInput"
-      class="pin-input"
-      placeholder="••••••"
-      onkeydown="if(event.key==='Enter') verifyAdminPin()"
-    />
-    <div id="pinErrorMsg" class="pin-error"></div>
-    <button type="button" class="btn btn-primary" style="width:100%; padding:12px; font-size:14px;" onclick="verifyAdminPin()">
-      Buka Dashboard ASR
-    </button>
+    <div style="font-size:11px; font-weight:800; color:#1d4ed8; letter-spacing:0.6px;">PT AGRINAS PANGAN NUSANTARA</div>
+    <h2 style="margin:6px 0 4px; font-size:19px; color:#0f172a;">Dashboard Pusat ASR</h2>
+    <p style="margin:0; font-size:12.5px; color:#64748b;">Masukkan PIN Admin Operasional KDKMP Cianjur</p>
+    <input type="password" id="pinInput" class="pin-input" maxlength="6" inputmode="numeric" placeholder="••••••" onkeyup="if(event.key==='Enter') checkPin()" />
+    <button type="button" class="btn btn-primary" style="width:100%; padding:12px; font-size:14px;" onclick="checkPin()">Buka Dashboard ASR</button>
   </div>
 </div>
 
+<!-- MODAL LIHAT FOTO BUKTI -->
+<div id="photoModal" onclick="if(event.target===this) this.style.display='none'">
+  <div class="photo-modal-box">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <strong id="photoModalTitle" style="font-size:14px;">Lampiran Bukti</strong>
+      <button type="button" class="btn btn-danger btn-sm" onclick="document.getElementById('photoModal').style.display='none'">Tutup</button>
+    </div>
+    <img id="photoModalImg" src="" alt="Bukti Lampiran" />
+  </div>
+</div>
+
+<!-- STUDIO RENDER PNG OFFSCREEN -->
+<div id="pngExportStage"></div>
+
 <header>
-  <div class="header-inner">
-    <div>
-      <h1 class="brand-title">DASHBOARD PUSAT ASR CIANJUR — MONITORING KDKMP</h1>
-      <div class="brand-sub">PT Agrinas Pangan Nusantara • Kontrol Antrean POS, Stok Sisa, Setoran Omset & PO</div>
-    </div>
-    <div class="header-actions">
-      <span id="connBadge" class="badge-conn conn-sandbox">Mode Sandbox Lokal</span>
-      <button type="button" class="btn btn-outline-light" onclick="refreshAllData()">Muat Ulang Data</button>
-      <button type="button" class="btn btn-success" onclick="exportActiveTabCsv()">Export CSV Tab Ini</button>
-      <button type="button" class="btn btn-danger-soft" onclick="lockDashboard()">Kunci Layar</button>
-    </div>
+  <div>
+    <h1 class="h-title">DASHBOARD PUSAT ASR — KDKMP KABUPATEN CIANJUR</h1>
+    <div class="h-sub">PT Agrinas Pangan Nusantara • Validasi Data, Monitoring Kepatuhan & Laporan Pimpinan</div>
+  </div>
+  <div class="h-actions">
+    <span id="connStatus" class="badge-conn conn-local">Mode Lokal</span>
+    <button type="button" class="btn btn-outline btn-sm" style="background:#fff;" onclick="loadAllData()">↻ Muat Ulang Data</button>
   </div>
 </header>
 
-<div class="container">
-
-  <!-- ==================== 4 KARTU RINGKASAN EKSEKUTIF ==================== -->
-  <div class="kpi-grid">
-    <div class="kpi-card kpi-amber" onclick="jumpToDoPending()">
-      <div class="kpi-label">Antrean Input Mesin POS</div>
-      <div class="kpi-val" id="kpiPendingPos">0 DO</div>
-      <div class="kpi-sub" id="kpiPendingPosSub">Barang masuk belum diinput ke POS</div>
-    </div>
-    <div class="kpi-card kpi-blue" onclick="switchDashTab('panel-sisa', document.getElementById('tabBtnSisa'))">
-      <div class="kpi-label">Laporan Stok Sisa Hari Ini</div>
-      <div class="kpi-val" id="kpiSisaToday">0 Item</div>
-      <div class="kpi-sub" id="kpiSisaTodaySub">Audit fisik gerai tercatat</div>
-    </div>
-    <div class="kpi-card kpi-green" onclick="switchDashTab('panel-omset', document.getElementById('tabBtnOmset'))">
-      <div class="kpi-label">Total Setoran Tervalidasi</div>
-      <div class="kpi-val" id="kpiTotalTransfer">Rp 0</div>
-      <div class="kpi-sub" id="kpiOmsetSub">Menunggu TF H+1: 0 laporan</div>
-    </div>
-    <div class="kpi-card kpi-purple" onclick="switchDashTab('panel-po', document.getElementById('tabBtnPo'))">
-      <div class="kpi-label">Pengajuan PO Menunggu</div>
-      <div class="kpi-val" id="kpiPendingPo">0 PO</div>
-      <div class="kpi-sub">Perlu persetujuan / terbit DO</div>
-    </div>
+<!-- FILTER GLOBAL -->
+<div class="filter-bar">
+  <div class="f-group">
+    <label>Tanggal Pantauan</label>
+    <input type="date" id="fltTanggal" onchange="renderAllTabs()" />
   </div>
-
-  <!-- ==================== BAR FILTER GLOBAL ==================== -->
-  <div class="filter-card">
-    <div class="filter-group">
-      <label>Filter Kecamatan</label>
-      <select id="fltKecamatan" onchange="onKecamatanFilterChange()">
-        <option value="ALL">Semua Kecamatan</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label>Filter Gerai KDKMP</label>
-      <select id="fltKdkmp" onchange="renderAllTables()">
-        <option value="ALL">Semua Gerai KDKMP</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label>Filter Komoditas</label>
-      <select id="fltKategori" onchange="renderAllTables()">
-        <option value="ALL">Semua Komoditas</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label>Filter Tanggal</label>
-      <input type="date" id="fltTanggal" onchange="renderAllTables()" />
-    </div>
-    <div class="filter-group">
-      <label>Pencarian Cepat</label>
-      <input type="text" id="fltSearch" placeholder="Cari No. DO, nama barang, manager..." oninput="renderAllTables()" />
-    </div>
-    <div>
-      <button type="button" class="btn btn-outline" onclick="resetFilters()">Reset Filter</button>
-    </div>
+  <div class="f-group">
+    <label>Mode Periode</label>
+    <select id="fltPeriode" onchange="renderAllTabs()">
+      <option value="DAY">Harian (Sesuai Tanggal)</option>
+      <option value="ALL">Semua Riwayat Data</option>
+    </select>
   </div>
-
-  <!-- ==================== 5 TAB UTAMA DASHBOARD ==================== -->
-  <div class="tabs-bar">
-    <button id="tabBtnDo" class="tab-btn active" onclick="switchDashTab('panel-do', this)">
-      1. Barang Masuk (DO) — Input POS
-      <span id="badgeTabDo" class="tab-badge tab-badge-alert">0</span>
-    </button>
-    <button id="tabBtnSisa" class="tab-btn" onclick="switchDashTab('panel-sisa', this)">
-      2. Log Stok Sisa Harian
-      <span id="badgeTabSisa" class="tab-badge">0</span>
-    </button>
-    <button id="tabBtnRekap" class="tab-btn" onclick="switchDashTab('panel-rekap', this)">
-      3. Rekap Stok Gerai
-      <span id="badgeTabRekap" class="tab-badge">0</span>
-    </button>
-    <button id="tabBtnOmset" class="tab-btn" onclick="switchDashTab('panel-omset', this)">
-      4. Setoran Omset & Struk
-      <span id="badgeTabOmset" class="tab-badge">0</span>
-    </button>
-    <button id="tabBtnPo" class="tab-btn" onclick="switchDashTab('panel-po', this)">
-      5. Rencana & Approval PO
-      <span id="badgeTabPo" class="tab-badge">0</span>
-    </button>
+  <div class="f-group">
+    <label>Filter Kecamatan</label>
+    <select id="fltKecamatan" onchange="renderAllTabs()">
+      <option value="ALL">Semua Kecamatan</option>
+    </select>
   </div>
-
-  <!-- ==================== PANEL 1: BARANG MASUK (DO) UNTUK ADMIN POS ==================== -->
-  <div id="panel-do" class="panel active">
-    <div class="card-panel">
-      <div class="panel-toolbar">
-        <div class="pill-group">
-          <button type="button" id="pillPosBelum" class="sub-pill active-warn" onclick="setPosStatusFilter('Belum Input POS')">
-            Belum Input POS
-          </button>
-          <button type="button" id="pillPosSudah" class="sub-pill" onclick="setPosStatusFilter('Sudah Input POS')">
-            Sudah Input POS
-          </button>
-          <button type="button" id="pillPosAll" class="sub-pill" onclick="setPosStatusFilter('ALL')">
-            Semua Riwayat DO
-          </button>
-        </div>
-        <div style="font-size:12px; color:#475569;">
-          Klik tombol <strong>Sudah Input POS</strong> setelah saldo DO dimasukkan ke mesin kasir POS gerai.
-        </div>
-      </div>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Tgl Terima / Input</th>
-              <th>Gerai KDKMP</th>
-              <th>Supplier & No. DO</th>
-              <th>Komoditas & Barang</th>
-              <th class="num-right">Qty Masuk</th>
-              <th>Surat Jalan</th>
-              <th>Status Mesin POS</th>
-              <th>Aksi Admin POS</th>
-            </tr>
-          </thead>
-          <tbody id="tbodyDo"></tbody>
-        </table>
-      </div>
-    </div>
+  <div class="f-group">
+    <label>Cari Gerai / Barang</label>
+    <input type="text" id="fltSearch" placeholder="Ketik nama KDKMP / barang..." oninput="renderAllTabs()" />
   </div>
-
-  <!-- ==================== PANEL 2: LOG STOK SISA HARIAN ==================== -->
-  <div id="panel-sisa" class="panel">
-    <div class="card-panel">
-      <div class="panel-toolbar">
-        <strong style="font-size:13px; color:#0f172a;">Riwayat Audit Fisik Stok Sisa Tutup Gerai (Terpisah dari Barang Masuk DO)</strong>
-        <span style="font-size:12px; color:#64748b;" id="infoCountSisa">0 baris</span>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Tgl Stok Sisa</th>
-              <th>Waktu Lapor</th>
-              <th>Gerai KDKMP</th>
-              <th>Komoditas</th>
-              <th>Kode & Nama Barang</th>
-              <th class="num-right">Stok Fisik Sisa</th>
-              <th>Catatan Manager</th>
-            </tr>
-          </thead>
-          <tbody id="tbodySisa"></tbody>
-        </table>
-      </div>
-    </div>
+  <div class="f-group">
+    <label>Nama Validator ASR (PDF/Foto)</label>
+    <input type="text" id="asrValidatorName" value="Admin Pusat ASR Cianjur" oninput="localStorage.setItem('asr_validator_name', this.value)" />
   </div>
-
-  <!-- ==================== PANEL 3: REKAP STOK GERAI TERKINI ==================== -->
-  <div id="panel-rekap" class="panel">
-    <div class="card-panel">
-      <div class="panel-toolbar">
-        <div class="pill-group">
-          <button type="button" id="pillStokAll" class="sub-pill active" onclick="setRekapFilter('ALL')">Semua Stok Gerai</button>
-          <button type="button" id="pillStokKritis" class="sub-pill" onclick="setRekapFilter('KRITIS')">Stok Menipis / Kosong</button>
-        </div>
-        <span style="font-size:12px; color:#64748b;">Saldo terkini hasil akumulasi DO masuk & kalibrasi Stok Sisa Harian</span>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Kecamatan</th>
-              <th>Nama KDKMP</th>
-              <th>Kategori</th>
-              <th>Kode & Nama Barang</th>
-              <th class="num-right">Stok Akhir</th>
-              <th>Status Stok</th>
-              <th>Update Terakhir</th>
-            </tr>
-          </thead>
-          <tbody id="tbodyRekap"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== PANEL 4: SETORAN OMSET & BUKTI FOTO ==================== -->
-  <div id="panel-omset" class="panel">
-    <div class="card-panel">
-      <div class="panel-toolbar">
-        <div class="pill-group">
-          <button type="button" id="pillOmsetAll" class="sub-pill active" onclick="setOmsetFilter('ALL')">Semua Laporan</button>
-          <button type="button" id="pillOmsetTunda" class="sub-pill" onclick="setOmsetFilter('TUNDA')">Menunggu TF H+1</button>
-          <button type="button" id="pillOmsetSelisih" class="sub-pill" onclick="setOmsetFilter('SELISIH')">Ada Selisih Tunai</button>
-        </div>
-        <div style="font-size:12px; font-weight:700; color:#0f172a;" id="summaryOmsetBar">
-          Total Omset: Rp 0 • Total Transfer: Rp 0
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Tgl Omset & Shift</th>
-              <th>Gerai KDKMP</th>
-              <th class="num-right">Omset Struk</th>
-              <th class="num-right">Dana Transfer</th>
-              <th class="num-right">Selisih Tunai</th>
-              <th>Rekening Tujuan</th>
-              <th>Bukti Foto</th>
-              <th>Status & Catatan</th>
-            </tr>
-          </thead>
-          <tbody id="tbodyOmset"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== PANEL 5: RENCANA & APPROVAL PO ==================== -->
-  <div id="panel-po" class="panel">
-    <div class="card-panel">
-      <div class="panel-toolbar">
-        <div class="pill-group">
-          <button type="button" id="pillPoDiajukan" class="sub-pill active-warn" onclick="setPoFilter('Diajukan')">Menunggu Approval</button>
-          <button type="button" id="pillPoDisetujui" class="sub-pill" onclick="setPoFilter('Disetujui ASR')">Disetujui / DO Terbit</button>
-          <button type="button" id="pillPoAll" class="sub-pill" onclick="setPoFilter('ALL')">Semua Pengajuan PO</button>
-        </div>
-        <span style="font-size:12px; color:#64748b;">Status yang diubah otomatis tampil di HP Manager KDKMP</span>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Tgl Butuh</th>
-              <th>Gerai KDKMP</th>
-              <th>Barang Pesanan</th>
-              <th class="num-right">Sisa Stok</th>
-              <th class="num-right">Jumlah PO</th>
-              <th>Catatan</th>
-              <th>Status PO</th>
-              <th>Aksi Approval ASR</th>
-            </tr>
-          </thead>
-          <tbody id="tbodyPo"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
 </div>
 
-<!-- MODAL PREVIEW FOTO SANDBOX / LOKAL -->
-<div id="photoModal" class="modal-overlay" onclick="if(event.target===this) closePhotoModal()">
-  <div class="modal-box">
-    <div class="modal-head">
-      <strong id="photoModalTitle" style="font-size:14px;">Pratinjau Dokumen</strong>
-      <button type="button" class="btn btn-outline btn-xs" onclick="closePhotoModal()">Tutup</button>
+<div class="container">
+  <!-- 5 KARTU RINGKASAN KPI -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-lbl">Kepatuhan Gerai</div>
+      <div class="kpi-val" id="kpiPatuh">0 / 0</div>
+      <div class="kpi-sub" id="kpiPatuhSub">Gerai lengkap 4 laporan</div>
     </div>
-    <div class="modal-body">
-      <img id="photoModalImg" src="" alt="Preview Dokumen" />
+    <div class="kpi-card">
+      <div class="kpi-lbl">Antrean Input POS (DO)</div>
+      <div class="kpi-val" id="kpiDoPending" style="color:#d97706;">0</div>
+      <div class="kpi-sub">Barang masuk belum diinput POS</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl">Total Omset Sales</div>
+      <div class="kpi-val" id="kpiOmset" style="color:#059669;">Rp 0</div>
+      <div class="kpi-sub" id="kpiTransferSub">Transfer masuk: Rp 0</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl">Gerai Belum Setor</div>
+      <div class="kpi-val" id="kpiBelumSetor" style="color:#dc2626;">0 Gerai</div>
+      <div class="kpi-sub">Perlu tindak lanjut grup WA</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl">Antrean Approval PO</div>
+      <div class="kpi-val" id="kpiPoPending" style="color:#1d4ed8;">0 Item</div>
+      <div class="kpi-sub">Menunggu persetujuan ASR</div>
+    </div>
+  </div>
+
+  <!-- 6 TAB NAVIGASI -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="openTab('tab-kepatuhan', this)">1. Matriks Kepatuhan Gerai</button>
+    <button class="tab-btn" onclick="openTab('tab-masuk', this)">2. Barang Masuk (DO)</button>
+    <button class="tab-btn" onclick="openTab('tab-sales', this)">3. Validasi Sales & Setoran</button>
+    <button class="tab-btn" onclick="openTab('tab-sisa', this)">4. Audit Stok Sisa</button>
+    <button class="tab-btn" onclick="openTab('tab-rekap', this)">5. Rekap Stok Gerai</button>
+    <button class="tab-btn" onclick="openTab('tab-po', this)">6. Approval PO</button>
+  </div>
+
+  <!-- TAB 1: MATRIKS KEPATUHAN HARIAN GERAI -->
+  <div id="tab-kepatuhan" class="panel active">
+    <div class="panel-head">
+      <div>
+        <h3 class="panel-title">Matriks Kepatuhan Laporan Harian Seluruh Gerai KDKMP</h3>
+        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Pantau gerai yang belum setor, belum input barang masuk, stok sisa, atau PO dalam 1 tampilan</div>
+      </div>
+      <div class="export-toolbar">
+        <select id="fltStatusKepatuhan" onchange="renderKepatuhanTab()" style="padding:7px 9px; border-radius:8px; border:1.5px solid #94a3b8; font-size:12px; font-weight:700;">
+          <option value="ALL">Tampilkan: Semua Gerai</option>
+          <option value="INCOMPLETE">Khusus Gerai Belum Lengkap (Tindak Lanjut)</option>
+          <option value="BELUM_SETOR">Khusus Belum Setor Sales</option>
+          <option value="BELUM_PO">Khusus Belum Ajukan PO</option>
+          <option value="COMPLETE">Khusus Sudah Lengkap Semua</option>
+        </select>
+        <button type="button" class="btn btn-success" onclick="exportTabToPng('kepatuhan')">Export Foto WA (PNG)</button>
+        <button type="button" class="btn btn-dark" onclick="exportTabToPdf('kepatuhan')">Export Laporan PDF</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Kecamatan</th>
+            <th>Nama Gerai KDKMP</th>
+            <th>Manager</th>
+            <th>1. Barang Masuk</th>
+            <th>2. Stok Sisa</th>
+            <th>3. Sales & Setor</th>
+            <th>4. Rencana PO</th>
+            <th>Status Akhir</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyKepatuhan"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 2: BARANG MASUK (DO) -->
+  <div id="tab-masuk" class="panel">
+    <div class="panel-head">
+      <div>
+        <h3 class="panel-title">Log Penerimaan Barang Masuk (DO) & Antrean Input POS</h3>
+        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Validasi barang datang dari Bulog, Pertamina, Pupuk, Minyakita & ID FOOD</div>
+      </div>
+      <div class="export-toolbar">
+        <select id="fltStatusMasuk" onchange="renderMasukTab()" style="padding:7px 9px; border-radius:8px; border:1.5px solid #94a3b8; font-size:12px; font-weight:700;">
+          <option value="ALL">Semua Status DO</option>
+          <option value="Belum Input POS">Khusus Belum Input POS</option>
+          <option value="Sudah Input POS">Sudah Input POS</option>
+        </select>
+        <button type="button" class="btn btn-success" onclick="exportTabToPng('masuk')">Export Foto WA (PNG)</button>
+        <button type="button" class="btn btn-dark" onclick="exportTabToPdf('masuk')">Export Laporan PDF</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Gerai KDKMP</th>
+            <th>Supplier / No. DO</th>
+            <th>Nama Barang</th>
+            <th>Jumlah</th>
+            <th>Foto DO</th>
+            <th>Status POS ASR</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyMasuk"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 3: VALIDASI SALES & SETORAN -->
+  <div id="tab-sales" class="panel">
+    <div class="panel-head">
+      <div>
+        <h3 class="panel-title">Laporan Sales & Bukti Setoran Transfer Gerai</h3>
+        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Cocokkan omset closeshift dengan transfer masuk ke rekening PT Agrinas Pangan Nusantara</div>
+      </div>
+      <div class="export-toolbar">
+        <select id="fltStatusSales" onchange="renderSalesTab()" style="padding:7px 9px; border-radius:8px; border:1.5px solid #94a3b8; font-size:12px; font-weight:700;">
+          <option value="ALL">Semua Laporan Sales</option>
+          <option value="TUNDA">Khusus TF Menyusul / Belum Lunas</option>
+          <option value="LUNAS">Sudah Setor & Sesuai</option>
+        </select>
+        <button type="button" class="btn btn-success" onclick="exportTabToPng('sales')">Export Foto WA (PNG)</button>
+        <button type="button" class="btn btn-dark" onclick="exportTabToPdf('sales')">Export Laporan PDF</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Tanggal / Shift</th>
+            <th>Gerai KDKMP</th>
+            <th>Omset Struk</th>
+            <th>Nominal Transfer</th>
+            <th>Selisih</th>
+            <th>Rekening Tujuan</th>
+            <th>Bukti Foto</th>
+            <th>Keterangan</th>
+          </tr>
+        </thead>
+        <tbody id="tbodySales"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 4: AUDIT STOK SISA -->
+  <div id="tab-sisa" class="panel">
+    <div class="panel-head">
+      <div>
+        <h3 class="panel-title">Laporan Audit Fisik Stok Sisa Harian</h3>
+        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Catatan stok tutup gerai yang dikirim oleh Manager KDKMP</div>
+      </div>
+      <div class="export-toolbar">
+        <button type="button" class="btn btn-success" onclick="exportTabToPng('sisa')">Export Foto WA (PNG)</button>
+        <button type="button" class="btn btn-dark" onclick="exportTabToPdf('sisa')">Export Laporan PDF</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Kecamatan</th>
+            <th>Gerai KDKMP</th>
+            <th>Kategori</th>
+            <th>Nama Barang</th>
+            <th>Stok Sisa Fisik</th>
+            <th>Catatan</th>
+          </tr>
+        </thead>
+        <tbody id="tbodySisa"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 5: REKAP STOK GERAI -->
+  <div id="tab-rekap" class="panel">
+    <div class="panel-head">
+      <div>
+        <h3 class="panel-title">Posisi Stok Terkini Seluruh Gerai & Peringatan Stok Menipis</h3>
+        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Pantauan stok berjalan untuk dasar evaluasi pengajuan PO</div>
+      </div>
+      <div class="export-toolbar">
+        <select id="fltStatusRekap" onchange="renderRekapTab()" style="padding:7px 9px; border-radius:8px; border:1.5px solid #94a3b8; font-size:12px; font-weight:700;">
+          <option value="ALL">Semua Stok Gerai</option>
+          <option value="KRITIS">Khusus Stok Menipis / Habis</option>
+        </select>
+        <button type="button" class="btn btn-success" onclick="exportTabToPng('rekap')">Export Foto WA (PNG)</button>
+        <button type="button" class="btn btn-dark" onclick="exportTabToPdf('rekap')">Export Laporan PDF</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Kecamatan</th>
+            <th>Gerai KDKMP</th>
+            <th>Kategori</th>
+            <th>Nama Barang</th>
+            <th>Stok Terkini</th>
+            <th>Status Stok</th>
+            <th>Update Terakhir</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyRekap"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 6: APPROVAL PO -->
+  <div id="tab-po" class="panel">
+    <div class="panel-head">
+      <div>
+        <h3 class="panel-title">Daftar Pengajuan Perencanaan PO & Persetujuan Pusat ASR</h3>
+        <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Validasi dan setujui rencana order barang dari gerai KDKMP</div>
+      </div>
+      <div class="export-toolbar">
+        <select id="fltStatusPo" onchange="renderPoTab()" style="padding:7px 9px; border-radius:8px; border:1.5px solid #94a3b8; font-size:12px; font-weight:700;">
+          <option value="ALL">Semua Status PO</option>
+          <option value="Diajukan">Menunggu Approval (Diajukan)</option>
+          <option value="Disetujui ASR">Disetujui ASR</option>
+          <option value="DO Terbit">DO Terbit</option>
+        </select>
+        <button type="button" class="btn btn-success" onclick="exportTabToPng('po')">Export Foto WA (PNG)</button>
+        <button type="button" class="btn btn-dark" onclick="exportTabToPdf('po')">Export Laporan PDF</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Target Kirim</th>
+            <th>Gerai KDKMP</th>
+            <th>Nama Barang</th>
+            <th>Stok Saat PO</th>
+            <th>Jumlah PO</th>
+            <th>Status ASR</th>
+            <th>Aksi Approval</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyPo"></tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -527,10 +432,10 @@
 
 <script>
   // =========================================================================
-  // KONFIGURASI KEAMANAN & BACKEND
+  // KONFIGURASI BACKEND & PIN ADMIN ASR
   // =========================================================================
-  const ADMIN_PIN = "123456"; // Ubah PIN akses Admin Pusat ASR di sini
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMcyrtGHQ7sw2kvM2hUqqHOmxEYDXrzzOZyFXdq1uoeOvVIayE9vaH91Ufp3YidnEcCg/exec";    // Tempel URL Web App Google Apps Script (/exec) di sini
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMcyrtGHQ7sw2kvM2hUqqHOmxEYDXrzzOZyFXdq1uoeOvVIayE9vaH91Ufp3YidnEcCg/exec";
+  const ADMIN_PIN = "123456";
 
   const DEFAULT_KDKMP = [
     { Kecamatan: "Cibeber", Nama_KDKMP: "KDKMP Selagedang", Nama_Manager: "Abdurrahman Hidayatullah" },
@@ -541,690 +446,826 @@
     { Kecamatan: "Cipanas", Nama_KDKMP: "KDKMP Cipanas", Nama_Manager: "Manager Cipanas" }
   ];
 
-  const DEFAULT_BARANG = [
-    { Kode_Barang: "SPHP-01", Kategori: "Beras SPHP", Nama_Barang: "Beras SPHP Bulog (5 Kg)", Satuan: "Sak", Batas_Kritis: 20 },
-    { Kode_Barang: "GAS-01", Kategori: "Gas LPG 3kg", Nama_Barang: "Tabung Gas LPG 3 Kg", Satuan: "Tabung", Batas_Kritis: 15 },
-    { Kode_Barang: "PPK-01", Kategori: "Pupuk Subsidi", Nama_Barang: "Pupuk Urea Subsidi (50 Kg)", Satuan: "Zak", Batas_Kritis: 10 },
-    { Kode_Barang: "PPK-02", Kategori: "Pupuk Subsidi", Nama_Barang: "Pupuk NPK Phonska (50 Kg)", Satuan: "Zak", Batas_Kritis: 10 },
-    { Kode_Barang: "MYK-01", Kategori: "Minyakita", Nama_Barang: "Minyakita Pouch / Botol 1L", Satuan: "Liter", Batas_Kritis: 24 },
-    { Kode_Barang: "IDF-01", Kategori: "Produk ID FOOD", Nama_Barang: "Gula Pasir Kristal Putih 1 Kg", Satuan: "Kg", Batas_Kritis: 15 },
-    { Kode_Barang: "IDF-02", Kategori: "Produk ID FOOD", Nama_Barang: "Minyak Goreng ID FOOD 1L", Satuan: "Liter", Batas_Kritis: 15 },
-    { Kode_Barang: "IDF-03", Kategori: "Produk ID FOOD", Nama_Barang: "Tepung Terigu ID FOOD 1 Kg", Satuan: "Kg", Batas_Kritis: 15 },
-    { Kode_Barang: "IDF-04", Kategori: "Produk ID FOOD", Nama_Barang: "Daging Kerbau / Ayam Beku", Satuan: "Kg", Batas_Kritis: 10 }
-  ];
-
-  let dashState = {
-    activePanel: "panel-do",
-    posFilter: "Belum Input POS",
-    rekapFilter: "ALL",
-    omsetFilter: "ALL",
-    poFilter: "Diajukan",
-    masterKdkmp: [],
-    masterBarang: [],
-    penerimaanLogs: [],
-    stokSisaLogs: [],
-    rekapStok: [],
-    omsetLogs: [],
-    poList: []
+  let db = {
+    master_kdkmp: [],
+    master_barang: [],
+    penerimaan: [],
+    stok_sisa: [],
+    omset: [],
+    rekap_stok: [],
+    po_list: []
   };
 
-  // ==================== KONTROL PIN ADMIN ====================
-  function initPinLock() {
-    const unlocked = sessionStorage.getItem("asr_admin_unlocked") === "true";
-    const overlay = document.getElementById("pinOverlay");
-    if (unlocked) {
-      overlay.style.display = "none";
-      return true;
-    } else {
-      overlay.style.display = "flex";
-      setTimeout(() => document.getElementById("pinInput").focus(), 100);
-      return false;
-    }
-  }
+  let viewCache = {
+    kepatuhan: [],
+    masuk: [],
+    sales: [],
+    sisa: [],
+    rekap: [],
+    po: []
+  };
 
-  async function verifyAdminPin() {
-    const inp = document.getElementById("pinInput");
-    const errEl = document.getElementById("pinErrorMsg");
-    if (inp.value.trim() === String(ADMIN_PIN)) {
-      sessionStorage.setItem("asr_admin_unlocked", "true");
-      errEl.textContent = "";
-      inp.value = "";
-      document.getElementById("pinOverlay").style.display = "none";
-      await refreshAllData();
-    } else {
-      errEl.textContent = "PIN salah! Silakan masukkan PIN Admin ASR yang valid.";
-      inp.value = "";
-      inp.focus();
-    }
-  }
+  document.addEventListener("DOMContentLoaded", () => {
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
+    document.getElementById("fltTanggal").value = today;
 
-  function lockDashboard() {
-    sessionStorage.removeItem("asr_admin_unlocked");
-    document.getElementById("pinErrorMsg").textContent = "";
-    document.getElementById("pinInput").value = "";
-    document.getElementById("pinOverlay").style.display = "flex";
-    setTimeout(() => document.getElementById("pinInput").focus(), 100);
-  }
+    const savedValidator = localStorage.getItem("asr_validator_name");
+    if (savedValidator) document.getElementById("asrValidatorName").value = savedValidator;
 
-  document.addEventListener("DOMContentLoaded", async () => {
-    const badge = document.getElementById("connBadge");
-    if (SCRIPT_URL) {
-      badge.textContent = "Terhubung Live Google Sheets";
-      badge.className = "badge-conn conn-live";
-    }
-    if (initPinLock()) {
-      await refreshAllData();
+    if (sessionStorage.getItem("asr_unlocked") === "1") {
+      document.getElementById("pinGate").style.display = "none";
+      loadAllData();
     }
   });
 
-  async function refreshAllData() {
-    if (SCRIPT_URL) {
-      try {
-        showToast("Menyinkronkan data pusat ASR...");
-        const res = await fetch(SCRIPT_URL);
-        const data = await res.json();
-        if (data.status !== "success") throw new Error(data.message || "Gagal memuat data");
-
-        dashState.masterKdkmp = (data.master_kdkmp && data.master_kdkmp.length) ? data.master_kdkmp : DEFAULT_KDKMP;
-        dashState.masterBarang = (data.master_barang && data.master_barang.length) ? data.master_barang : DEFAULT_BARANG;
-        dashState.penerimaanLogs = data.penerimaan_logs || [];
-        dashState.stokSisaLogs = data.stok_sisa_logs || [];
-        dashState.rekapStok = data.rekap_stok || [];
-        dashState.omsetLogs = data.omset_logs || [];
-        dashState.poList = data.po_list || [];
-      } catch (err) {
-        alert("Gagal terhubung ke Google Sheets: " + err.message);
-      }
+  function checkPin() {
+    const val = document.getElementById("pinInput").value.trim();
+    if (val === ADMIN_PIN) {
+      sessionStorage.setItem("asr_unlocked", "1");
+      document.getElementById("pinGate").style.display = "none";
+      loadAllData();
     } else {
-      dashState.masterKdkmp = JSON.parse(localStorage.getItem("kdkmp_master_gerai") || "null") || DEFAULT_KDKMP;
-      dashState.masterBarang = JSON.parse(localStorage.getItem("kdkmp_master_barang") || "null") || DEFAULT_BARANG;
-      dashState.penerimaanLogs = JSON.parse(localStorage.getItem("kdkmp_penerimaan_logs") || "[]");
-      dashState.stokSisaLogs = JSON.parse(localStorage.getItem("kdkmp_stok_sisa_logs") || "[]");
-      dashState.rekapStok = JSON.parse(localStorage.getItem("kdkmp_rekap_stok") || "[]");
-      dashState.omsetLogs = JSON.parse(localStorage.getItem("kdkmp_omset_logs") || "[]");
-      dashState.poList = JSON.parse(localStorage.getItem("kdkmp_po_list") || "[]");
+      showToast("PIN Admin salah!");
+      document.getElementById("pinInput").value = "";
     }
-
-    populateFilterDropdowns();
-    renderAllTables();
   }
 
   function showToast(msg) {
     const el = document.getElementById("toast");
     el.textContent = msg;
     el.style.display = "block";
-    setTimeout(() => { el.style.display = "none"; }, 2600);
+    setTimeout(() => { el.style.display = "none"; }, 3200);
   }
 
-  function esc(str) {
-    return String(str ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
+  function formatRp(n) {
+    return "Rp " + (Number(n) || 0).toLocaleString("id-ID");
   }
 
-  function formatRp(num) {
-    return "Rp " + (Number(num) || 0).toLocaleString("id-ID");
+  function normDate(val) {
+    if (!val) return "";
+    const s = String(val).trim();
+    if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+    const d = new Date(s);
+    if (!isNaN(d.getTime())) return d.toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
+    return s.slice(0, 10);
   }
 
-  // ==================== FILTER DROPDOWNS ====================
-  function populateFilterDropdowns() {
-    const prevKec = document.getElementById("fltKecamatan").value;
-    const prevKat = document.getElementById("fltKategori").value;
-
-    const kecs = [...new Set(dashState.masterKdkmp.map(x => x.Kecamatan).filter(Boolean))].sort();
-    document.getElementById("fltKecamatan").innerHTML =
-      `<option value="ALL">Semua Kecamatan (${kecs.length})</option>` +
-      kecs.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join("");
-    if (kecs.includes(prevKec)) document.getElementById("fltKecamatan").value = prevKec;
-
-    onKecamatanFilterChange(false);
-
-    const kats = [...new Set(dashState.masterBarang.map(x => x.Kategori).filter(Boolean))];
-    document.getElementById("fltKategori").innerHTML =
-      `<option value="ALL">Semua Komoditas</option>` +
-      kats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
-    if (kats.includes(prevKat)) document.getElementById("fltKategori").value = prevKat;
+  function getWibTimestamp() {
+    return new Date().toLocaleString("id-ID", {
+      timeZone: "Asia/Jakarta",
+      day: "2-digit", month: "short", year: "numeric",
+      hour: "2-digit", minute: "2-digit"
+    }) + " WIB";
   }
 
-  function onKecamatanFilterChange(triggerRender = true) {
-    const selectedKec = document.getElementById("fltKecamatan").value;
-    const prevKdkmp = document.getElementById("fltKdkmp").value;
-    const list = selectedKec === "ALL"
-      ? dashState.masterKdkmp
-      : dashState.masterKdkmp.filter(x => x.Kecamatan === selectedKec);
-
-    document.getElementById("fltKdkmp").innerHTML =
-      `<option value="ALL">Semua Gerai (${list.length})</option>` +
-      list.map(g => `<option value="${esc(g.Nama_KDKMP)}">${esc(g.Nama_KDKMP)}</option>`).join("");
-
-    if (list.some(g => g.Nama_KDKMP === prevKdkmp)) {
-      document.getElementById("fltKdkmp").value = prevKdkmp;
+  async function loadAllData() {
+    const badge = document.getElementById("connStatus");
+    if (SCRIPT_URL) {
+      badge.textContent = "Menyinkronkan...";
+      try {
+        const res = await fetch(SCRIPT_URL, { redirect: "follow" });
+        const json = await res.json();
+        if (json.status === "success") {
+          db.master_kdkmp = json.master_kdkmp && json.master_kdkmp.length ? json.master_kdkmp : DEFAULT_KDKMP;
+          db.master_barang = json.master_barang || [];
+          db.penerimaan = json.penerimaan || [];
+          db.stok_sisa = json.stok_sisa || [];
+          db.omset = json.omset || [];
+          db.rekap_stok = json.rekap_stok || [];
+          db.po_list = json.po_list || [];
+          badge.textContent = "Terhubung Pusat ASR";
+          badge.className = "badge-conn conn-ok";
+        }
+      } catch (e) {
+        console.warn("Gagal fetch server, pakai lokal:", e);
+        loadFromLocalFallback();
+      }
+    } else {
+      loadFromLocalFallback();
     }
-    if (triggerRender) renderAllTables();
+
+    populateKecamatanFilter();
+    renderAllTabs();
   }
 
-  function resetFilters() {
-    document.getElementById("fltKecamatan").value = "ALL";
-    onKecamatanFilterChange(false);
-    document.getElementById("fltKdkmp").value = "ALL";
-    document.getElementById("fltKategori").value = "ALL";
-    document.getElementById("fltTanggal").value = "";
-    document.getElementById("fltSearch").value = "";
-    renderAllTables();
+  function loadFromLocalFallback() {
+    const badge = document.getElementById("connStatus");
+    badge.textContent = "Sandbox Lokal";
+    badge.className = "badge-conn conn-local";
+    db.master_kdkmp = JSON.parse(localStorage.getItem("kdkmp_master_gerai") || "null") || DEFAULT_KDKMP;
+    db.master_barang = JSON.parse(localStorage.getItem("kdkmp_master_barang") || "[]");
+    db.penerimaan = JSON.parse(localStorage.getItem("kdkmp_penerimaan_logs") || "[]");
+    db.stok_sisa = JSON.parse(localStorage.getItem("kdkmp_stok_sisa_logs") || "[]");
+    db.omset = JSON.parse(localStorage.getItem("kdkmp_omset_logs") || "[]");
+    db.rekap_stok = JSON.parse(localStorage.getItem("kdkmp_rekap_stok") || "[]");
+    db.po_list = JSON.parse(localStorage.getItem("kdkmp_po_list") || "[]");
+  }
+
+  function populateKecamatanFilter() {
+    const sel = document.getElementById("fltKecamatan");
+    const curr = sel.value;
+    const kecs = [...new Set(db.master_kdkmp.map(g => g.Kecamatan).filter(Boolean))].sort();
+    sel.innerHTML = `<option value="ALL">Semua Kecamatan (${kecs.length})</option>` +
+      kecs.map(k => `<option value="${k}">${k}</option>`).join("");
+    if (kecs.includes(curr)) sel.value = curr;
+  }
+
+  function openTab(tabId, btn) {
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById(tabId).classList.add("active");
+    btn.classList.add("active");
   }
 
   function getGlobalFilters() {
     return {
-      kec: document.getElementById("fltKecamatan").value,
-      kdkmp: document.getElementById("fltKdkmp").value,
-      kat: document.getElementById("fltKategori").value,
-      tgl: document.getElementById("fltTanggal").value,
-      q: document.getElementById("fltSearch").value.trim().toLowerCase()
+      tanggal: document.getElementById("fltTanggal").value,
+      periode: document.getElementById("fltPeriode").value,
+      kecamatan: document.getElementById("fltKecamatan").value,
+      search: document.getElementById("fltSearch").value.trim().toLowerCase()
     };
   }
 
-  function matchGlobalRow(row, f, dateField, extraSearchFields = []) {
-    if (f.kec !== "ALL" && String(row.Kecamatan || "") !== f.kec) return false;
-    if (f.kdkmp !== "ALL" && String(row.Nama_KDKMP || "") !== f.kdkmp) return false;
-    if (f.kat !== "ALL" && row.Kategori && String(row.Kategori) !== f.kat) return false;
-    if (f.tgl && dateField) {
-      const rowDate = String(row[dateField] || "").slice(0, 10);
-      if (rowDate !== f.tgl) return false;
+  function matchGlobalRow(row, dateField, f) {
+    if (f.periode === "DAY" && f.tanggal && dateField) {
+      if (normDate(row[dateField]) !== f.tanggal) return false;
     }
-    if (f.q) {
-      const hay = [
-        row.Nama_KDKMP, row.Kecamatan, row.Manager, row.Nama_Barang,
-        row.Kode_Barang, row.Kategori, ...extraSearchFields.map(k => row[k])
-      ].join(" ").toLowerCase();
-      if (!hay.includes(f.q)) return false;
+    if (f.kecamatan !== "ALL" && (row.Kecamatan || "") !== f.kecamatan) return false;
+    if (f.search) {
+      const hay = `${row.Nama_KDKMP || ""} ${row.Kecamatan || ""} ${row.Manager || ""} ${row.Nama_Barang || ""} ${row.No_DO || ""} ${row.Supplier || ""}`.toLowerCase();
+      if (!hay.includes(f.search)) return false;
     }
     return true;
   }
 
-  // ==================== NAVIGASI TAB & SUB-PILL ====================
-  function switchDashTab(panelId, btnEl) {
-    dashState.activePanel = panelId;
-    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-    document.getElementById(panelId).classList.add("active");
-    if (btnEl) btnEl.classList.add("active");
-  }
-
-  function jumpToDoPending() {
-    switchDashTab("panel-do", document.getElementById("tabBtnDo"));
-    setPosStatusFilter("Belum Input POS");
-  }
-
-  function setPosStatusFilter(status) {
-    dashState.posFilter = status;
-    document.getElementById("pillPosBelum").className = status === "Belum Input POS" ? "sub-pill active-warn" : "sub-pill";
-    document.getElementById("pillPosSudah").className = status === "Sudah Input POS" ? "sub-pill active" : "sub-pill";
-    document.getElementById("pillPosAll").className = status === "ALL" ? "sub-pill active" : "sub-pill";
-    renderDoTable();
-  }
-
-  function setRekapFilter(mode) {
-    dashState.rekapFilter = mode;
-    document.getElementById("pillStokAll").className = mode === "ALL" ? "sub-pill active" : "sub-pill";
-    document.getElementById("pillStokKritis").className = mode === "KRITIS" ? "sub-pill active-warn" : "sub-pill";
-    renderRekapTable();
-  }
-
-  function setOmsetFilter(mode) {
-    dashState.omsetFilter = mode;
-    document.getElementById("pillOmsetAll").className = mode === "ALL" ? "sub-pill active" : "sub-pill";
-    document.getElementById("pillOmsetTunda").className = mode === "TUNDA" ? "sub-pill active-warn" : "sub-pill";
-    document.getElementById("pillOmsetSelisih").className = mode === "SELISIH" ? "sub-pill active-warn" : "sub-pill";
-    renderOmsetTable();
-  }
-
-  function setPoFilter(mode) {
-    dashState.poFilter = mode;
-    document.getElementById("pillPoDiajukan").className = mode === "Diajukan" ? "sub-pill active-warn" : "sub-pill";
-    document.getElementById("pillPoDisetujui").className = mode === "Disetujui ASR" ? "sub-pill active" : "sub-pill";
-    document.getElementById("pillPoAll").className = mode === "ALL" ? "sub-pill active" : "sub-pill";
-    renderPoTable();
-  }
-
-  // ==================== RENDER SEMUA TABEL & KPI ====================
-  function renderAllTables() {
+  function renderAllTabs() {
+    renderKepatuhanTab();
+    renderMasukTab();
+    renderSalesTab();
+    renderSisaTab();
+    renderRekapTab();
+    renderPoTab();
     updateKpiCards();
-    renderDoTable();
-    renderSisaTable();
-    renderRekapTable();
-    renderOmsetTable();
-    renderPoTable();
   }
 
-  function updateKpiCards() {
-    const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
-
-    const pendingDo = dashState.penerimaanLogs.filter(r => (r.Status_Input_POS || "Belum Input POS") === "Belum Input POS");
-    document.getElementById("kpiPendingPos").textContent = `${pendingDo.length} DO`;
-    document.getElementById("badgeTabDo").textContent = pendingDo.length;
-
-    const sisaToday = dashState.stokSisaLogs.filter(r => String(r.Tanggal || "").slice(0, 10) === today);
-    const uniqueGeraiSisa = new Set(sisaToday.map(r => r.Nama_KDKMP)).size;
-    document.getElementById("kpiSisaToday").textContent = `${sisaToday.length} Item`;
-    document.getElementById("kpiSisaTodaySub").textContent = `Dari ${uniqueGeraiSisa} gerai melapor hari ini`;
-
-    const totalTf = dashState.omsetLogs.reduce((acc, r) => acc + (Number(r.Nominal_Transfer) || 0), 0);
-    const tundaCount = dashState.omsetLogs.filter(r => String(r.Metode_Rekening || "").includes("Menyusul")).length;
-    document.getElementById("kpiTotalTransfer").textContent = formatRp(totalTf);
-    document.getElementById("kpiOmsetSub").textContent = `Menunggu TF H+1: ${tundaCount} laporan`;
-
-    const pendingPo = dashState.poList.filter(p => (p.Status_PO || "Diajukan") === "Diajukan");
-    document.getElementById("kpiPendingPo").textContent = `${pendingPo.length} PO`;
-    document.getElementById("badgeTabPo").textContent = pendingPo.length;
-  }
-
-  // ==================== 1. TABEL BARANG MASUK (DO) + TOMBOL INPUT POS ====================
-  function renderDoTable() {
+  // ==================== 1. TAB MATRIKS KEPATUHAN ====================
+  function renderKepatuhanTab() {
     const f = getGlobalFilters();
-    const rows = dashState.penerimaanLogs.filter(r => {
-      if (!matchGlobalRow(r, f, "Tanggal_Terima", ["No_DO", "Supplier", "ID_Log", "Catatan"])) return false;
-      const st = r.Status_Input_POS || "Belum Input POS";
-      if (dashState.posFilter !== "ALL" && st !== dashState.posFilter) return false;
+    const tgl = f.tanggal;
+    const stFilter = document.getElementById("fltStatusKepatuhan").value;
+
+    const geraiFiltered = db.master_kdkmp.filter(g => {
+      if (f.kecamatan !== "ALL" && g.Kecamatan !== f.kecamatan) return false;
+      if (f.search) {
+        const hay = `${g.Nama_KDKMP} ${g.Kecamatan} ${g.Nama_Manager}`.toLowerCase();
+        if (!hay.includes(f.search)) return false;
+      }
       return true;
     });
 
-    const tbody = document.getElementById("tbodyDo");
-    if (rows.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:24px; color:#64748b;">Tidak ada data Barang Masuk (DO) sesuai filter.</td></tr>`;
+    const matrix = geraiFiltered.map(g => {
+      const hasMasuk = db.penerimaan.some(r => r.Nama_KDKMP === g.Nama_KDKMP && (!tgl || normDate(r.Tanggal_Terima) === tgl));
+      const hasSisa = db.stok_sisa.some(r => r.Nama_KDKMP === g.Nama_KDKMP && (!tgl || normDate(r.Tanggal) === tgl));
+      const salesRows = db.omset.filter(r => r.Nama_KDKMP === g.Nama_KDKMP && (!tgl || normDate(r.Tanggal) === tgl));
+      const hasPo = db.po_list.some(r => r.Nama_KDKMP === g.Nama_KDKMP && (!tgl || normDate(r.Waktu_Pengajuan) === tgl || normDate(r.Tanggal_Kebutuhan) >= tgl));
+
+      let salesStatus = "BELUM";
+      if (salesRows.length > 0) {
+        const totalOmset = salesRows.reduce((a, b) => a + (Number(b.Nominal_Omset) || 0), 0);
+        const totalTf = salesRows.reduce((a, b) => a + (Number(b.Nominal_Transfer) || 0), 0);
+        salesStatus = (totalTf > 0 && totalTf >= totalOmset) ? "SUDAH" : "TUNDA_TF";
+      }
+
+      const isComplete = hasMasuk && hasSisa && salesStatus === "SUDAH" && hasPo;
+      return {
+        Kecamatan: g.Kecamatan,
+        Nama_KDKMP: g.Nama_KDKMP,
+        Manager: g.Nama_Manager || "-",
+        hasMasuk,
+        hasSisa,
+        salesStatus,
+        hasPo,
+        isComplete
+      };
+    });
+
+    const finalRows = matrix.filter(m => {
+      if (stFilter === "INCOMPLETE") return !m.isComplete;
+      if (stFilter === "BELUM_SETOR") return m.salesStatus !== "SUDAH";
+      if (stFilter === "BELUM_PO") return !m.hasPo;
+      if (stFilter === "COMPLETE") return m.isComplete;
+      return true;
+    });
+
+    viewCache.kepatuhan = finalRows;
+    const tbody = document.getElementById("tbodyKepatuhan");
+    if (finalRows.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:18px; color:#64748b;">Tidak ada gerai yang cocok dengan filter kepatuhan.</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = rows.map(r => {
-      const statusPos = r.Status_Input_POS || "Belum Input POS";
-      const isPending = statusPos === "Belum Input POS";
-      const rowClass = isPending ? "row-pending-pos" : "";
-      const fotoLink = renderPhotoAction(r.Link_Foto_DO, `Surat Jalan DO - ${r.Nama_KDKMP}`);
-
-      const actionBtn = isPending
-        ? `<button type="button" class="btn btn-success btn-xs" onclick="togglePosStatus('${esc(r.ID_Log)}', 'Sudah Input POS', this)">
-             Sudah Input POS
-           </button>`
-        : `<button type="button" class="btn btn-outline btn-xs" onclick="togglePosStatus('${esc(r.ID_Log)}', 'Belum Input POS', this)">
-             Batalkan
-           </button>`;
+    tbody.innerHTML = finalRows.map((r, i) => {
+      const bMasuk = r.hasMasuk ? `<span class="badge b-ok">✓ Sudah</span>` : `<span class="badge b-no">✕ Belum</span>`;
+      const bSisa = r.hasSisa ? `<span class="badge b-ok">✓ Sudah</span>` : `<span class="badge b-no">✕ Belum</span>`;
+      const bSales = r.salesStatus === "SUDAH"
+        ? `<span class="badge b-ok">✓ Lunas</span>`
+        : (r.salesStatus === "TUNDA_TF" ? `<span class="badge b-warn">⏳ TF H+1</span>` : `<span class="badge b-no">✕ Belum</span>`);
+      const bPo = r.hasPo ? `<span class="badge b-ok">✓ Sudah</span>` : `<span class="badge b-no">✕ Belum</span>`;
+      const bEnd = r.isComplete ? `<span class="badge b-ok">LENGKAP</span>` : `<span class="badge b-no">PERLU TINDAK LANJUT</span>`;
 
       return `
-        <tr class="${rowClass}">
-          <td>
-            <span class="bold">${esc(String(r.Tanggal_Terima || "").slice(0, 10))}</span>
-            <span class="sub-text">${esc(r.Waktu_Input || "-")}</span>
-          </td>
-          <td>
-            <span class="bold">${esc(r.Nama_KDKMP)}</span>
-            <span class="sub-text">Kec. ${esc(r.Kecamatan)} • ${esc(r.Manager || "-")}</span>
-          </td>
-          <td>
-            <span class="bold">${esc(r.Supplier || "-")}</span>
-            <span class="sub-text">No. DO: ${esc(r.No_DO || "-")}</span>
-          </td>
-          <td>
-            <span class="tag tag-info">${esc(r.Kategori)}</span>
-            <div class="bold" style="margin-top:3px;">${esc(r.Nama_Barang)}</div>
-            ${r.Catatan ? `<span class="sub-text">Ket: ${esc(r.Catatan)}</span>` : ""}
-          </td>
-          <td class="num-right bold" style="font-size:14px; color:#1e3a8a;">
-            +${Number(r.Jumlah || 0).toLocaleString("id-ID")} ${esc(r.Satuan)}
-          </td>
-          <td>${fotoLink}</td>
-          <td>
-            <span class="tag ${isPending ? 'tag-wait' : 'tag-ok'}">${esc(statusPos)}</span>
-          </td>
-          <td>${actionBtn}</td>
+        <tr class="${r.isComplete ? '' : 'row-alert'}">
+          <td>${i + 1}</td>
+          <td>${r.Kecamatan}</td>
+          <td><strong>${r.Nama_KDKMP}</strong></td>
+          <td>${r.Manager}</td>
+          <td>${bMasuk}</td>
+          <td>${bSisa}</td>
+          <td>${bSales}</td>
+          <td>${bPo}</td>
+          <td>${bEnd}</td>
         </tr>
       `;
     }).join("");
   }
 
-  async function togglePosStatus(idLog, targetStatus, btnEl) {
-    if (!idLog) return showToast("ID Log DO tidak ditemukan.");
-    if (btnEl) {
-      btnEl.disabled = true;
-      btnEl.textContent = "Menyimpan...";
+  // ==================== 2. TAB BARANG MASUK ====================
+  function renderMasukTab() {
+    const f = getGlobalFilters();
+    const stFlt = document.getElementById("fltStatusMasuk").value;
+    const rows = db.penerimaan.filter(r => {
+      if (!matchGlobalRow(r, "Tanggal_Terima", f)) return false;
+      if (stFlt !== "ALL" && (r.Status_Input_POS || "Belum Input POS") !== stFlt) return false;
+      return true;
+    });
+    viewCache.masuk = rows;
+
+    const tbody = document.getElementById("tbodyMasuk");
+    if (rows.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:18px; color:#64748b;">Belum ada data barang masuk pada periode ini.</td></tr>`;
+      return;
     }
 
-    try {
-      if (SCRIPT_URL) {
-        const res = await fetch(SCRIPT_URL, {
+    tbody.innerHTML = rows.map(r => {
+      const isDone = r.Status_Input_POS === "Sudah Input POS";
+      const hasPhoto = r.Link_Foto_DO && r.Link_Foto_DO !== "-";
+      return `
+        <tr>
+          <td>${normDate(r.Tanggal_Terima)}</td>
+          <td><strong>${r.Nama_KDKMP}</strong><br><span style="font-size:11px; color:#64748b;">Kec. ${r.Kecamatan}</span></td>
+          <td>${r.Supplier}<br><span style="font-size:11px; color:#1d4ed8; font-weight:700;">DO: ${r.No_DO || "-"}</span></td>
+          <td><strong>${r.Nama_Barang}</strong></td>
+          <td><strong>+${Number(r.Jumlah || 0).toLocaleString("id-ID")} ${r.Satuan}</strong></td>
+          <td>${hasPhoto ? `<button class="btn btn-outline btn-sm" onclick="previewProof('${r.Link_Foto_DO}', 'Surat Jalan ${r.Nama_KDKMP}')">Lihat DO</button>` : "-"}</td>
+          <td><span class="badge ${isDone ? 'b-ok' : 'b-warn'}">${r.Status_Input_POS || "Belum Input POS"}</span></td>
+          <td>${isDone ? "✓ Valid" : `<button class="btn btn-primary btn-sm" onclick="markDoPosDone('${r.ID_Log}')">Validasi Input POS</button>`}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  async function markDoPosDone(idLog) {
+    const idx = db.penerimaan.findIndex(x => x.ID_Log === idLog);
+    if (idx >= 0) db.penerimaan[idx].Status_Input_POS = "Sudah Input POS";
+    localStorage.setItem("kdkmp_penerimaan_logs", JSON.stringify(db.penerimaan));
+    renderAllTabs();
+    showToast("Status DO divalidasi: Sudah Input POS");
+
+    if (SCRIPT_URL) {
+      try {
+        await fetch(SCRIPT_URL, {
           method: "POST",
-          body: JSON.stringify({
-            action: "UPDATE_POS_STATUS",
-            id_log: idLog,
-            status_pos: targetStatus
-          })
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "UPDATE_STATUS_DO", id_log: idLog, status_pos: "Sudah Input POS" })
         });
-        const json = await res.json();
-        if (json.status !== "success") throw new Error(json.message || "Gagal update status POS");
-      }
-
-      const idx = dashState.penerimaanLogs.findIndex(x => String(x.ID_Log) === String(idLog));
-      if (idx >= 0) {
-        dashState.penerimaanLogs[idx].Status_Input_POS = targetStatus;
-        if (!SCRIPT_URL) {
-          localStorage.setItem("kdkmp_penerimaan_logs", JSON.stringify(dashState.penerimaanLogs));
-        }
-      }
-
-      updateKpiCards();
-      renderDoTable();
-      showToast(`Status diperbarui: ${targetStatus}`);
-    } catch (err) {
-      alert("Gagal memperbarui status POS: " + err.message);
-      if (btnEl) btnEl.disabled = false;
+      } catch (e) { console.warn(e); }
     }
   }
 
-  // ==================== 2. TABEL LOG STOK SISA HARIAN ====================
-  function renderSisaTable() {
+  // ==================== 3. TAB VALIDASI SALES ====================
+  function renderSalesTab() {
     const f = getGlobalFilters();
-    const rows = dashState.stokSisaLogs.filter(r => matchGlobalRow(r, f, "Tanggal", ["Catatan"]));
-    document.getElementById("badgeTabSisa").textContent = rows.length;
-    document.getElementById("infoCountSisa").textContent = `${rows.length} catatan audit`;
+    const stFlt = document.getElementById("fltStatusSales").value;
+    const rows = db.omset.filter(r => {
+      if (!matchGlobalRow(r, "Tanggal", f)) return false;
+      const om = Number(r.Nominal_Omset) || 0;
+      const tf = Number(r.Nominal_Transfer) || 0;
+      const isLunas = tf > 0 && tf >= om;
+      if (stFlt === "LUNAS" && !isLunas) return false;
+      if (stFlt === "TUNDA" && isLunas) return false;
+      return true;
+    });
+    viewCache.sales = rows;
+
+    const tbody = document.getElementById("tbodySales");
+    if (rows.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:18px; color:#64748b;">Belum ada laporan sales pada periode ini.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = rows.map(r => {
+      const om = Number(r.Nominal_Omset) || 0;
+      const tf = Number(r.Nominal_Transfer) || 0;
+      const selisih = om - tf;
+      const hasStruk = r.Link_Struk_CloseShift && r.Link_Struk_CloseShift !== "-";
+      const hasTf = r.Link_Bukti_Transfer && r.Link_Bukti_Transfer !== "-";
+
+      return `
+        <tr class="${selisih > 0 ? 'row-alert' : ''}">
+          <td><strong>${normDate(r.Tanggal)}</strong><br><span style="font-size:11px; color:#64748b;">${r.Shift || "-"}</span></td>
+          <td><strong>${r.Nama_KDKMP}</strong><br><span style="font-size:11px; color:#64748b;">Kec. ${r.Kecamatan}</span></td>
+          <td><strong>${formatRp(om)}</strong></td>
+          <td><strong style="color:#059669;">${formatRp(tf)}</strong></td>
+          <td><span class="badge ${selisih === 0 ? 'b-ok' : 'b-no'}">${selisih === 0 ? 'Sesuai' : formatRp(selisih)}</span></td>
+          <td style="font-size:11.5px;">${r.Metode_Rekening || "-"}</td>
+          <td>
+            <div style="display:flex; gap:4px;">
+              ${hasStruk ? `<button class="btn btn-outline btn-sm" onclick="previewProof('${r.Link_Struk_CloseShift}', 'Struk ${r.Nama_KDKMP}')">Struk</button>` : ""}
+              ${hasTf ? `<button class="btn btn-primary btn-sm" onclick="previewProof('${r.Link_Bukti_Transfer}', 'Bukti TF ${r.Nama_KDKMP}')">Bukti TF</button>` : ""}
+            </div>
+          </td>
+          <td style="font-size:11.5px; max-width:210px;">${r.Catatan || "-"}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  // ==================== 4. TAB STOK SISA ====================
+  function renderSisaTab() {
+    const f = getGlobalFilters();
+    const rows = db.stok_sisa.filter(r => matchGlobalRow(r, "Tanggal", f));
+    viewCache.sisa = rows;
 
     const tbody = document.getElementById("tbodySisa");
     if (rows.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:24px; color:#64748b;">Belum ada laporan Stok Sisa Harian sesuai filter.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:18px; color:#64748b;">Belum ada laporan stok sisa harian pada periode ini.</td></tr>`;
       return;
     }
 
     tbody.innerHTML = rows.map(r => `
       <tr>
-        <td class="bold">${esc(String(r.Tanggal || "").slice(0, 10))}</td>
-        <td><span class="sub-text">${esc(r.Waktu_Input || "-")}</span></td>
-        <td>
-          <span class="bold">${esc(r.Nama_KDKMP)}</span>
-          <span class="sub-text">Kec. ${esc(r.Kecamatan)} • ${esc(r.Manager || "-")}</span>
-        </td>
-        <td><span class="tag tag-neutral">${esc(r.Kategori)}</span></td>
-        <td>
-          <span class="bold">${esc(r.Nama_Barang)}</span>
-          <span class="sub-text">Kode: ${esc(r.Kode_Barang)}</span>
-        </td>
-        <td class="num-right bold" style="font-size:14px; color:#0f766e;">
-          ${Number(r.Jumlah || 0).toLocaleString("id-ID")} ${esc(r.Satuan)}
-        </td>
-        <td>${esc(r.Catatan || "-")}</td>
+        <td>${normDate(r.Tanggal)}</td>
+        <td>${r.Kecamatan}</td>
+        <td><strong>${r.Nama_KDKMP}</strong></td>
+        <td>${r.Kategori}</td>
+        <td><strong>${r.Nama_Barang}</strong></td>
+        <td><strong>${Number(r.Jumlah || 0).toLocaleString("id-ID")} ${r.Satuan}</strong></td>
+        <td>${r.Catatan || "-"}</td>
       </tr>
     `).join("");
   }
 
-  // ==================== 3. TABEL REKAP STOK GERAI ====================
-  function renderRekapTable() {
+  // ==================== 5. TAB REKAP STOK ====================
+  function renderRekapTab() {
     const f = getGlobalFilters();
-    const batasMap = {};
-    dashState.masterBarang.forEach(b => {
-      batasMap[b.Kode_Barang] = Number(b.Batas_Kritis) || 10;
-    });
-
-    const rows = dashState.rekapStok.filter(r => {
-      if (!matchGlobalRow(r, f, null, [])) return false;
-      if (dashState.rekapFilter === "KRITIS") {
-        const limit = batasMap[r.Kode_Barang] || 10;
-        if (Number(r.Stok_Akhir || 0) > limit) return false;
-      }
+    const stFlt = document.getElementById("fltStatusRekap").value;
+    const rows = db.rekap_stok.filter(r => {
+      if (f.kecamatan !== "ALL" && r.Kecamatan !== f.kecamatan) return false;
+      if (f.search && !`${r.Nama_KDKMP} ${r.Nama_Barang} ${r.Kecamatan}`.toLowerCase().includes(f.search)) return false;
+      const m = db.master_barang.find(b => b.Kode_Barang === r.Kode_Barang);
+      const batas = m ? (Number(m.Batas_Kritis) || 10) : 10;
+      const isKritis = (Number(r.Stok_Akhir) || 0) <= batas;
+      if (stFlt === "KRITIS" && !isKritis) return false;
       return true;
     });
+    viewCache.rekap = rows;
 
-    document.getElementById("badgeTabRekap").textContent = rows.length;
     const tbody = document.getElementById("tbodyRekap");
-
     if (rows.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:24px; color:#64748b;">Tidak ada data rekap stok sesuai filter.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:18px; color:#64748b;">Tidak ada data rekap stok gerai.</td></tr>`;
       return;
     }
 
     tbody.innerHTML = rows.map(r => {
-      const stok = Number(r.Stok_Akhir || 0);
-      const limit = batasMap[r.Kode_Barang] || 10;
-      const isHabis = stok <= 0;
-      const isMenipis = stok > 0 && stok <= limit;
-
-      const statusBadge = isHabis
-        ? `<span class="tag tag-danger">Stok Kosong</span>`
-        : (isMenipis ? `<span class="tag tag-wait">Menipis (&le;${limit})</span>` : `<span class="tag tag-ok">Aman</span>`);
-
+      const m = db.master_barang.find(b => b.Kode_Barang === r.Kode_Barang);
+      const batas = m ? (Number(m.Batas_Kritis) || 10) : 10;
+      const qty = Number(r.Stok_Akhir) || 0;
+      const isKritis = qty <= batas;
       return `
-        <tr>
-          <td>${esc(r.Kecamatan)}</td>
-          <td class="bold">${esc(r.Nama_KDKMP)}</td>
-          <td><span class="tag tag-neutral">${esc(r.Kategori)}</span></td>
-          <td>
-            <span class="bold">${esc(r.Nama_Barang)}</span>
-            <span class="sub-text">${esc(r.Kode_Barang)}</span>
-          </td>
-          <td class="num-right bold" style="font-size:14px;">${stok.toLocaleString("id-ID")} ${esc(r.Satuan)}</td>
-          <td>${statusBadge}</td>
-          <td><span class="sub-text">${esc(r.Update_Terakhir || "-")}</span></td>
+        <tr class="${isKritis ? 'row-alert' : ''}">
+          <td>${r.Kecamatan}</td>
+          <td><strong>${r.Nama_KDKMP}</strong></td>
+          <td>${r.Kategori}</td>
+          <td><strong>${r.Nama_Barang}</strong></td>
+          <td><strong>${qty.toLocaleString("id-ID")} ${r.Satuan}</strong></td>
+          <td><span class="badge ${isKritis ? 'b-no' : 'b-ok'}">${isKritis ? 'Menipis / Kritis' : 'Aman'}</span></td>
+          <td style="font-size:11.5px; color:#64748b;">${r.Update_Terakhir || "-"}</td>
         </tr>
       `;
     }).join("");
   }
 
-  // ==================== 4. TABEL SETORAN OMSET ====================
-  function renderOmsetTable() {
+  // ==================== 6. TAB APPROVAL PO ====================
+  function renderPoTab() {
     const f = getGlobalFilters();
-    const rows = dashState.omsetLogs.filter(r => {
-      if (!matchGlobalRow(r, f, "Tanggal", ["Shift", "Metode_Rekening", "Catatan"])) return false;
-      if (dashState.omsetFilter === "TUNDA" && !String(r.Metode_Rekening || "").includes("Menyusul")) return false;
-      if (dashState.omsetFilter === "SELISIH" && (Number(r.Selisih_Tunai) || 0) === 0) return false;
+    const stFlt = document.getElementById("fltStatusPo").value;
+    const rows = db.po_list.filter(r => {
+      if (!matchGlobalRow(r, "Tanggal_Kebutuhan", f) && f.periode === "DAY") {
+        if (normDate(r.Waktu_Pengajuan) !== f.tanggal) return false;
+      } else if (f.kecamatan !== "ALL" && r.Kecamatan !== f.kecamatan) {
+        return false;
+      }
+      if (stFlt !== "ALL" && (r.Status_PO || "Diajukan") !== stFlt) return false;
       return true;
     });
-
-    document.getElementById("badgeTabOmset").textContent = rows.length;
-    const sumOmset = rows.reduce((s, r) => s + (Number(r.Nominal_Omset) || 0), 0);
-    const sumTf = rows.reduce((s, r) => s + (Number(r.Nominal_Transfer) || 0), 0);
-    document.getElementById("summaryOmsetBar").textContent =
-      `Total Omset: ${formatRp(sumOmset)} • Total Transfer: ${formatRp(sumTf)}`;
-
-    const tbody = document.getElementById("tbodyOmset");
-    if (rows.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:24px; color:#64748b;">Tidak ada laporan setoran omset sesuai filter.</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = rows.map(r => {
-      const selisih = Number(r.Selisih_Tunai) || 0;
-      const isTunda = String(r.Metode_Rekening || "").includes("Menyusul");
-      const selisihHtml = selisih !== 0
-        ? `<span style="color:#dc2626; font-weight:800;">${formatRp(selisih)}</span>`
-        : `<span style="color:#059669; font-weight:700;">Rp 0</span>`;
-
-      const strukBtn = renderPhotoAction(r.Link_Struk_CloseShift, `Struk Closeshift - ${r.Nama_KDKMP}`, "Struk");
-      const tfBtn = renderPhotoAction(r.Link_Bukti_Transfer, `Bukti Transfer - ${r.Nama_KDKMP}`, "Bukti TF");
-
-      return `
-        <tr class="${isTunda ? 'row-pending-pos' : ''}">
-          <td>
-            <span class="bold">${esc(String(r.Tanggal || "").slice(0, 10))}</span>
-            <span class="sub-text">${esc(r.Shift || "-")}</span>
-          </td>
-          <td>
-            <span class="bold">${esc(r.Nama_KDKMP)}</span>
-            <span class="sub-text">Kec. ${esc(r.Kecamatan)} • ${esc(r.Manager || "-")}</span>
-          </td>
-          <td class="num-right bold">${formatRp(r.Nominal_Omset)}</td>
-          <td class="num-right bold" style="color:#059669;">${formatRp(r.Nominal_Transfer)}</td>
-          <td class="num-right">${selisihHtml}</td>
-          <td>
-            <span class="tag ${isTunda ? 'tag-wait' : 'tag-info'}">${esc(r.Metode_Rekening || "-")}</span>
-          </td>
-          <td>
-            <div style="display:flex; gap:4px; flex-wrap:wrap;">${strukBtn} ${tfBtn}</div>
-          </td>
-          <td><span class="sub-text">${esc(r.Catatan || "-")}</span></td>
-        </tr>
-      `;
-    }).join("");
-  }
-
-  // ==================== 5. TABEL PERENCANAAN & APPROVAL PO ====================
-  function renderPoTable() {
-    const f = getGlobalFilters();
-    const rows = dashState.poList.filter(p => {
-      if (!matchGlobalRow(p, f, "Tanggal_Kebutuhan", ["ID_PO", "Catatan"])) return false;
-      const st = p.Status_PO || "Diajukan";
-      if (dashState.poFilter === "Diajukan" && st !== "Diajukan") return false;
-      if (dashState.poFilter === "Disetujui ASR" && st === "Diajukan") return false;
-      return true;
-    });
+    viewCache.po = rows;
 
     const tbody = document.getElementById("tbodyPo");
     if (rows.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:24px; color:#64748b;">Tidak ada pengajuan PO sesuai filter.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:18px; color:#64748b;">Belum ada pengajuan PO pada filter ini.</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = rows.map(p => {
-      const st = p.Status_PO || "Diajukan";
-      const badgeCls = st === "Selesai" || st === "Disetujui ASR" ? "tag-ok" : (st === "DO Terbit" ? "tag-info" : "tag-wait");
-
-      let actionHtml = "";
-      if (st === "Diajukan") {
-        actionHtml = `<button type="button" class="btn btn-primary btn-xs" onclick="updatePoStatus('${esc(p.ID_PO)}', 'Disetujui ASR', this)">Setujui PO</button>`;
-      } else if (st === "Disetujui ASR") {
-        actionHtml = `<button type="button" class="btn btn-success btn-xs" onclick="updatePoStatus('${esc(p.ID_PO)}', 'DO Terbit', this)">Terbitkan DO</button>`;
-      } else if (st === "DO Terbit") {
-        actionHtml = `<button type="button" class="btn btn-outline btn-xs" onclick="updatePoStatus('${esc(p.ID_PO)}', 'Selesai', this)">Tandai Selesai</button>`;
-      } else {
-        actionHtml = `<span class="sub-text">Tuntas</span>`;
-      }
-
+    tbody.innerHTML = rows.map(r => {
+      const st = r.Status_PO || "Diajukan";
+      const cls = st === "Disetujui ASR" ? "b-ok" : (st === "DO Terbit" ? "b-info" : "b-warn");
       return `
         <tr>
+          <td><strong>${normDate(r.Tanggal_Kebutuhan)}</strong></td>
+          <td><strong>${r.Nama_KDKMP}</strong><br><span style="font-size:11px; color:#64748b;">Kec. ${r.Kecamatan}</span></td>
+          <td><strong>${r.Nama_Barang}</strong></td>
+          <td>${Number(r.Stok_Saat_Pengajuan || 0).toLocaleString("id-ID")} ${r.Satuan}</td>
+          <td><strong style="color:#1d4ed8;">${Number(r.Jumlah_PO || 0).toLocaleString("id-ID")} ${r.Satuan}</strong></td>
+          <td><span class="badge ${cls}">${st}</span></td>
           <td>
-            <span class="bold">${esc(String(p.Tanggal_Kebutuhan || "").slice(0, 10))}</span>
-            <span class="sub-text">${esc(p.ID_PO || "")}</span>
+            <div style="display:flex; gap:4px;">
+              ${st === "Diajukan" ? `<button class="btn btn-success btn-sm" onclick="updatePoStatus('${r.ID_PO}', 'Disetujui ASR')">Setujui</button>` : ""}
+              ${st === "Disetujui ASR" ? `<button class="btn btn-primary btn-sm" onclick="updatePoStatus('${r.ID_PO}', 'DO Terbit')">Terbitkan DO</button>` : ""}
+              ${st === "DO Terbit" ? `<span style="font-size:11px; color:#059669; font-weight:800;">✓ Selesai</span>` : ""}
+            </div>
           </td>
-          <td>
-            <span class="bold">${esc(p.Nama_KDKMP)}</span>
-            <span class="sub-text">Kec. ${esc(p.Kecamatan)}</span>
-          </td>
-          <td>
-            <span class="tag tag-neutral">${esc(p.Kategori)}</span>
-            <div class="bold" style="margin-top:3px;">${esc(p.Nama_Barang)}</div>
-          </td>
-          <td class="num-right">${Number(p.Stok_Saat_Pengajuan || 0).toLocaleString("id-ID")} ${esc(p.Satuan)}</td>
-          <td class="num-right bold" style="color:#1e3a8a; font-size:14px;">${Number(p.Jumlah_PO || 0).toLocaleString("id-ID")} ${esc(p.Satuan)}</td>
-          <td>${esc(p.Catatan || "-")}</td>
-          <td><span class="tag ${badgeCls}">${esc(st)}</span></td>
-          <td>${actionHtml}</td>
         </tr>
       `;
     }).join("");
   }
 
-  async function updatePoStatus(idPo, newStatus, btnEl) {
-    if (btnEl) {
-      btnEl.disabled = true;
-      btnEl.textContent = "Proses...";
-    }
-    try {
-      if (SCRIPT_URL) {
-        const res = await fetch(SCRIPT_URL, {
+  async function updatePoStatus(idPo, newStatus) {
+    const idx = db.po_list.findIndex(x => x.ID_PO === idPo);
+    if (idx >= 0) db.po_list[idx].Status_PO = newStatus;
+    localStorage.setItem("kdkmp_po_list", JSON.stringify(db.po_list));
+    renderAllTabs();
+    showToast(`Status PO diperbarui: ${newStatus}`);
+
+    if (SCRIPT_URL) {
+      try {
+        await fetch(SCRIPT_URL, {
           method: "POST",
-          body: JSON.stringify({
-            action: "UPDATE_PO_STATUS",
-            id_po: idPo,
-            status_baru: newStatus
-          })
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "UPDATE_STATUS_PO", id_po: idPo, status_po: newStatus })
         });
-        const json = await res.json();
-        if (json.status !== "success") throw new Error(json.message || "Gagal update status PO");
-      }
-
-      const idx = dashState.poList.findIndex(x => String(x.ID_PO) === String(idPo));
-      if (idx >= 0) {
-        dashState.poList[idx].Status_PO = newStatus;
-        if (!SCRIPT_URL) {
-          localStorage.setItem("kdkmp_po_list", JSON.stringify(dashState.poList));
-        }
-      }
-
-      updateKpiCards();
-      renderPoTable();
-      showToast(`Status PO diubah menjadi: ${newStatus}`);
-    } catch (err) {
-      alert("Gagal update PO: " + err.message);
-      if (btnEl) btnEl.disabled = false;
+      } catch (e) { console.warn(e); }
     }
   }
 
-  // ==================== PRATINJAU FOTO & EXPORT CSV ====================
-  function renderPhotoAction(linkVal, title, label = "Lihat Foto") {
-    const val = String(linkVal || "").trim();
-    if (!val || val === "-" || val === "Sandbox_Foto_DO") {
-      return `<span class="sub-text">-</span>`;
-    }
-    if (val.startsWith("data:image")) {
-      return `<button type="button" class="btn btn-outline btn-xs" onclick="openPhotoModal('${esc(title)}', '${val}')">${esc(label)}</button>`;
-    }
-    if (val.startsWith("http")) {
-      return `<a href="${esc(val)}" target="_blank" rel="noopener" class="btn btn-outline btn-xs" style="text-decoration:none;">${esc(label)}</a>`;
-    }
-    return `<span class="sub-text">${esc(val)}</span>`;
+  function updateKpiCards() {
+    const allMatrix = viewCache.kepatuhan;
+    const lengkap = allMatrix.filter(m => m.isComplete).length;
+    document.getElementById("kpiPatuh").textContent = `${lengkap} / ${allMatrix.length}`;
+
+    const doPending = viewCache.masuk.filter(r => (r.Status_Input_POS || "Belum Input POS") === "Belum Input POS").length;
+    document.getElementById("kpiDoPending").textContent = `${doPending} DO`;
+
+    const totOmset = viewCache.sales.reduce((s, r) => s + (Number(r.Nominal_Omset) || 0), 0);
+    const totTf = viewCache.sales.reduce((s, r) => s + (Number(r.Nominal_Transfer) || 0), 0);
+    document.getElementById("kpiOmset").textContent = formatRp(totOmset);
+    document.getElementById("kpiTransferSub").textContent = `Transfer masuk: ${formatRp(totTf)}`;
+
+    const belumSetor = allMatrix.filter(m => m.salesStatus !== "SUDAH").length;
+    document.getElementById("kpiBelumSetor").textContent = `${belumSetor} Gerai`;
+
+    const poPending = viewCache.po.filter(p => (p.Status_PO || "Diajukan") === "Diajukan").length;
+    document.getElementById("kpiPoPending").textContent = `${poPending} Item`;
   }
 
-  function openPhotoModal(title, dataUrl) {
+  function previewProof(src, title) {
+    if (!src || src === "-") return;
+    if (src.startsWith("http")) {
+      window.open(src, "_blank");
+      return;
+    }
     document.getElementById("photoModalTitle").textContent = title;
-    document.getElementById("photoModalImg").src = dataUrl;
+    document.getElementById("photoModalImg").src = src;
     document.getElementById("photoModal").style.display = "flex";
   }
 
-  function closePhotoModal() {
-    document.getElementById("photoModal").style.display = "none";
-    document.getElementById("photoModalImg").src = "";
+  // =========================================================================
+  // ENGINE EXPORT DATA (FOTO PNG ANTI-TERPOTONG + CAPTION WA & PDF A4 RESMI)
+  // =========================================================================
+  function buildReportDataset(tabKey) {
+    const f = getGlobalFilters();
+    const periodeLabel = f.periode === "DAY" ? `Tanggal ${f.tanggal}` : "Semua Riwayat Data";
+    const kecLabel = f.kecamatan === "ALL" ? "Seluruh Kecamatan Kab. Cianjur" : `Kecamatan ${f.kecamatan}`;
+
+    if (tabKey === "kepatuhan") {
+      const rows = viewCache.kepatuhan;
+      const lengkap = rows.filter(r => r.isComplete).length;
+      const belum = rows.length - lengkap;
+      const belumNames = rows.filter(r => !r.isComplete).map((r, i) => `${i + 1}. ${r.Nama_KDKMP} (${[!r.hasMasuk ? "DO" : "", !r.hasSisa ? "Stok" : "", r.salesStatus !== "SUDAH" ? "Sales" : "", !r.hasPo ? "PO" : ""].filter(Boolean).join(", ")})`);
+
+      return {
+        title: "REKAP KEPATUHAN LAPORAN HARIAN GERAI KDKMP",
+        subtitle: `${periodeLabel} • ${kecLabel}`,
+        summaryBoxes: [
+          { label: "Total Gerai Dipantau", val: `${rows.length} Gerai` },
+          { label: "Sudah Lengkap (4/4)", val: `${lengkap} Gerai` },
+          { label: "Perlu Tindak Lanjut", val: `${belum} Gerai` }
+        ],
+        headers: ["No", "Kecamatan", "Nama Gerai KDKMP", "Manager", "Masuk DO", "Stok Sisa", "Sales/Setor", "PO", "Status"],
+        body: rows.map((r, i) => [
+          i + 1,
+          r.Kecamatan,
+          r.Nama_KDKMP,
+          r.Manager,
+          r.hasMasuk ? "SUDAH" : "BELUM",
+          r.hasSisa ? "SUDAH" : "BELUM",
+          r.salesStatus === "SUDAH" ? "LUNAS" : (r.salesStatus === "TUNDA_TF" ? "TF H+1" : "BELUM"),
+          r.hasPo ? "SUDAH" : "BELUM",
+          r.isComplete ? "LENGKAP" : "PENDING"
+        ]),
+        waCaption: `*UPDATE VALIDASI LAPORAN HARIAN KDKMP CIANJUR*\nPeriode: ${periodeLabel} (${kecLabel})\n✅ Lengkap: ${lengkap} Gerai | ⚠️ Belum Lengkap: ${belum} Gerai\n\n${belumNames.length ? "*Mohon segera melengkapi laporan berikut:*\n" + belumNames.join("\n") : "Terima kasih, seluruh gerai sudah melengkapi laporan hari ini."}`
+      };
+    }
+
+    if (tabKey === "masuk") {
+      const rows = viewCache.masuk;
+      const belumPos = rows.filter(r => (r.Status_Input_POS || "Belum Input POS") === "Belum Input POS").length;
+      return {
+        title: "LAPORAN PENERIMAAN BARANG MASUK (DO) & VALIDASI POS",
+        subtitle: `${periodeLabel} • ${kecLabel}`,
+        summaryBoxes: [
+          { label: "Total Item DO Masuk", val: `${rows.length} Baris` },
+          { label: "Sudah Validasi POS", val: `${rows.length - belumPos} Item` },
+          { label: "Antrean Input POS", val: `${belumPos} Item` }
+        ],
+        headers: ["No", "Tanggal", "Gerai KDKMP", "Supplier & No. DO", "Nama Barang", "Jumlah", "Status POS ASR"],
+        body: rows.map((r, i) => [
+          i + 1,
+          normDate(r.Tanggal_Terima),
+          r.Nama_KDKMP,
+          `${r.Supplier} (${r.No_DO || "-"})`,
+          r.Nama_Barang,
+          `+${Number(r.Jumlah || 0).toLocaleString("id-ID")} ${r.Satuan}`,
+          r.Status_Input_POS || "Belum Input POS"
+        ]),
+        waCaption: `*VALIDASI BARANG MASUK (DO) KDKMP CIANJUR*\nPeriode: ${periodeLabel} (${kecLabel})\nTotal DO Tercatat: ${rows.length} item (${rows.length - belumPos} sudah masuk POS, ${belumPos} proses validasi).`
+      };
+    }
+
+    if (tabKey === "sales") {
+      const rows = viewCache.sales;
+      const totOmset = rows.reduce((s, r) => s + (Number(r.Nominal_Omset) || 0), 0);
+      const totTf = rows.reduce((s, r) => s + (Number(r.Nominal_Transfer) || 0), 0);
+      return {
+        title: "LAPORAN VALIDASI OMSET SALES & SETORAN TRANSFER",
+        subtitle: `${periodeLabel} • ${kecLabel}`,
+        summaryBoxes: [
+          { label: "Gerai Lapor Sales", val: `${rows.length} Laporan` },
+          { label: "Total Omset Struk", val: formatRp(totOmset) },
+          { label: "Total Transfer Masuk", val: formatRp(totTf) }
+        ],
+        headers: ["No", "Tanggal", "Gerai KDKMP", "Omset Struk", "Transfer Masuk", "Selisih", "Rekening Tujuan"],
+        body: rows.map((r, i) => {
+          const om = Number(r.Nominal_Omset) || 0;
+          const tf = Number(r.Nominal_Transfer) || 0;
+          return [
+            i + 1,
+            normDate(r.Tanggal),
+            r.Nama_KDKMP,
+            formatRp(om),
+            formatRp(tf),
+            om - tf === 0 ? "Sesuai" : formatRp(om - tf),
+            r.Metode_Rekening || "-"
+          ];
+        }),
+        waCaption: `*VALIDASI SALES & SETORAN KDKMP CIANJUR*\nPeriode: ${periodeLabel} (${kecLabel})\nTotal Omset: ${formatRp(totOmset)} | Total Transfer Masuk: ${formatRp(totTf)}.`
+      };
+    }
+
+    if (tabKey === "sisa") {
+      const rows = viewCache.sisa;
+      return {
+        title: "LAPORAN AUDIT FISIK STOK SISA HARIAN GERAI",
+        subtitle: `${periodeLabel} • ${kecLabel}`,
+        summaryBoxes: [
+          { label: "Total Item Diaudit", val: `${rows.length} Baris` },
+          { label: "Cakupan Wilayah", val: kecLabel },
+          { label: "Status Data", val: "Tervalidasi ASR" }
+        ],
+        headers: ["No", "Tanggal", "Kecamatan", "Gerai KDKMP", "Nama Barang", "Stok Sisa Fisik", "Catatan"],
+        body: rows.map((r, i) => [
+          i + 1,
+          normDate(r.Tanggal),
+          r.Kecamatan,
+          r.Nama_KDKMP,
+          r.Nama_Barang,
+          `${Number(r.Jumlah || 0).toLocaleString("id-ID")} ${r.Satuan}`,
+          r.Catatan || "-"
+        ]),
+        waCaption: `*LAPORAN STOK SISA HARIAN KDKMP CIANJUR*\nPeriode: ${periodeLabel} (${kecLabel})\nTotal ${rows.length} item stok fisik tutup gerai telah tercatat di sistem ASR.`
+      };
+    }
+
+    if (tabKey === "rekap") {
+      const rows = viewCache.rekap;
+      const kritisCount = rows.filter(r => {
+        const m = db.master_barang.find(b => b.Kode_Barang === r.Kode_Barang);
+        return (Number(r.Stok_Akhir) || 0) <= (m ? (Number(m.Batas_Kritis) || 10) : 10);
+      }).length;
+      return {
+        title: "REKAPITULASI POSISI STOK TERKINI GERAI KDKMP",
+        subtitle: `Posisi Per ${getWibTimestamp()} • ${kecLabel}`,
+        summaryBoxes: [
+          { label: "Total Baris Stok", val: `${rows.length} Item` },
+          { label: "Stok Aman", val: `${rows.length - kritisCount} Item` },
+          { label: "Stok Menipis / Kritis", val: `${kritisCount} Item` }
+        ],
+        headers: ["No", "Kecamatan", "Gerai KDKMP", "Nama Barang", "Stok Terkini", "Status Stok", "Update Terakhir"],
+        body: rows.map((r, i) => {
+          const m = db.master_barang.find(b => b.Kode_Barang === r.Kode_Barang);
+          const isKritis = (Number(r.Stok_Akhir) || 0) <= (m ? (Number(m.Batas_Kritis) || 10) : 10);
+          return [
+            i + 1,
+            r.Kecamatan,
+            r.Nama_KDKMP,
+            r.Nama_Barang,
+            `${Number(r.Stok_Akhir || 0).toLocaleString("id-ID")} ${r.Satuan}`,
+            isKritis ? "MENIPIS" : "AMAN",
+            r.Update_Terakhir || "-"
+          ];
+        }),
+        waCaption: `*UPDATE POSISI STOK GERAI KDKMP CIANJUR*\nWilayah: ${kecLabel}\nTerdapat ${kritisCount} item stok menipis yang perlu segera diajukan PO.`
+      };
+    }
+
+    // tabKey === "po"
+    const rows = viewCache.po;
+    const disetujui = rows.filter(r => r.Status_PO === "Disetujui ASR" || r.Status_PO === "DO Terbit").length;
+    return {
+      title: "REKAPITULASI PENGAJUAN & APPROVAL PO BARANG KDKMP",
+      subtitle: `${periodeLabel} • ${kecLabel}`,
+      summaryBoxes: [
+        { label: "Total Item PO", val: `${rows.length} Item` },
+        { label: "Disetujui / DO Terbit", val: `${disetujui} Item` },
+        { label: "Menunggu Approval", val: `${rows.length - disetujui} Item` }
+      ],
+      headers: ["No", "Target Kirim", "Gerai KDKMP", "Nama Barang", "Stok Saat PO", "Jumlah PO", "Status ASR"],
+      body: rows.map((r, i) => [
+        i + 1,
+        normDate(r.Tanggal_Kebutuhan),
+        r.Nama_KDKMP,
+        r.Nama_Barang,
+        `${Number(r.Stok_Saat_Pengajuan || 0).toLocaleString("id-ID")} ${r.Satuan}`,
+        `${Number(r.Jumlah_PO || 0).toLocaleString("id-ID")} ${r.Satuan}`,
+        r.Status_PO || "Diajukan"
+      ]),
+      waCaption: `*UPDATE PENGAJUAN & APPROVAL PO KDKMP CIANJUR*\nPeriode: ${periodeLabel} (${kecLabel})\nTotal Pengajuan: ${rows.length} item (${disetujui} sudah disetujui ASR).`
+    };
   }
 
-  function exportActiveTabCsv() {
-    let dataset = [];
-    let filename = "Export_ASR_Cianjur.csv";
+  async function exportTabToPng(tabKey) {
+    const rep = buildReportDataset(tabKey);
+    if (rep.body.length === 0) return showToast("Tidak ada data pada tab ini untuk di-export!");
 
-    if (dashState.activePanel === "panel-do") {
-      dataset = dashState.penerimaanLogs;
-      filename = "Log_Penerimaan_DO_ASR.csv";
-    } else if (dashState.activePanel === "panel-sisa") {
-      dataset = dashState.stokSisaLogs;
-      filename = "Log_Stok_Sisa_Harian_ASR.csv";
-    } else if (dashState.activePanel === "panel-rekap") {
-      dataset = dashState.rekapStok;
-      filename = "Rekap_Stok_Gerai_ASR.csv";
-    } else if (dashState.activePanel === "panel-omset") {
-      dataset = dashState.omsetLogs;
-      filename = "Setoran_Omset_ASR.csv";
-    } else if (dashState.activePanel === "panel-po") {
-      dataset = dashState.poList;
-      filename = "Perencanaan_PO_ASR.csv";
+    showToast("Membuat gambar laporan HD untuk WhatsApp...");
+    const validator = document.getElementById("asrValidatorName").value.trim() || "Admin Pusat ASR";
+    const stage = document.getElementById("pngExportStage");
+
+    stage.innerHTML = `
+      <div class="png-header">
+        <div>
+          <div class="png-org">PT AGRINAS PANGAN NUSANTARA • PUSAT OPERASIONAL ASR CIANJUR</div>
+          <div class="png-title">${rep.title}</div>
+          <div class="png-meta">${rep.subtitle}</div>
+        </div>
+        <div class="png-stamp">
+          <div style="font-size:10px; font-weight:800; color:#059669;">✓ VALIDASI SISTEM ASR</div>
+          <div style="font-size:11px; font-weight:700; color:#0f172a; margin-top:2px;">${getWibTimestamp()}</div>
+          <div style="font-size:10.5px; color:#475569;">Oleh: ${validator}</div>
+        </div>
+      </div>
+      <div class="png-summary-strip">
+        ${rep.summaryBoxes.map(b => `
+          <div class="png-sum-box">
+            <div style="font-size:10.5px; font-weight:700; color:#64748b; text-transform:uppercase;">${b.label}</div>
+            <div style="font-size:16px; font-weight:900; color:#0f172a; margin-top:2px;">${b.val}</div>
+          </div>
+        `).join("")}
+      </div>
+      <table class="png-table">
+        <thead><tr>${rep.headers.map(h => `<th>${h}</th>`).join("")}</tr></thead>
+        <tbody>
+          ${rep.body.map(row => `
+            <tr>${row.map(cell => {
+              const txt = String(cell);
+              let style = "";
+              if (/BELUM|PENDING|MENIPIS|Sesuai/.test(txt)) {
+                if (txt === "Sesuai") style = "color:#059669; font-weight:800;";
+                else style = "color:#dc2626; font-weight:800;";
+              } else if (/SUDAH|LUNAS|LENGKAP|Disetujui|DO Terbit|AMAN|Sudah Input POS/.test(txt)) {
+                style = "color:#059669; font-weight:800;";
+              } else if (/TF H\+1|Diajukan|Belum Input POS/.test(txt)) {
+                style = "color:#d97706; font-weight:800;";
+              }
+              return `<td style="${style}">${txt}</td>`;
+            }).join("")}</tr>
+          `).join("")}
+        </tbody>
+      </table>
+      <div class="png-footer">
+        <span>Dokumen resmi tindak lanjut operasional KDKMP Kabupaten Cianjur</span>
+        <span>Dicetak otomatis melalui Portal Pusat ASR</span>
+      </div>
+    `;
+
+    try {
+      const canvas = await html2canvas(stage, { scale: 2, backgroundColor: "#ffffff" });
+      const link = document.createElement("a");
+      const tglFile = document.getElementById("fltTanggal").value || "rekap";
+      link.download = `ASR_${tabKey.toUpperCase()}_${tglFile}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+
+      if (navigator.clipboard && rep.waCaption) {
+        await navigator.clipboard.writeText(rep.waCaption).catch(() => {});
+        showToast("Foto HD terunduh & teks caption WA otomatis tersalin!");
+      } else {
+        showToast("Foto HD berhasil diunduh!");
+      }
+    } catch (err) {
+      alert("Gagal merender gambar PNG: " + err.message);
     }
+  }
 
-    if (!dataset || dataset.length === 0) {
-      return showToast("Tidak ada data pada tab ini untuk diekspor.");
-    }
+  function exportTabToPdf(tabKey) {
+    const rep = buildReportDataset(tabKey);
+    if (rep.body.length === 0) return showToast("Tidak ada data pada tab ini untuk di-export!");
 
-    const headers = Object.keys(dataset[0]);
-    const csvLines = [
-      headers.join(","),
-      ...dataset.map(row => headers.map(h => {
-        let cell = String(row[h] ?? "").replace(/"/g, '""');
-        if (cell.startsWith("data:image")) cell = "[Foto_Lokal]";
-        return `"${cell}"`;
-      }).join(","))
-    ];
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+    const validator = document.getElementById("asrValidatorName").value.trim() || "Admin Pusat ASR Cianjur";
 
-    const blob = new Blob(["\uFEFF" + csvLines.join("\n")], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast("CSV berhasil diunduh: " + filename);
+    // KOP LAPORAN RESMI
+    doc.setFillColor(15, 23, 42);
+    doc.rect(14, 12, 269, 20, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text("PT AGRINAS PANGAN NUSANTARA — KOORDINATOR WILAYAH KDKMP KABUPATEN CIANJUR", 18, 19);
+    doc.setFontSize(13);
+    doc.text(rep.title, 18, 27);
+
+    // SUBHEADER & RINGKASAN
+    doc.setTextColor(30, 41, 59);
+    doc.setFontSize(9.5);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Periode & Wilayah : ${rep.subtitle}`, 14, 38);
+    doc.text(`Waktu Validasi    : ${getWibTimestamp()}`, 14, 43);
+
+    const summaryLine = rep.summaryBoxes.map(b => `${b.label}: ${b.val}`).join("   |   ");
+    doc.setFont("helvetica", "bold");
+    doc.text(summaryLine, 14, 49);
+
+    // TABEL MULTI-HALAMAN RAPI
+    doc.autoTable({
+      startY: 53,
+      head: [rep.headers],
+      body: rep.body,
+      theme: "grid",
+      styles: { fontSize: 8.5, cellPadding: 2.5, textColor: [15, 23, 42] },
+      headStyles: { fillColor: [30, 58, 138], textColor: [255, 255, 255], fontStyle: "bold" },
+      alternateRowStyles: { fillColor: [248, 250, 252] },
+      didParseCell: function(data) {
+        if (data.section === "body") {
+          const val = String(data.cell.raw || "");
+          if (/BELUM|PENDING|MENIPIS/.test(val)) {
+            data.cell.styles.textColor = [220, 38, 38];
+            data.cell.styles.fontStyle = "bold";
+          } else if (/SUDAH|LUNAS|LENGKAP|Disetujui|DO Terbit|AMAN|Sudah Input POS|Sesuai/.test(val)) {
+            data.cell.styles.textColor = [5, 150, 105];
+            data.cell.styles.fontStyle = "bold";
+          }
+        }
+      }
+    });
+
+    // BLOK PENGESAHAN TANDA TANGAN DI HALAMAN TERAKHIR
+    const finalY = (doc.lastAutoTable && doc.lastAutoTable.finalY) ? doc.lastAutoTable.finalY + 10 : 160;
+    const pageH = doc.internal.pageSize.getHeight();
+    const signY = finalY + 28 > pageH ? (doc.addPage(), 25) : finalY;
+
+    doc.setFontSize(9.5);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(15, 23, 42);
+    doc.text(`Cianjur, ${new Date().toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric" })}`, 215, signY);
+    doc.text("Divalidasi & Dilaporkan Oleh,", 215, signY + 5);
+    doc.setFont("helvetica", "bold");
+    doc.text(validator, 215, signY + 23);
+    doc.setFont("helvetica", "normal");
+    doc.text("Pusat Operasional ASR KDKMP Cianjur", 215, signY + 28);
+
+    const tglFile = document.getElementById("fltTanggal").value || "rekap";
+    doc.save(`Laporan_ASR_${tabKey.toUpperCase()}_${tglFile}.pdf`);
+    showToast("Laporan PDF A4 berhasil diunduh!");
   }
 </script>
 </body>
