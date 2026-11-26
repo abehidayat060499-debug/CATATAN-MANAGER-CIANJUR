@@ -491,11 +491,20 @@
     return "Rp " + (Number(n) || 0).toLocaleString("id-ID");
   }
 
-  function normStr(v) {
+function normStr(v) {
     return String(v || "").trim().toLowerCase();
   }
 
-function normDate(val) {
+  function normGeraiKey(nama, kec) {
+    let n = String(nama || "").toLowerCase().replace(/^kdkmp[\s_]+/, "").replace(/[_\s]+/g, " ").trim();
+    const k = String(kec || "").toLowerCase().replace(/[_\s]+/g, " ").trim();
+    if (k && n.endsWith(" " + k)) {
+      n = n.slice(0, -(k.length + 1)).trim();
+    }
+    return k + "|" + n;
+  }
+
+  function normDate(val) {
     if (!val) return "";
     const s = String(val).trim();
     if (/^\d{4}-\d{2}-\d{2}T/.test(s)) {
@@ -660,11 +669,11 @@ function normDate(val) {
     });
 
     const matrix = geraiFiltered.map(function(g) {
-      const gKey = normStr(g.Nama_KDKMP);
-      const hasMasuk = db.penerimaan.some(function(r) { return normStr(r.Nama_KDKMP) === gKey && (f.periode === "ALL" || !tgl || normDate(r.Tanggal_Terima) === tgl); });
-      const hasSisa = db.stok_sisa.some(function(r) { return normStr(r.Nama_KDKMP) === gKey && (f.periode === "ALL" || !tgl || normDate(r.Tanggal) === tgl); });
-      const salesRows = db.omset.filter(function(r) { return normStr(r.Nama_KDKMP) === gKey && (f.periode === "ALL" || !tgl || normDate(r.Tanggal) === tgl); });
-      const hasPo = db.po_list.some(function(r) { return normStr(r.Nama_KDKMP) === gKey && (f.periode === "ALL" || !tgl || normDate(r.Waktu_Pengajuan) === tgl || normDate(r.Tanggal_Kebutuhan) >= tgl); });
+      const gKey = normGeraiKey(g.Nama_KDKMP, g.Kecamatan);
+      const hasMasuk = db.penerimaan.some(function(r) { return normGeraiKey(r.Nama_KDKMP, r.Kecamatan) === gKey && (f.periode === "ALL" || !tgl || normDate(r.Tanggal_Terima) === tgl); });
+      const hasSisa = db.stok_sisa.some(function(r) { return normGeraiKey(r.Nama_KDKMP, r.Kecamatan) === gKey && (f.periode === "ALL" || !tgl || normDate(r.Tanggal) === tgl); });
+      const salesRows = db.omset.filter(function(r) { return normGeraiKey(r.Nama_KDKMP, r.Kecamatan) === gKey && (f.periode === "ALL" || !tgl || normDate(r.Tanggal) === tgl); });
+      const hasPo = db.po_list.some(function(r) { return normGeraiKey(r.Nama_KDKMP, r.Kecamatan) === gKey && (f.periode === "ALL" || !tgl || normDate(r.Waktu_Pengajuan) === tgl || normDate(r.Tanggal_Kebutuhan) >= tgl); });
 
       let salesStatus = "BELUM";
       if (salesRows.length > 0) {
