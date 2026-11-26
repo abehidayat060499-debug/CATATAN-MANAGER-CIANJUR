@@ -34,7 +34,7 @@
     .h-title { font-size: 16px; font-weight: 800; margin: 0; letter-spacing: 0.2px; }
     .h-sub { font-size: 11.5px; color: #cbd5e1; margin-top: 2px; }
     .h-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    .badge-conn { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+    .badge-conn { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; max-width: 340px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .conn-ok { background: #065f46; border: 1px solid #34d399; color: #ecfdf5; }
     .conn-local { background: #92400e; border: 1px solid #fbbf24; color: #fef3c7; }
 
@@ -87,13 +87,14 @@
     .b-warn { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
     .b-info { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
 
-    /* HIDDEN OFFSCREEN EXPORT STUDIO (UNTUK PNG ANTI-TERPOTONG) */
+    /* HIDDEN OFFSCREEN EXPORT STUDIO (UNTUK PNG ANTI-TERPOTONG & MULTI-FOTO) */
     #pngExportStage { position: fixed; left: -9999px; top: 0; width: 980px; background: #ffffff; color: #0f172a; padding: 24px 28px; z-index: -1; }
-    .png-header { border-bottom: 3px solid #0f172a; padding-bottom: 12px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: flex-start; }
+    .png-header { border-bottom: 3px solid #0f172a; padding-bottom: 12px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
     .png-org { font-size: 11px; font-weight: 800; color: #1d4ed8; letter-spacing: 0.6px; text-transform: uppercase; }
-    .png-title { font-size: 20px; font-weight: 900; color: #0f172a; margin: 3px 0; }
+    .png-title { font-size: 19px; font-weight: 900; color: #0f172a; margin: 3px 0; }
     .png-meta { font-size: 12px; color: #475569; font-weight: 600; }
-    .png-stamp { text-align: right; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; }
+    .png-stamp { text-align: right; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; min-width: 210px; }
+    .png-part-pill { display: inline-block; margin-top: 4px; background: #1d4ed8; color: #fff; font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 999px; }
     .png-summary-strip { display: flex; gap: 10px; margin-bottom: 14px; }
     .png-sum-box { flex: 1; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 12px; }
     .png-table { width: 100%; border-collapse: collapse; font-size: 12px; }
@@ -142,7 +143,7 @@
     <div class="h-sub">PT Agrinas Pangan Nusantara • Validasi Data, Monitoring Kepatuhan & Laporan Pimpinan</div>
   </div>
   <div class="h-actions">
-    <span id="connStatus" class="badge-conn conn-local">Mode Lokal</span>
+    <span id="connStatus" class="badge-conn conn-local" title="Status Koneksi">Mode Lokal</span>
     <button type="button" class="btn btn-outline btn-sm" style="background:#fff;" onclick="loadAllData(true)">↻ Muat Ulang Data</button>
   </div>
 </header>
@@ -169,6 +170,14 @@
   <div class="f-group">
     <label>Cari Gerai / Barang</label>
     <input type="text" id="fltSearch" placeholder="Ketik nama KDKMP / barang..." oninput="renderAllTabs()" />
+  </div>
+  <div class="f-group">
+    <label>Max Baris / Foto PNG</label>
+    <select id="fltPngChunkSize" onchange="localStorage.setItem('asr_png_chunk', this.value)">
+      <option value="15">15 Baris / Foto</option>
+      <option value="18" selected>18 Baris / Foto (Rekomendasi)</option>
+      <option value="25">25 Baris / Foto</option>
+    </select>
   </div>
   <div class="f-group">
     <label>Nama Validator ASR (PDF/Foto)</label>
@@ -472,6 +481,9 @@
     const savedValidator = localStorage.getItem("asr_validator_name");
     if (savedValidator) document.getElementById("asrValidatorName").value = savedValidator;
 
+    const savedChunk = localStorage.getItem("asr_png_chunk");
+    if (savedChunk) document.getElementById("fltPngChunkSize").value = savedChunk;
+
     if (sessionStorage.getItem("asr_unlocked") === "1") {
       document.getElementById("pinGate").style.display = "none";
       loadAllData(false);
@@ -494,7 +506,8 @@
     const el = document.getElementById("toast");
     el.textContent = msg;
     el.style.display = "block";
-    setTimeout(() => { el.style.display = "none"; }, 3200);
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer = setTimeout(() => { el.style.display = "none"; }, 3400);
   }
 
   function formatRp(n) {
@@ -526,10 +539,48 @@
     }) + " WIB";
   }
 
-  async function loadAllData(forceFresh = false) {
+  function setConnBadge(state, text, titleText) {
     const badge = document.getElementById("connStatus");
-    const cachedAsr = localStorage.getItem("asr_full_snapshot");
+    badge.className = "badge-conn " + (state === "ok" ? "conn-ok" : "conn-local");
+    badge.textContent = text;
+    badge.title = titleText || text;
+  }
 
+  // Fallback JSONP apabila fetch() terblokir browser/jaringan
+  function fetchJsonp(url, timeoutMs = 12000) {
+    return new Promise((resolve, reject) => {
+      const cbName = "asrJsonpCb_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
+      const sep = url.includes("?") ? "&" : "?";
+      const script = document.createElement("script");
+
+      const timer = setTimeout(() => {
+        cleanup();
+        reject(new Error("Timeout JSONP"));
+      }, timeoutMs);
+
+      function cleanup() {
+        clearTimeout(timer);
+        if (script.parentNode) script.parentNode.removeChild(script);
+        try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+      }
+
+      window[cbName] = function(data) {
+        cleanup();
+        resolve(data);
+      };
+
+      script.onerror = function() {
+        cleanup();
+        reject(new Error("Gagal memuat skrip JSONP"));
+      };
+
+      script.src = `${url}${sep}callback=${cbName}`;
+      document.body.appendChild(script);
+    });
+  }
+
+  async function loadAllData(forceFresh = false) {
+    const cachedAsr = localStorage.getItem("asr_full_snapshot");
     if (cachedAsr) {
       try {
         applyServerSnapshot(JSON.parse(cachedAsr));
@@ -538,28 +589,47 @@
       } catch (e) {}
     }
 
-    if (SCRIPT_URL) {
-      badge.textContent = "Menyinkronkan...";
+    const cleanUrl = String(SCRIPT_URL || "").trim();
+    if (!cleanUrl) {
+      loadFromLocalFallback("SCRIPT_URL kosong");
+      populateKecamatanFilter();
+      renderAllTabs();
+      return;
+    }
+
+    setConnBadge("local", "Menyinkronkan...", cleanUrl);
+    const baseUrl = forceFresh ? `${cleanUrl}${cleanUrl.includes("?") ? "&" : "?"}nocache=1&t=${Date.now()}` : cleanUrl;
+
+    try {
+      const res = await fetch(baseUrl, { method: "GET", redirect: "follow", cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const rawText = await res.text();
+      let json;
       try {
-        const fetchUrl = forceFresh ? `${SCRIPT_URL}?nocache=1&t=${Date.now()}` : SCRIPT_URL;
-        const res = await fetch(fetchUrl, { redirect: "follow" });
-        const json = await res.json();
-        if (json.status === "success") {
-          applyServerSnapshot(json);
-          localStorage.setItem("asr_full_snapshot", JSON.stringify(json));
-          badge.textContent = "Terhubung Pusat ASR";
-          badge.className = "badge-conn conn-ok";
-        } else {
-          throw new Error(json.message || "Respon server tidak valid");
-        }
-      } catch (e) {
-        console.warn("Gagal fetch server, pakai lokal:", e);
-        if (!cachedAsr) loadFromLocalFallback();
-        badge.textContent = "Offline / Cache";
-        badge.className = "badge-conn conn-local";
+        json = JSON.parse(rawText);
+      } catch (parseErr) {
+        throw new Error("Respons bukan JSON (cek izin akses Web App ke Anyone)");
       }
-    } else {
-      loadFromLocalFallback();
+      if (!json || json.status !== "success") {
+        throw new Error((json && json.message) || "Status gagal dari server");
+      }
+      applyServerSnapshot(json);
+      localStorage.setItem("asr_full_snapshot", JSON.stringify(json));
+      setConnBadge("ok", "Terhubung Pusat ASR", "Sinkron via Fetch API");
+    } catch (fetchErr) {
+      try {
+        const jsonpData = await fetchJsonp(baseUrl);
+        if (!jsonpData || jsonpData.status !== "success") {
+          throw new Error((jsonpData && jsonpData.message) || "JSONP gagal");
+        }
+        applyServerSnapshot(jsonpData);
+        localStorage.setItem("asr_full_snapshot", JSON.stringify(jsonpData));
+        setConnBadge("ok", "Terhubung (JSONP)", "Sinkron via jalur alternatif JSONP");
+      } catch (jsonpErr) {
+        console.warn("Gagal sinkron:", fetchErr, jsonpErr);
+        if (!cachedAsr) loadFromLocalFallback(fetchErr.message);
+        setConnBadge("local", `Gagal Sync: ${fetchErr.message}`, `Fetch: ${fetchErr.message} | JSONP: ${jsonpErr.message}`);
+      }
     }
 
     populateKecamatanFilter();
@@ -567,19 +637,17 @@
   }
 
   function applyServerSnapshot(json) {
-    db.master_kdkmp = json.master_kdkmp && json.master_kdkmp.length ? json.master_kdkmp : DEFAULT_KDKMP;
-    db.master_barang = json.master_barang || [];
-    db.penerimaan = json.penerimaan_logs || json.penerimaan || [];
-    db.stok_sisa = json.stok_sisa_logs || json.stok_sisa || [];
-    db.omset = json.omset_logs || json.omset || [];
-    db.rekap_stok = json.rekap_stok || [];
-    db.po_list = json.po_list || [];
+    db.master_kdkmp = Array.isArray(json.master_kdkmp) && json.master_kdkmp.length ? json.master_kdkmp : DEFAULT_KDKMP;
+    db.master_barang = Array.isArray(json.master_barang) ? json.master_barang : [];
+    db.penerimaan = Array.isArray(json.penerimaan_logs) ? json.penerimaan_logs : (Array.isArray(json.penerimaan) ? json.penerimaan : []);
+    db.stok_sisa = Array.isArray(json.stok_sisa_logs) ? json.stok_sisa_logs : (Array.isArray(json.stok_sisa) ? json.stok_sisa : []);
+    db.omset = Array.isArray(json.omset_logs) ? json.omset_logs : (Array.isArray(json.omset) ? json.omset : []);
+    db.rekap_stok = Array.isArray(json.rekap_stok) ? json.rekap_stok : [];
+    db.po_list = Array.isArray(json.po_list) ? json.po_list : [];
   }
 
-  function loadFromLocalFallback() {
-    const badge = document.getElementById("connStatus");
-    badge.textContent = "Sandbox Lokal";
-    badge.className = "badge-conn conn-local";
+  function loadFromLocalFallback(reason = "") {
+    setConnBadge("local", reason ? `Mode Lokal (${reason})` : "Mode Lokal", reason);
     db.master_kdkmp = JSON.parse(localStorage.getItem("kdkmp_master_gerai") || "null") || DEFAULT_KDKMP;
     db.master_barang = JSON.parse(localStorage.getItem("kdkmp_master_barang") || "[]");
     db.penerimaan = JSON.parse(localStorage.getItem("kdkmp_penerimaan_logs") || "[]");
@@ -980,7 +1048,7 @@
   }
 
   // =========================================================================
-  // ENGINE EXPORT DATA (FOTO PNG ANTI-TERPOTONG + CAPTION WA & PDF A4 RESMI)
+  // ENGINE EXPORT DATA (MULTI-FOTO PNG OTOMATIS + CAPTION WA & PDF A4 RESMI)
   // =========================================================================
   function buildReportDataset(tabKey) {
     const f = getGlobalFilters();
@@ -1122,73 +1190,103 @@
     };
   }
 
+  function triggerDownloadDataUrl(dataUrl, fileName) {
+    const link = document.createElement("a");
+    link.download = fileName;
+    link.href = dataUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   async function exportTabToPng(tabKey) {
     const rep = buildReportDataset(tabKey);
-    if (rep.body.length === 0) return showToast("Tidak ada data pada tab ini untuk di-export!");
+    if (!rep.body || rep.body.length === 0) return showToast("Tidak ada data pada tab ini untuk di-export!");
 
-    showToast("Membuat gambar laporan HD untuk WhatsApp...");
+    const chunkSize = Math.max(5, Number(document.getElementById("fltPngChunkSize").value) || 18);
+    const chunks = [];
+    for (let i = 0; i < rep.body.length; i += chunkSize) {
+      chunks.push(rep.body.slice(i, i + chunkSize));
+    }
+
+    const totalParts = chunks.length;
     const validator = document.getElementById("asrValidatorName").value.trim() || "Admin Pusat ASR";
     const stage = document.getElementById("pngExportStage");
+    const tglFile = document.getElementById("fltTanggal").value || "rekap";
 
-    stage.innerHTML = `
-      <div class="png-header">
-        <div>
-          <div class="png-org">PT AGRINAS PANGAN NUSANTARA • PUSAT OPERASIONAL ASR CIANJUR</div>
-          <div class="png-title">${rep.title}</div>
-          <div class="png-meta">${rep.subtitle}</div>
-        </div>
-        <div class="png-stamp">
-          <div style="font-size:10px; font-weight:800; color:#059669;">✓ VALIDASI SISTEM ASR</div>
-          <div style="font-size:11px; font-weight:700; color:#0f172a; margin-top:2px;">${getWibTimestamp()}</div>
-          <div style="font-size:10.5px; color:#475569;">Oleh: ${validator}</div>
-        </div>
-      </div>
-      <div class="png-summary-strip">
-        ${rep.summaryBoxes.map(b => `
-          <div class="png-sum-box">
-            <div style="font-size:10.5px; font-weight:700; color:#64748b; text-transform:uppercase;">${b.label}</div>
-            <div style="font-size:16px; font-weight:900; color:#0f172a; margin-top:2px;">${b.val}</div>
-          </div>
-        `).join("")}
-      </div>
-      <table class="png-table">
-        <thead><tr>${rep.headers.map(h => `<th>${h}</th>`).join("")}</tr></thead>
-        <tbody>
-          ${rep.body.map(row => `
-            <tr>${row.map(cell => {
-              const txt = String(cell);
-              let style = "";
-              if (/BELUM|PENDING|MENIPIS|Sesuai/.test(txt)) {
-                style = txt === "Sesuai" ? "color:#059669; font-weight:800;" : "color:#dc2626; font-weight:800;";
-              } else if (/SUDAH|LUNAS|LENGKAP|Disetujui|DO Terbit|AMAN|Sudah Input POS/.test(txt)) {
-                style = "color:#059669; font-weight:800;";
-              } else if (/TF H\+1|Diajukan|Belum Input POS/.test(txt)) {
-                style = "color:#d97706; font-weight:800;";
-              }
-              return `<td style="${style}">${txt}</td>`;
-            }).join("")}</tr>
-          `).join("")}
-        </tbody>
-      </table>
-      <div class="png-footer">
-        <span>Dokumen resmi tindak lanjut operasional KDKMP Kabupaten Cianjur</span>
-        <span>Dicetak otomatis melalui Portal Pusat ASR</span>
-      </div>
-    `;
+    showToast(totalParts > 1 ? `Data panjang: memecah menjadi ${totalParts} foto HD...` : "Membuat gambar laporan HD untuk WhatsApp...");
 
     try {
-      const canvas = await html2canvas(stage, { scale: 2, backgroundColor: "#ffffff" });
-      const link = document.createElement("a");
-      const tglFile = document.getElementById("fltTanggal").value || "rekap";
-      link.download = `ASR_${tabKey.toUpperCase()}_${tglFile}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
+      for (let pIdx = 0; pIdx < totalParts; pIdx++) {
+        const partRows = chunks[pIdx];
+        const partNum = pIdx + 1;
+        const partBadge = totalParts > 1 ? `<div class="png-part-pill">FOTO ${partNum} DARI ${totalParts}</div>` : "";
 
-      if (navigator.clipboard && rep.waCaption) {
-        await navigator.clipboard.writeText(rep.waCaption).catch(() => {});
-        showToast("Foto HD terunduh & teks caption WA otomatis tersalin!");
+        stage.innerHTML = `
+          <div class="png-header">
+            <div>
+              <div class="png-org">PT AGRINAS PANGAN NUSANTARA • PUSAT OPERASIONAL ASR CIANJUR</div>
+              <div class="png-title">${rep.title}</div>
+              <div class="png-meta">${rep.subtitle} • Baris ${pIdx * chunkSize + 1}–${pIdx * chunkSize + partRows.length} dari ${rep.body.length}</div>
+            </div>
+            <div class="png-stamp">
+              <div style="font-size:10px; font-weight:800; color:#059669;">✓ VALIDASI SISTEM ASR</div>
+              <div style="font-size:11px; font-weight:700; color:#0f172a; margin-top:2px;">${getWibTimestamp()}</div>
+              <div style="font-size:10.5px; color:#475569;">Oleh: ${validator}</div>
+              ${partBadge}
+            </div>
+          </div>
+          <div class="png-summary-strip">
+            ${rep.summaryBoxes.map(b => `
+              <div class="png-sum-box">
+                <div style="font-size:10.5px; font-weight:700; color:#64748b; text-transform:uppercase;">${b.label}</div>
+                <div style="font-size:16px; font-weight:900; color:#0f172a; margin-top:2px;">${b.val}</div>
+              </div>
+            `).join("")}
+          </div>
+          <table class="png-table">
+            <thead><tr>${rep.headers.map(h => `<th>${h}</th>`).join("")}</tr></thead>
+            <tbody>
+              ${partRows.map(row => `
+                <tr>${row.map(cell => {
+                  const txt = String(cell);
+                  let style = "";
+                  if (/BELUM|PENDING|MENIPIS|Sesuai/.test(txt)) {
+                    style = txt === "Sesuai" ? "color:#059669; font-weight:800;" : "color:#dc2626; font-weight:800;";
+                  } else if (/SUDAH|LUNAS|LENGKAP|Disetujui|DO Terbit|AMAN|Sudah Input POS/.test(txt)) {
+                    style = "color:#059669; font-weight:800;";
+                  } else if (/TF H\+1|Diajukan|Belum Input POS/.test(txt)) {
+                    style = "color:#d97706; font-weight:800;";
+                  }
+                  return `<td style="${style}">${txt}</td>`;
+                }).join("")}</tr>
+              `).join("")}
+            </tbody>
+          </table>
+          <div class="png-footer">
+            <span>Dokumen resmi tindak lanjut operasional KDKMP Kabupaten Cianjur${totalParts > 1 ? ` (Bagian ${partNum}/${totalParts})` : ""}</span>
+            <span>Dicetak otomatis melalui Portal Pusat ASR</span>
+          </div>
+        `;
+
+        const canvas = await html2canvas(stage, { scale: 2, backgroundColor: "#ffffff" });
+        const suffix = totalParts > 1 ? `_Part${partNum}of${totalParts}` : "";
+        triggerDownloadDataUrl(canvas.toDataURL("image/png"), `ASR_${tabKey.toUpperCase()}_${tglFile}${suffix}.png`);
+
+        if (totalParts > 1 && partNum < totalParts) {
+          await new Promise(r => setTimeout(r, 350));
+        }
+      }
+
+      const capWithParts = totalParts > 1
+        ? `${rep.waCaption}\n\n_(Dikirim dalam ${totalParts} bagian foto agar jelas terbaca)_`
+        : rep.waCaption;
+
+      if (navigator.clipboard && capWithParts) {
+        await navigator.clipboard.writeText(capWithParts).catch(() => {});
+        showToast(totalParts > 1 ? `${totalParts} foto HD terunduh & caption WA tersalin!` : "Foto HD terunduh & caption WA tersalin!");
       } else {
-        showToast("Foto HD berhasil diunduh!");
+        showToast(totalParts > 1 ? `${totalParts} foto HD berhasil diunduh!` : "Foto HD berhasil diunduh!");
       }
     } catch (err) {
       alert("Gagal merender gambar PNG: " + err.message);
@@ -1197,7 +1295,7 @@
 
   function exportTabToPdf(tabKey) {
     const rep = buildReportDataset(tabKey);
-    if (rep.body.length === 0) return showToast("Tidak ada data pada tab ini untuk di-export!");
+    if (!rep.body || rep.body.length === 0) return showToast("Tidak ada data pada tab ini untuk di-export!");
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
