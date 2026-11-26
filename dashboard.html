@@ -143,7 +143,7 @@
   </div>
   <div class="h-actions">
     <span id="connStatus" class="badge-conn conn-local">Mode Lokal</span>
-    <button type="button" class="btn btn-outline btn-sm" style="background:#fff;" onclick="loadAllData()">↻ Muat Ulang Data</button>
+    <button type="button" class="btn btn-outline btn-sm" style="background:#fff;" onclick="loadAllData(true)">↻ Muat Ulang Data</button>
   </div>
 </header>
 
@@ -474,7 +474,7 @@
 
     if (sessionStorage.getItem("asr_unlocked") === "1") {
       document.getElementById("pinGate").style.display = "none";
-      loadAllData();
+      loadAllData(false);
     }
   });
 
@@ -483,7 +483,7 @@
     if (val === ADMIN_PIN) {
       sessionStorage.setItem("asr_unlocked", "1");
       document.getElementById("pinGate").style.display = "none";
-      loadAllData();
+      loadAllData(false);
     } else {
       showToast("PIN Admin salah!");
       document.getElementById("pinInput").value = "";
@@ -501,10 +501,18 @@
     return "Rp " + (Number(n) || 0).toLocaleString("id-ID");
   }
 
+  function normStr(v) {
+    return String(v || "").trim().toLowerCase();
+  }
+
   function normDate(val) {
     if (!val) return "";
     const s = String(val).trim();
     if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+    const dmy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+    if (dmy) {
+      return `${dmy[3]}-${dmy[2].padStart(2, "0")}-${dmy[1].padStart(2, "0")}`;
+    }
     const d = new Date(s);
     if (!isNaN(d.getTime())) return d.toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
     return s.slice(0, 10);
@@ -518,27 +526,37 @@
     }) + " WIB";
   }
 
-  async function loadAllData() {
+  async function loadAllData(forceFresh = false) {
     const badge = document.getElementById("connStatus");
+    const cachedAsr = localStorage.getItem("asr_full_snapshot");
+
+    if (cachedAsr) {
+      try {
+        applyServerSnapshot(JSON.parse(cachedAsr));
+        populateKecamatanFilter();
+        renderAllTabs();
+      } catch (e) {}
+    }
+
     if (SCRIPT_URL) {
       badge.textContent = "Menyinkronkan...";
       try {
-        const res = await fetch(SCRIPT_URL, { redirect: "follow" });
+        const fetchUrl = forceFresh ? `${SCRIPT_URL}?nocache=1&t=${Date.now()}` : SCRIPT_URL;
+        const res = await fetch(fetchUrl, { redirect: "follow" });
         const json = await res.json();
         if (json.status === "success") {
-          db.master_kdkmp = json.master_kdkmp && json.master_kdkmp.length ? json.master_kdkmp : DEFAULT_KDKMP;
-          db.master_barang = json.master_barang || [];
-          db.penerimaan = json.penerimaan || [];
-          db.stok_sisa = json.stok_sisa || [];
-          db.omset = json.omset || [];
-          db.rekap_stok = json.rekap_stok || [];
-          db.po_list = json.po_list || [];
+          applyServerSnapshot(json);
+          localStorage.setItem("asr_full_snapshot", JSON.stringify(json));
           badge.textContent = "Terhubung Pusat ASR";
           badge.className = "badge-conn conn-ok";
+        } else {
+          throw new Error(json.message || "Respon server tidak valid");
         }
       } catch (e) {
         console.warn("Gagal fetch server, pakai lokal:", e);
-        loadFromLocalFallback();
+        if (!cachedAsr) loadFromLocalFallback();
+        badge.textContent = "Offline / Cache";
+        badge.className = "badge-conn conn-local";
       }
     } else {
       loadFromLocalFallback();
@@ -546,6 +564,16 @@
 
     populateKecamatanFilter();
     renderAllTabs();
+  }
+
+  function applyServerSnapshot(json) {
+    db.master_kdkmp = json.master_kdkmp && json.master_kdkmp.length ? json.master_kdkmp : DEFAULT_KDKMP;
+    db.master_barang = json.master_barang || [];
+    db.penerimaan = json.penerimaan_logs || json.penerimaan || [];
+    db.stok_sisa = json.stok_sisa_logs || json.stok_sisa || [];
+    db.omset = json.omset_logs || json.omset || [];
+    db.rekap_stok = json.rekap_stok || [];
+    db.po_list = json.po_list || [];
   }
 
   function loadFromLocalFallback() {
@@ -564,7 +592,7 @@
   function populateKecamatanFilter() {
     const sel = document.getElementById("fltKecamatan");
     const curr = sel.value;
-    const kecs = [...new Set(db.master_kdkmp.map(g => g.Kecamatan).filter(Boolean))].sort();
+    const kecs = [...new Set(db.master_kdkmp.map(g => String(g.Kecamatan || "").trim()).filter(Boolean))].sort();
     sel.innerHTML = `<option value="ALL">Semua Kecamatan (${kecs.length})</option>` +
       kecs.map(k => `<option value="${k}">${k}</option>`).join("");
     if (kecs.includes(curr)) sel.value = curr;
@@ -590,7 +618,7 @@
     if (f.periode === "DAY" && f.tanggal && dateField) {
       if (normDate(row[dateField]) !== f.tanggal) return false;
     }
-    if (f.kecamatan !== "ALL" && (row.Kecamatan || "") !== f.kecamatan) return false;
+    if (f.kecamatan !== "ALL" && normStr(row.Kecamatan) !== normStr(f.kecamatan)) return false;
     if (f.search) {
       const hay = `${row.Nama_KDKMP || ""} ${row.Kecamatan || ""} ${row.Manager || ""} ${row.Nama_Barang || ""} ${row.No_DO || ""} ${row.Supplier || ""}`.toLowerCase();
       if (!hay.includes(f.search)) return false;
@@ -615,7 +643,7 @@
     const stFilter = document.getElementById("fltStatusKepatuhan").value;
 
     const geraiFiltered = db.master_kdkmp.filter(g => {
-      if (f.kecamatan !== "ALL" && g.Kecamatan !== f.kecamatan) return false;
+      if (f.kecamatan !== "ALL" && normStr(g.Kecamatan) !== normStr(f.kecamatan)) return false;
       if (f.search) {
         const hay = `${g.Nama_KDKMP} ${g.Kecamatan} ${g.Nama_Manager}`.toLowerCase();
         if (!hay.includes(f.search)) return false;
@@ -624,10 +652,11 @@
     });
 
     const matrix = geraiFiltered.map(g => {
-      const hasMasuk = db.penerimaan.some(r => r.Nama_KDKMP === g.Nama_KDKMP && (!tgl || normDate(r.Tanggal_Terima) === tgl));
-      const hasSisa = db.stok_sisa.some(r => r.Nama_KDKMP === g.Nama_KDKMP && (!tgl || normDate(r.Tanggal) === tgl));
-      const salesRows = db.omset.filter(r => r.Nama_KDKMP === g.Nama_KDKMP && (!tgl || normDate(r.Tanggal) === tgl));
-      const hasPo = db.po_list.some(r => r.Nama_KDKMP === g.Nama_KDKMP && (!tgl || normDate(r.Waktu_Pengajuan) === tgl || normDate(r.Tanggal_Kebutuhan) >= tgl));
+      const gKey = normStr(g.Nama_KDKMP);
+      const hasMasuk = db.penerimaan.some(r => normStr(r.Nama_KDKMP) === gKey && (f.periode === "ALL" || !tgl || normDate(r.Tanggal_Terima) === tgl));
+      const hasSisa = db.stok_sisa.some(r => normStr(r.Nama_KDKMP) === gKey && (f.periode === "ALL" || !tgl || normDate(r.Tanggal) === tgl));
+      const salesRows = db.omset.filter(r => normStr(r.Nama_KDKMP) === gKey && (f.periode === "ALL" || !tgl || normDate(r.Tanggal) === tgl));
+      const hasPo = db.po_list.some(r => normStr(r.Nama_KDKMP) === gKey && (f.periode === "ALL" || !tgl || normDate(r.Waktu_Pengajuan) === tgl || normDate(r.Tanggal_Kebutuhan) >= tgl));
 
       let salesStatus = "BELUM";
       if (salesRows.length > 0) {
@@ -638,9 +667,9 @@
 
       const isComplete = hasMasuk && hasSisa && salesStatus === "SUDAH" && hasPo;
       return {
-        Kecamatan: g.Kecamatan,
-        Nama_KDKMP: g.Nama_KDKMP,
-        Manager: g.Nama_Manager || "-",
+        Kecamatan: String(g.Kecamatan || "").trim(),
+        Nama_KDKMP: String(g.Nama_KDKMP || "").trim(),
+        Manager: String(g.Nama_Manager || "-").trim(),
         hasMasuk,
         hasSisa,
         salesStatus,
@@ -725,7 +754,7 @@
   }
 
   async function markDoPosDone(idLog) {
-    const idx = db.penerimaan.findIndex(x => x.ID_Log === idLog);
+    const idx = db.penerimaan.findIndex(x => String(x.ID_Log).trim() === String(idLog).trim());
     if (idx >= 0) db.penerimaan[idx].Status_Input_POS = "Sudah Input POS";
     localStorage.setItem("kdkmp_penerimaan_logs", JSON.stringify(db.penerimaan));
     renderAllTabs();
@@ -735,8 +764,9 @@
       try {
         await fetch(SCRIPT_URL, {
           method: "POST",
+          redirect: "follow",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "UPDATE_STATUS_DO", id_log: idLog, status_pos: "Sudah Input POS" })
+          body: JSON.stringify({ action: "UPDATE_POS_STATUS", id_log: idLog, status_pos: "Sudah Input POS" })
         });
       } catch (e) { console.warn(e); }
     }
@@ -820,9 +850,9 @@
     const f = getGlobalFilters();
     const stFlt = document.getElementById("fltStatusRekap").value;
     const rows = db.rekap_stok.filter(r => {
-      if (f.kecamatan !== "ALL" && r.Kecamatan !== f.kecamatan) return false;
+      if (f.kecamatan !== "ALL" && normStr(r.Kecamatan) !== normStr(f.kecamatan)) return false;
       if (f.search && !`${r.Nama_KDKMP} ${r.Nama_Barang} ${r.Kecamatan}`.toLowerCase().includes(f.search)) return false;
-      const m = db.master_barang.find(b => b.Kode_Barang === r.Kode_Barang);
+      const m = db.master_barang.find(b => String(b.Kode_Barang).trim() === String(r.Kode_Barang).trim());
       const batas = m ? (Number(m.Batas_Kritis) || 10) : 10;
       const isKritis = (Number(r.Stok_Akhir) || 0) <= batas;
       if (stFlt === "KRITIS" && !isKritis) return false;
@@ -837,7 +867,7 @@
     }
 
     tbody.innerHTML = rows.map(r => {
-      const m = db.master_barang.find(b => b.Kode_Barang === r.Kode_Barang);
+      const m = db.master_barang.find(b => String(b.Kode_Barang).trim() === String(r.Kode_Barang).trim());
       const batas = m ? (Number(m.Batas_Kritis) || 10) : 10;
       const qty = Number(r.Stok_Akhir) || 0;
       const isKritis = qty <= batas;
@@ -862,7 +892,7 @@
     const rows = db.po_list.filter(r => {
       if (!matchGlobalRow(r, "Tanggal_Kebutuhan", f) && f.periode === "DAY") {
         if (normDate(r.Waktu_Pengajuan) !== f.tanggal) return false;
-      } else if (f.kecamatan !== "ALL" && r.Kecamatan !== f.kecamatan) {
+      } else if (f.kecamatan !== "ALL" && normStr(r.Kecamatan) !== normStr(f.kecamatan)) {
         return false;
       }
       if (stFlt !== "ALL" && (r.Status_PO || "Diajukan") !== stFlt) return false;
@@ -900,7 +930,7 @@
   }
 
   async function updatePoStatus(idPo, newStatus) {
-    const idx = db.po_list.findIndex(x => x.ID_PO === idPo);
+    const idx = db.po_list.findIndex(x => String(x.ID_PO).trim() === String(idPo).trim());
     if (idx >= 0) db.po_list[idx].Status_PO = newStatus;
     localStorage.setItem("kdkmp_po_list", JSON.stringify(db.po_list));
     renderAllTabs();
@@ -910,8 +940,9 @@
       try {
         await fetch(SCRIPT_URL, {
           method: "POST",
+          redirect: "follow",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "UPDATE_STATUS_PO", id_po: idPo, status_po: newStatus })
+          body: JSON.stringify({ action: "UPDATE_PO_STATUS", id_po: idPo, status_baru: newStatus })
         });
       } catch (e) { console.warn(e); }
     }
@@ -972,10 +1003,7 @@
         ],
         headers: ["No", "Kecamatan", "Nama Gerai KDKMP", "Manager", "Masuk DO", "Stok Sisa", "Sales/Setor", "PO", "Status"],
         body: rows.map((r, i) => [
-          i + 1,
-          r.Kecamatan,
-          r.Nama_KDKMP,
-          r.Manager,
+          i + 1, r.Kecamatan, r.Nama_KDKMP, r.Manager,
           r.hasMasuk ? "SUDAH" : "BELUM",
           r.hasSisa ? "SUDAH" : "BELUM",
           r.salesStatus === "SUDAH" ? "LUNAS" : (r.salesStatus === "TUNDA_TF" ? "TF H+1" : "BELUM"),
@@ -999,11 +1027,8 @@
         ],
         headers: ["No", "Tanggal", "Gerai KDKMP", "Supplier & No. DO", "Nama Barang", "Jumlah", "Status POS ASR"],
         body: rows.map((r, i) => [
-          i + 1,
-          normDate(r.Tanggal_Terima),
-          r.Nama_KDKMP,
-          `${r.Supplier} (${r.No_DO || "-"})`,
-          r.Nama_Barang,
+          i + 1, normDate(r.Tanggal_Terima), r.Nama_KDKMP,
+          `${r.Supplier} (${r.No_DO || "-"})`, r.Nama_Barang,
           `+${Number(r.Jumlah || 0).toLocaleString("id-ID")} ${r.Satuan}`,
           r.Status_Input_POS || "Belum Input POS"
         ]),
@@ -1027,15 +1052,7 @@
         body: rows.map((r, i) => {
           const om = Number(r.Nominal_Omset) || 0;
           const tf = Number(r.Nominal_Transfer) || 0;
-          return [
-            i + 1,
-            normDate(r.Tanggal),
-            r.Nama_KDKMP,
-            formatRp(om),
-            formatRp(tf),
-            om - tf === 0 ? "Sesuai" : formatRp(om - tf),
-            r.Metode_Rekening || "-"
-          ];
+          return [i + 1, normDate(r.Tanggal), r.Nama_KDKMP, formatRp(om), formatRp(tf), om - tf === 0 ? "Sesuai" : formatRp(om - tf), r.Metode_Rekening || "-"];
         }),
         waCaption: `*VALIDASI SALES & SETORAN KDKMP CIANJUR*\nPeriode: ${periodeLabel} (${kecLabel})\nTotal Omset: ${formatRp(totOmset)} | Total Transfer Masuk: ${formatRp(totTf)}.`
       };
@@ -1053,13 +1070,8 @@
         ],
         headers: ["No", "Tanggal", "Kecamatan", "Gerai KDKMP", "Nama Barang", "Stok Sisa Fisik", "Catatan"],
         body: rows.map((r, i) => [
-          i + 1,
-          normDate(r.Tanggal),
-          r.Kecamatan,
-          r.Nama_KDKMP,
-          r.Nama_Barang,
-          `${Number(r.Jumlah || 0).toLocaleString("id-ID")} ${r.Satuan}`,
-          r.Catatan || "-"
+          i + 1, normDate(r.Tanggal), r.Kecamatan, r.Nama_KDKMP, r.Nama_Barang,
+          `${Number(r.Jumlah || 0).toLocaleString("id-ID")} ${r.Satuan}`, r.Catatan || "-"
         ]),
         waCaption: `*LAPORAN STOK SISA HARIAN KDKMP CIANJUR*\nPeriode: ${periodeLabel} (${kecLabel})\nTotal ${rows.length} item stok fisik tutup gerai telah tercatat di sistem ASR.`
       };
@@ -1068,7 +1080,7 @@
     if (tabKey === "rekap") {
       const rows = viewCache.rekap;
       const kritisCount = rows.filter(r => {
-        const m = db.master_barang.find(b => b.Kode_Barang === r.Kode_Barang);
+        const m = db.master_barang.find(b => String(b.Kode_Barang).trim() === String(r.Kode_Barang).trim());
         return (Number(r.Stok_Akhir) || 0) <= (m ? (Number(m.Batas_Kritis) || 10) : 10);
       }).length;
       return {
@@ -1081,23 +1093,14 @@
         ],
         headers: ["No", "Kecamatan", "Gerai KDKMP", "Nama Barang", "Stok Terkini", "Status Stok", "Update Terakhir"],
         body: rows.map((r, i) => {
-          const m = db.master_barang.find(b => b.Kode_Barang === r.Kode_Barang);
+          const m = db.master_barang.find(b => String(b.Kode_Barang).trim() === String(r.Kode_Barang).trim());
           const isKritis = (Number(r.Stok_Akhir) || 0) <= (m ? (Number(m.Batas_Kritis) || 10) : 10);
-          return [
-            i + 1,
-            r.Kecamatan,
-            r.Nama_KDKMP,
-            r.Nama_Barang,
-            `${Number(r.Stok_Akhir || 0).toLocaleString("id-ID")} ${r.Satuan}`,
-            isKritis ? "MENIPIS" : "AMAN",
-            r.Update_Terakhir || "-"
-          ];
+          return [i + 1, r.Kecamatan, r.Nama_KDKMP, r.Nama_Barang, `${Number(r.Stok_Akhir || 0).toLocaleString("id-ID")} ${r.Satuan}`, isKritis ? "MENIPIS" : "AMAN", r.Update_Terakhir || "-"];
         }),
         waCaption: `*UPDATE POSISI STOK GERAI KDKMP CIANJUR*\nWilayah: ${kecLabel}\nTerdapat ${kritisCount} item stok menipis yang perlu segera diajukan PO.`
       };
     }
 
-    // tabKey === "po"
     const rows = viewCache.po;
     const disetujui = rows.filter(r => r.Status_PO === "Disetujui ASR" || r.Status_PO === "DO Terbit").length;
     return {
@@ -1110,10 +1113,7 @@
       ],
       headers: ["No", "Target Kirim", "Gerai KDKMP", "Nama Barang", "Stok Saat PO", "Jumlah PO", "Status ASR"],
       body: rows.map((r, i) => [
-        i + 1,
-        normDate(r.Tanggal_Kebutuhan),
-        r.Nama_KDKMP,
-        r.Nama_Barang,
+        i + 1, normDate(r.Tanggal_Kebutuhan), r.Nama_KDKMP, r.Nama_Barang,
         `${Number(r.Stok_Saat_Pengajuan || 0).toLocaleString("id-ID")} ${r.Satuan}`,
         `${Number(r.Jumlah_PO || 0).toLocaleString("id-ID")} ${r.Satuan}`,
         r.Status_PO || "Diajukan"
@@ -1159,8 +1159,7 @@
               const txt = String(cell);
               let style = "";
               if (/BELUM|PENDING|MENIPIS|Sesuai/.test(txt)) {
-                if (txt === "Sesuai") style = "color:#059669; font-weight:800;";
-                else style = "color:#dc2626; font-weight:800;";
+                style = txt === "Sesuai" ? "color:#059669; font-weight:800;" : "color:#dc2626; font-weight:800;";
               } else if (/SUDAH|LUNAS|LENGKAP|Disetujui|DO Terbit|AMAN|Sudah Input POS/.test(txt)) {
                 style = "color:#059669; font-weight:800;";
               } else if (/TF H\+1|Diajukan|Belum Input POS/.test(txt)) {
@@ -1204,7 +1203,6 @@
     const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
     const validator = document.getElementById("asrValidatorName").value.trim() || "Admin Pusat ASR Cianjur";
 
-    // KOP LAPORAN RESMI
     doc.setFillColor(15, 23, 42);
     doc.rect(14, 12, 269, 20, "F");
     doc.setTextColor(255, 255, 255);
@@ -1214,7 +1212,6 @@
     doc.setFontSize(13);
     doc.text(rep.title, 18, 27);
 
-    // SUBHEADER & RINGKASAN
     doc.setTextColor(30, 41, 59);
     doc.setFontSize(9.5);
     doc.setFont("helvetica", "normal");
@@ -1225,7 +1222,6 @@
     doc.setFont("helvetica", "bold");
     doc.text(summaryLine, 14, 49);
 
-    // TABEL MULTI-HALAMAN RAPI
     doc.autoTable({
       startY: 53,
       head: [rep.headers],
@@ -1248,7 +1244,6 @@
       }
     });
 
-    // BLOK PENGESAHAN TANDA TANGAN DI HALAMAN TERAKHIR
     const finalY = (doc.lastAutoTable && doc.lastAutoTable.finalY) ? doc.lastAutoTable.finalY + 10 : 160;
     const pageH = doc.internal.pageSize.getHeight();
     const signY = finalY + 28 > pageH ? (doc.addPage(), 25) : finalY;
