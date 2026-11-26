@@ -495,10 +495,16 @@
     return String(v || "").trim().toLowerCase();
   }
 
-  function normDate(val) {
+function normDate(val) {
     if (!val) return "";
     const s = String(val).trim();
-    if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+    if (/^\d{4}-\d{2}-\d{2}T/.test(s)) {
+      const dIso = new Date(s);
+      if (!isNaN(dIso.getTime())) {
+        return dIso.toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
+      }
+    }
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
     const dmy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
     if (dmy) {
       return dmy[3] + "-" + dmy[2].padStart(2, "0") + "-" + dmy[1].padStart(2, "0");
