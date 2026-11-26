@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Pusat Audit ASR — KDKMP Cianjur</title>
+  <title>Dashboard Pusat Audit ASR — KDKMP Kab. Cianjur</title>
   <style>
     :root {
       --primary: #1e3a8a;
+      --primary-light: #2563eb;
       --success: #059669;
       --danger: #dc2626;
       --warning: #d97706;
@@ -20,311 +21,565 @@
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 50px; }
 
+    /* ==================== PIN LOCK SCREEN ==================== */
+    #pinGate {
+      position: fixed; inset: 0; background: linear-gradient(135deg, #0f172a, #1e3a8a);
+      display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 16px;
+    }
+    .pin-card {
+      background: #fff; border-radius: 16px; padding: 28px 24px; max-width: 380px; width: 100%;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35); text-align: center;
+    }
+    .pin-icon {
+      width: 52px; height: 52px; border-radius: 14px; background: #eff6ff; color: var(--primary);
+      display: inline-flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800;
+      margin-bottom: 12px; border: 1px solid #bfdbfe;
+    }
+    .pin-title { font-size: 18px; font-weight: 800; margin: 0 0 6px 0; color: #0f172a; }
+    .pin-sub { font-size: 13px; color: var(--muted); margin: 0 0 18px 0; line-height: 1.4; }
+    .pin-input {
+      width: 100%; padding: 12px; font-size: 20px; font-weight: 800; text-align: center;
+      letter-spacing: 6px; border: 2px solid var(--border); border-radius: 10px; margin-bottom: 12px;
+    }
+    .pin-input:focus { outline: none; border-color: var(--primary-light); }
+    .pin-err { color: var(--danger); font-size: 12px; font-weight: 700; min-height: 18px; margin-bottom: 8px; }
+
+    /* ==================== HEADER & LAYOUT ==================== */
     header {
       background: linear-gradient(135deg, #0f172a, #1e3a8a);
-      color: #fff;
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
+      color: #fff; padding: 14px 20px; display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 10px; position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
     }
-    .header-title { font-size: 18px; font-weight: 800; margin: 0; }
+    .header-title { font-size: 17px; font-weight: 800; margin: 0; }
     .header-sub { font-size: 12px; color: #cbd5e1; margin-top: 2px; }
     .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
-    .container { max-width: 1200px; margin: 0 auto; padding: 16px; }
+    .container { max-width: 1260px; margin: 0 auto; padding: 16px; }
+
+    .card {
+      background: var(--card); border-radius: 12px; padding: 16px;
+      border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 16px;
+    }
+    .card-header {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+      gap: 10px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9;
+    }
+    .card-title { font-size: 15px; font-weight: 800; margin: 0; color: var(--primary); }
+    .card-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .card-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+    /* Buttons */
+    .btn {
+      padding: 8px 13px; border-radius: 8px; border: none; font-size: 12px; font-weight: 700;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;
+      transition: 0.15s;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-purple { background: var(--purple); color: #fff; }
+    .btn-dark { background: #334155; color: #fff; }
+    .btn-outline { background: #fff; color: var(--primary); border: 1px solid var(--primary); }
+    .btn-light { background: rgba(255,255,255,0.16); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+    .btn-xs { padding: 5px 9px; font-size: 11px; border-radius: 6px; }
+
+    /* Filter Bar */
+    .filter-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    @media (max-width: 960px) { .filter-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .filter-grid { grid-template-columns: 1fr; } }
+
+    label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px; text-transform: uppercase; }
+    input[type="date"], input[type="text"], select {
+      width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px;
+      font-size: 13px; background: #fff; color: var(--text);
+    }
+    .preset-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #e2e8f0; }
+    .preset-group { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .chk-label { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #991b1b; cursor: pointer; text-transform: none; margin: 0; }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      background: #fff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 14px;
+      margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+    }
+    .crumb-trail { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; font-weight: 700; }
+    .crumb-link { color: var(--primary-light); cursor: pointer; text-decoration: underline; }
+    .crumb-current { color: #0f172a; }
+
+    /* KPIs */
     .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
     @media (max-width: 768px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
     .kpi-card {
       background: #fff; padding: 14px 16px; border-radius: 12px;
       border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
-    .kpi-val { font-size: 21px; font-weight: 800; color: var(--primary); }
+    .kpi-val { font-size: 20px; font-weight: 800; color: var(--primary); }
     .kpi-lbl { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 3px; }
 
-    .card {
-      background: var(--card); border-radius: 12px; padding: 16px;
-      border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 16px;
-    }
-    .card-title {
-      font-size: 15px; font-weight: 700; margin: 0 0 12px 0; color: var(--primary);
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
-    }
-
-    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-    @media (max-width: 768px) { .grid-4 { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 480px) { .grid-4 { grid-template-columns: 1fr; } }
-
-    label { display: block; font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 4px; }
-    input, select {
-      width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px;
-    }
-
-    /* Sub-tabs Dashboard */
-    .dash-tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 14px; }
-    .dtab-btn {
-      padding: 10px 16px; border-radius: 10px; border: 1px solid var(--border); background: #fff;
-      font-size: 13px; font-weight: 700; color: var(--muted); cursor: pointer; white-space: nowrap;
-    }
-    .dtab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .dtab-panel { display: none; }
-    .dtab-panel.active { display: block; }
-
-    .btn {
-      padding: 8px 14px; border-radius: 8px; border: none; font-size: 12px; font-weight: 700;
-      cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
-    }
-    .btn-light { background: rgba(255,255,255,0.16); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
-    .btn-success { background: var(--success); color: #fff; }
-    .btn-primary { background: var(--primary); color: #fff; }
-    .btn-xs { padding: 4px 9px; font-size: 11px; border-radius: 6px; }
-
-    .agg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(195px, 1fr)); gap: 10px; }
-    .agg-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; }
-    .agg-cat { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+    /* Aggregate Cards */
+    .agg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 10px; }
+    .agg-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 11px 12px; }
+    .agg-cat { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
     .agg-name { font-size: 13px; font-weight: 700; margin: 3px 0; }
     .agg-qty { font-size: 18px; font-weight: 800; color: var(--primary); }
 
-    .table-wrap { overflow-x: auto; max-height: 440px; }
+    /* Tables */
+    .table-wrap { overflow-x: auto; max-height: 480px; }
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    th, td { padding: 9px 11px; text-align: left; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
-    th { background: #f8fafc; font-weight: 700; color: #334155; position: sticky; top: 0; z-index: 2; }
-    .tag { padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    th, td { padding: 9px 10px; text-align: left; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+    th { background: #f8fafc; font-weight: 700; color: #334155; position: sticky; top: 0; z-index: 2; white-space: nowrap; }
+    tr.clickable-row { cursor: pointer; transition: 0.1s; }
+    tr.clickable-row:hover { background: #eff6ff; }
+
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap; }
     .tag-ok { background: #dcfce7; color: #166534; }
     .tag-warn { background: #fef3c7; color: #92400e; }
     .tag-danger { background: #fee2e2; color: #991b1b; }
-    .tag-in { background: #dbeafe; color: #1e40af; }
+    .tag-info { background: #dbeafe; color: #1e40af; }
+    .tag-purple { background: #f3e8ff; color: #6b21a8; }
 
-    .status-select { padding: 4px 8px; font-size: 11px; font-weight: 700; border-radius: 6px; width: auto; }
+    .mini-list { margin: 0; padding-left: 14px; font-size: 11px; line-height: 1.45; }
+    .status-select { padding: 4px 6px; font-size: 11px; font-weight: 700; border-radius: 6px; width: auto; }
+
+    .level-view { display: none; }
+    .level-view.active { display: block; }
 
     .toast {
       position: fixed; bottom: 20px; right: 20px; background: #0f172a; color: #fff;
       padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; display: none; z-index: 100;
     }
+
+    /* ==================== PRINT STYLES (CETAK LAPORAN BERSIH) ==================== */
+    #printArea { display: none; }
+    @media print {
+      body { background: #fff !important; padding: 0 !important; margin: 0 !important; }
+      #appWrapper, #pinGate, .toast { display: none !important; }
+      #printArea {
+        display: block !important;
+        width: 100%;
+        color: #000;
+        font-size: 11px;
+      }
+      .print-kop {
+        border-bottom: 2px solid #000;
+        padding-bottom: 8px;
+        margin-bottom: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+      }
+      .print-kop h2 { margin: 0; font-size: 16px; text-transform: uppercase; }
+      .print-kop p { margin: 3px 0 0 0; font-size: 11px; color: #333; }
+      .print-meta { text-align: right; font-size: 10px; color: #333; }
+      #printArea .table-wrap { max-height: none !important; overflow: visible !important; }
+      #printArea table { width: 100%; border-collapse: collapse; font-size: 11px; }
+      #printArea th, #printArea td { border: 1px solid #94a3b8; padding: 6px 8px; position: static !important; }
+      #printArea th { background: #e2e8f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      #printArea .no-print { display: none !important; }
+      #printArea .agg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+      #printArea .agg-box { border: 1px solid #94a3b8; padding: 8px; }
+    }
   </style>
 </head>
 <body>
 
-<header>
-  <div>
-    <h1 class="header-title">DASHBOARD AUDIT PUSAT ASR — KAB. CIANJUR</h1>
-    <div class="header-sub" id="syncStatusText">Menghubungkan ke database pusat...</div>
+<!-- ==================== LAYAR KUNCI PIN ASR ==================== -->
+<div id="pinGate">
+  <div class="pin-card">
+    <div class="pin-icon">ASR</div>
+    <h2 class="pin-title">Akses Terbatas Tim ASR</h2>
+    <p class="pin-sub">Masukkan PIN Otorisasi untuk membuka Dashboard Audit Logistik, Omset, dan Approval PO KDKMP Cianjur.</p>
+    <input type="password" id="inpPin" class="pin-input" maxlength="8" inputmode="numeric" placeholder="••••" onkeydown="if(event.key==='Enter') checkPin()" />
+    <div id="pinError" class="pin-err"></div>
+    <button class="btn btn-primary" style="width:100%; justify-content:center; padding:12px; font-size:14px;" onclick="checkPin()">
+      Buka Dashboard ASR
+    </button>
   </div>
-  <div class="header-actions">
-    <button class="btn btn-light" onclick="loadData()">Refresh Data</button>
-    <button class="btn btn-success" onclick="exportActiveCsv()">Export CSV</button>
-  </div>
-</header>
+</div>
 
-<div class="container">
+<!-- ==================== AREA CETAK KHUSUS PRINT ==================== -->
+<div id="printArea"></div>
 
-  <!-- KPI RINGKASAN HARIAN -->
-  <div class="kpi-grid">
-    <div class="kpi-card">
-      <div class="kpi-val" id="kpiGeraiStok">0 / 0</div>
-      <div class="kpi-lbl">Gerai Lapor Stok (Tgl Filter)</div>
+<!-- ==================== APLIKASI UTAMA ==================== -->
+<div id="appWrapper" style="display:none;">
+  <header>
+    <div>
+      <h1 class="header-title">DASHBOARD PUSAT AUDIT ASR — KAB. CIANJUR</h1>
+      <div class="header-sub" id="syncStatusText">Menghubungkan ke database pusat...</div>
     </div>
-    <div class="kpi-card">
-      <div class="kpi-val" style="color:#059669;" id="kpiOmsetTotal">Rp 0</div>
-      <div class="kpi-lbl">Total Omset Terlapor</div>
+    <div class="header-actions">
+      <button class="btn btn-light" onclick="loadData()">Refresh Data</button>
+      <button class="btn btn-light" onclick="lockDashboard()">Kunci PIN</button>
     </div>
-    <div class="kpi-card">
-      <div class="kpi-val" id="kpiTransferTotal">Rp 0</div>
-      <div class="kpi-lbl">Total Dana Ditransfer</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-val" style="color:#dc2626;" id="kpiKritis">0</div>
-      <div class="kpi-lbl">Alert Stok Kritis / PO Aktif</div>
-    </div>
-  </div>
+  </header>
 
-  <!-- FILTER GLOBAL -->
-  <div class="card">
-    <div class="grid-4">
-      <div>
-        <label>Tanggal Audit (Omset & Kepatuhan)</label>
-        <input type="date" id="filterTanggal" onchange="renderAll()" />
-      </div>
-      <div>
-        <label>Filter Kecamatan</label>
-        <select id="filterKec" onchange="renderAll()">
-          <option value="ALL">Semua Kecamatan (Kab. Cianjur)</option>
-        </select>
-      </div>
-      <div>
-        <label>Filter Komoditas</label>
-        <select id="filterCat" onchange="renderAll()">
-          <option value="ALL">Semua Komoditas</option>
-        </select>
-      </div>
-      <div>
-        <label>Cari KDKMP / Barang</label>
-        <input type="text" id="filterSearch" placeholder="Ketik nama gerai atau barang..." oninput="renderAll()" />
-      </div>
-    </div>
-  </div>
+  <div class="container">
 
-  <!-- TAB MENU DASHBOARD ASR -->
-  <div class="dash-tabs">
-    <button class="dtab-btn active" onclick="switchDashTab('panel-stok', this)">1. Posisi Stok & Kepatuhan</button>
-    <button class="dtab-btn" onclick="switchDashTab('panel-omset', this)">2. Audit Omset & Bukti Foto</button>
-    <button class="dtab-btn" onclick="switchDashTab('panel-po', this)">3. Rekap & Approval PO</button>
-    <button class="dtab-btn" onclick="switchDashTab('panel-logs', this)">4. Log Barang Masuk / DO</button>
-  </div>
-
-  <!-- ==================== PANEL 1: STOK & KEPATUHAN ==================== -->
-  <div id="panel-stok" class="dtab-panel active">
+    <!-- FILTER GLOBAL & LOMPAT CEPAT -->
     <div class="card">
-      <div class="card-title">Total Akumulasi Stok Fisik (Sesuai Filter Wilayah)</div>
-      <div class="agg-grid" id="aggStokGrid"></div>
-    </div>
+      <div class="filter-grid">
+        <div>
+          <label>Dari Tanggal</label>
+          <input type="date" id="filterStart" onchange="renderAll()" />
+        </div>
+        <div>
+          <label>Sampai Tanggal</label>
+          <input type="date" id="filterEnd" onchange="renderAll()" />
+        </div>
+        <div>
+          <label>Level Wilayah (Kecamatan)</label>
+          <select id="filterKec" onchange="onFilterKecChange()">
+            <option value="ALL">Semua Kabupaten Cianjur</option>
+          </select>
+        </div>
+        <div>
+          <label>Lompat Cepat 1 KDKMP</label>
+          <div style="display:flex; gap:4px;">
+            <input type="text" id="filterKdkmpInput" list="kdkmpDatalist" placeholder="Ketik nama desa/KDKMP..." onchange="onQuickKdkmpSelect()" />
+            <button class="btn btn-outline btn-xs" onclick="clearKdkmpFilter()" title="Reset KDKMP">X</button>
+          </div>
+          <datalist id="kdkmpDatalist"></datalist>
+        </div>
+        <div>
+          <label>Filter Komoditas / Supplier</label>
+          <select id="filterCat" onchange="renderAll()">
+            <option value="ALL">Semua Komoditas</option>
+          </select>
+        </div>
+      </div>
 
-    <div class="card">
-      <div class="card-title">Posisi Stok Akhir per Gerai KDKMP</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Kecamatan</th>
-              <th>Nama KDKMP</th>
-              <th>Komoditas</th>
-              <th>Nama Barang</th>
-              <th>Stok Akhir</th>
-              <th>Status</th>
-              <th>Update Terakhir</th>
-            </tr>
-          </thead>
-          <tbody id="tblStok"></tbody>
-        </table>
+      <div class="preset-bar">
+        <div class="preset-group">
+          <span style="font-size:11px; font-weight:700; color:#64748b;">Rentang Cepat:</span>
+          <button class="btn btn-outline btn-xs" onclick="setDatePreset('TODAY')">Hari Ini</button>
+          <button class="btn btn-outline btn-xs" onclick="setDatePreset('7DAYS')">7 Hari Terakhir</button>
+          <button class="btn btn-outline btn-xs" onclick="setDatePreset('MONTH')">Bulan Ini</button>
+        </div>
+        <label class="chk-label">
+          <input type="checkbox" id="chkOnlyIssue" onchange="renderAll()" />
+          Tampilkan hanya gerai bermasalah (Stok Kritis / Belum Lapor / Belum Setor Omset)
+        </label>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">Radar Kepatuhan Laporan Stok (Tanggal Terpilih)</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Kecamatan</th>
-              <th>Nama KDKMP</th>
-              <th>Manager</th>
-              <th>Status Lapor Stok</th>
-              <th>Waktu Input</th>
-            </tr>
-          </thead>
-          <tbody id="tblCompStok"></tbody>
-        </table>
+    <!-- BREADCRUMB NAVIGASI 3 LEVEL -->
+    <div class="breadcrumb">
+      <div class="crumb-trail" id="breadcrumbTrail"></div>
+      <div style="font-size:11px; color:#64748b; font-weight:600;" id="levelHintText">
+        Klik baris Kecamatan untuk melihat daftar gerai
       </div>
     </div>
+
+    <!-- KPI RINGKASAN DINAMIS -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-val" id="kpiLaporStok">0 / 0</div>
+        <div class="kpi-lbl">Gerai Lapor Stok (Periode)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val" style="color:#059669;" id="kpiOmset">Rp 0</div>
+        <div class="kpi-lbl">Total Omset Terlapor</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val" id="kpiTransfer">Rp 0</div>
+        <div class="kpi-lbl">Total Dana Ditransfer</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val" style="color:#dc2626;" id="kpiAlertPo">0 Kritis • 0 PO</div>
+        <div class="kpi-lbl">Stok Kritis & PO Aktif</div>
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- LEVEL 1: PANDANGAN UMUM (SE-KABUPATEN CIANJUR)                      -->
+    <!-- =================================================================== -->
+    <div id="view-kabupaten" class="level-view active">
+
+      <!-- 1A. MATRIKS REKAP PER KECAMATAN -->
+      <div class="card" id="card-kab-kecamatan">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">1. Rekapitulasi Logistik & Omset per Kecamatan (Kab. Cianjur)</h3>
+            <div class="card-subtitle">Klik baris kecamatan mana saja untuk membedah daftar KDKMP di dalamnya</div>
+          </div>
+          <div class="card-actions no-print">
+            <button class="btn btn-dark btn-xs" onclick="printSection('card-kab-kecamatan', 'REKAPITULASI LOGISTIK & OMSET PER KECAMATAN - KAB. CIANJUR')">
+              Print Rekap Kecamatan
+            </button>
+            <button class="btn btn-success btn-xs" onclick="exportKecamatanCsv()">Export CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Kecamatan</th>
+                <th>Jml Gerai</th>
+                <th>Lapor Stok</th>
+                <th>Stok Kritis</th>
+                <th>Barang Masuk (Periode)</th>
+                <th>PO Aktif</th>
+                <th>Omset Terlapor</th>
+                <th>Dana Ditransfer</th>
+                <th class="no-print">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tblKabKecamatan"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 1B. REKAP PENGAJUAN PO PER SUPPLIER / KOMODITAS -->
+      <div class="card" id="card-kab-po-supplier">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">2. Rekapitulasi Kebutuhan PO per Supplier & Komoditas (Se-Kabupaten)</h3>
+            <div class="card-subtitle">Akumulasi pesanan aktif (status Diajukan & Disetujui ASR) siap rekap ke distributor</div>
+          </div>
+          <div class="card-actions no-print">
+            <select id="filterPoStatusKab" style="padding:4px 8px; font-size:11px; width:auto;" onchange="renderAll()">
+              <option value="ACTIVE">PO Aktif (Diajukan + Disetujui)</option>
+              <option value="Diajukan">Hanya Status: Diajukan</option>
+              <option value="Disetujui ASR">Hanya Status: Disetujui ASR</option>
+              <option value="ALL">Semua Riwayat PO</option>
+            </select>
+            <button class="btn btn-dark btn-xs" onclick="printSection('card-kab-po-supplier', 'REKAPITULASI PENGAJUAN PO PER SUPPLIER - KAB. CIANJUR')">
+              Print PO per Supplier
+            </button>
+            <button class="btn btn-success btn-xs" onclick="exportPoSupplierCsv('ALL')">Export CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Supplier / Prinsipal</th>
+                <th>Komoditas</th>
+                <th>Nama Barang</th>
+                <th>Jml KDKMP Pemesan</th>
+                <th>Total Kebutuhan PO</th>
+                <th>Satuan</th>
+              </tr>
+            </thead>
+            <tbody id="tblKabPoSupplier"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 1C. AKUMULASI STOK FISIK TERKINI SE-KABUPATEN -->
+      <div class="card" id="card-kab-stok">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">3. Posisi Total Stok Fisik Terakhir (Se-Kabupaten Cianjur)</h3>
+            <div class="card-subtitle">Akumulasi sisa stok fisik terbaru seluruh gerai aktif</div>
+          </div>
+          <div class="card-actions no-print">
+            <button class="btn btn-dark btn-xs" onclick="printSection('card-kab-stok', 'POSISI TOTAL STOK FISIK KDKMP SE-KABUPATEN CIANJUR')">
+              Print Stok Kabupaten
+            </button>
+          </div>
+        </div>
+        <div class="agg-grid" id="aggKabStokGrid"></div>
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- LEVEL 2: PANDANGAN WILAYAH (PER KECAMATAN)                          -->
+    <!-- =================================================================== -->
+    <div id="view-kecamatan" class="level-view">
+
+      <!-- 2A. MATRIKS MENYELURUH GERAI DALAM 1 KECAMATAN -->
+      <div class="card" id="card-kec-matrix">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title" id="titleKecMatrix">Matriks Menyeluruh KDKMP</h3>
+            <div class="card-subtitle">1 baris mencakup barang datang, tgl terakhir DO, stok sisa, PO, dan setoran omset</div>
+          </div>
+          <div class="card-actions no-print">
+            <button class="btn btn-dark btn-xs" onclick="printSection('card-kec-matrix', document.getElementById('titleKecMatrix').textContent)">
+              Print Matriks Kecamatan
+            </button>
+            <button class="btn btn-success btn-xs" onclick="exportKecMatrixCsv()">Export CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nama KDKMP & Manager</th>
+                <th>Barang Datang & Tgl Terakhir DO</th>
+                <th>Stok Sisa Fisik Terakhir</th>
+                <th>PO Aktif</th>
+                <th>Omset & Transfer (Periode)</th>
+                <th>Status Audit</th>
+                <th class="no-print">Detail</th>
+              </tr>
+            </thead>
+            <tbody id="tblKecMatrix"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 2B. REKAP PO PER SUPPLIER UNTUK KECAMATAN INI -->
+      <div class="card" id="card-kec-po">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title" id="titleKecPo">Rekap Pengajuan PO per Supplier — Kecamatan</h3>
+            <div class="card-subtitle">Total kebutuhan barang seluruh KDKMP di kecamatan ini</div>
+          </div>
+          <div class="card-actions no-print">
+            <button class="btn btn-dark btn-xs" onclick="printSection('card-kec-po', document.getElementById('titleKecPo').textContent)">
+              Print PO Kecamatan
+            </button>
+            <button class="btn btn-success btn-xs" onclick="exportPoSupplierCsv(navState.kecamatan)">Export CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Supplier / Prinsipal</th>
+                <th>Komoditas</th>
+                <th>Nama Barang</th>
+                <th>Jml Gerai Pemesan</th>
+                <th>Total Kebutuhan PO</th>
+                <th>Satuan</th>
+              </tr>
+            </thead>
+            <tbody id="tblKecPoSupplier"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- LEVEL 3: BEDAH DETAIL SPESIFIK 1 KDKMP                              -->
+    <!-- =================================================================== -->
+    <div id="view-kdkmp" class="level-view">
+
+      <!-- 3A. RAPOR AUDIT BARANG & APPROVAL PO GERAI -->
+      <div class="card" id="card-gerai-barang">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title" id="titleGeraiBarang">Rapor Audit Barang & Approval PO</h3>
+            <div class="card-subtitle" id="subGeraiInfo">Detail pergerakan stok & status pengajuan PO</div>
+          </div>
+          <div class="card-actions no-print">
+            <button class="btn btn-dark btn-xs" onclick="printSection('card-gerai-barang', document.getElementById('titleGeraiBarang').textContent)">
+              Print Rapor Barang & PO
+            </button>
+            <button class="btn btn-success btn-xs" onclick="exportGeraiCsv()">Export CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Supplier & Komoditas</th>
+                <th>Nama Barang</th>
+                <th>Masuk (Periode)</th>
+                <th>Tgl Terakhir DO</th>
+                <th>Stok Fisik Terakhir</th>
+                <th>Est. Keluar</th>
+                <th>PO Diajukan</th>
+                <th>Status Approval ASR</th>
+              </tr>
+            </thead>
+            <tbody id="tblGeraiBarang"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3B. RIWAYAT SETORAN OMSET & BUKTI FOTO -->
+      <div class="card" id="card-gerai-omset">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title" id="titleGeraiOmset">Riwayat Setoran Omset & Verifikasi Foto</h3>
+            <div class="card-subtitle">Klik tombol foto untuk memeriksa Struk Close Shift & Bukti Transfer di Google Drive</div>
+          </div>
+          <div class="card-actions no-print">
+            <button class="btn btn-dark btn-xs" onclick="printSection('card-gerai-omset', document.getElementById('titleGeraiOmset').textContent)">
+              Print Rekap Omset
+            </button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal / Shift</th>
+                <th>Omset Struk</th>
+                <th>Ditransfer</th>
+                <th>Selisih Tunai</th>
+                <th>Rekening</th>
+                <th>Catatan</th>
+                <th class="no-print">Bukti Foto</th>
+              </tr>
+            </thead>
+            <tbody id="tblGeraiOmset"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3C. LOG PENERIMAAN SURAT JALAN (DO) -->
+      <div class="card" id="card-gerai-do">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title" id="titleGeraiDo">Log Riwayat Penerimaan Barang (Surat Jalan / DO)</h3>
+            <div class="card-subtitle">Catatan kedatangan barang dari berbagai supplier pada periode terpilih</div>
+          </div>
+          <div class="card-actions no-print">
+            <button class="btn btn-dark btn-xs" onclick="printSection('card-gerai-do', document.getElementById('titleGeraiDo').textContent)">
+              Print Log DO
+            </button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal & Waktu</th>
+                <th>Supplier</th>
+                <th>No. DO</th>
+                <th>Nama Barang</th>
+                <th>Jumlah Masuk</th>
+                <th class="no-print">Foto DO</th>
+              </tr>
+            </thead>
+            <tbody id="tblGeraiDo"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </div>
-
-  <!-- ==================== PANEL 2: AUDIT OMSET & BUKTI FOTO ==================== -->
-  <div id="panel-omset" class="dtab-panel">
-    <div class="card">
-      <div class="card-title">Setoran Omset Close Shift & Verifikasi Bukti Foto</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Tanggal / Shift</th>
-              <th>KDKMP (Kecamatan)</th>
-              <th>Manager</th>
-              <th>Omset Struk</th>
-              <th>Ditransfer</th>
-              <th>Selisih Tunai</th>
-              <th>Rekening</th>
-              <th>Bukti Foto</th>
-            </tr>
-          </thead>
-          <tbody id="tblOmset"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Radar Kepatuhan Setor Omset (Tanggal Terpilih)</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Kecamatan</th>
-              <th>Nama KDKMP</th>
-              <th>Manager</th>
-              <th>Status Setor Omset</th>
-              <th>Nominal Transfer</th>
-            </tr>
-          </thead>
-          <tbody id="tblCompOmset"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== PANEL 3: REKAP & APPROVAL PO ==================== -->
-  <div id="panel-po" class="dtab-panel">
-    <div class="card">
-      <div class="card-title">Total Kebutuhan PO Se-Wilayah (Status: Diajukan / Disetujui)</div>
-      <div class="agg-grid" id="aggPoGrid"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Daftar Pengajuan PO per KDKMP (Ubah Status untuk Approval ASR)</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Tgl Kebutuhan</th>
-              <th>KDKMP (Kecamatan)</th>
-              <th>Komoditas</th>
-              <th>Nama Barang</th>
-              <th>Sisa Stok Gerai</th>
-              <th>Jumlah PO</th>
-              <th>Status Approval ASR</th>
-              <th>Catatan</th>
-            </tr>
-          </thead>
-          <tbody id="tblPo"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== PANEL 4: LOG BARANG MASUK / DO ==================== -->
-  <div id="panel-logs" class="dtab-panel">
-    <div class="card">
-      <div class="card-title">Riwayat Input Penerimaan DO & Stok Sisa</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Waktu Input</th>
-              <th>KDKMP (Kecamatan)</th>
-              <th>Jenis</th>
-              <th>Supplier / No. DO</th>
-              <th>Barang</th>
-              <th>Jumlah</th>
-              <th>Foto DO</th>
-            </tr>
-          </thead>
-          <tbody id="tblLogs"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
 </div>
 
 <div id="toast" class="toast"></div>
 
 <script>
   // =========================================================================
-  // KONFIGURASI BACKEND: Tempel URL Web App Google Apps Script (/exec) di sini
+  // KONFIGURASI BACKEND & PIN AKSES TIM ASR
   // =========================================================================
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMcyrtGHQ7sw2kvM2hUqqHOmxEYDXrzzOZyFXdq1uoeOvVIayE9vaH91Ufp3YidnEcCg/exec";
+  const ASR_PIN = "2026";
 
-  let activePanel = "panel-stok";
+  // Pemetaan kategori komoditas ke Supplier utama untuk rekap PO per Supplier
+  const SUPPLIER_MAP = {
+    "Beras SPHP": "Perum Bulog (SPHP)",
+    "Gas LPG 3kg": "Agen Pertamina (LPG 3kg)",
+    "Pupuk Subsidi": "Distributor Pupuk Subsidi",
+    "Minyakita": "Distributor Minyakita",
+    "Produk ID FOOD": "ID FOOD / RNI"
+  };
+
+  let navState = {
+    level: "KABUPATEN", // "KABUPATEN" | "KECAMATAN" | "KDKMP"
+    kecamatan: "ALL",
+    kdkmp: ""
+  };
+
   let db = {
     masterKdkmp: [],
     masterBarang: [],
@@ -334,10 +589,61 @@
     poList: []
   };
 
+  // ==================== KEAMANAN PIN ====================
   document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("filterTanggal").value = new Date().toISOString().slice(0, 10);
-    loadData();
+    if (sessionStorage.getItem("asr_pin_unlocked") === "1") {
+      unlockApp();
+    } else {
+      document.getElementById("inpPin").focus();
+    }
   });
+
+  function checkPin() {
+    const val = document.getElementById("inpPin").value.trim();
+    if (val === ASR_PIN) {
+      sessionStorage.setItem("asr_pin_unlocked", "1");
+      document.getElementById("pinError").textContent = "";
+      unlockApp();
+    } else {
+      document.getElementById("pinError").textContent = "PIN salah! Silakan coba lagi.";
+      document.getElementById("inpPin").value = "";
+      document.getElementById("inpPin").focus();
+    }
+  }
+
+  function lockDashboard() {
+    sessionStorage.removeItem("asr_pin_unlocked");
+    document.getElementById("appWrapper").style.display = "none";
+    document.getElementById("pinGate").style.display = "flex";
+    document.getElementById("inpPin").value = "";
+  }
+
+  function unlockApp() {
+    document.getElementById("pinGate").style.display = "none";
+    document.getElementById("appWrapper").style.display = "block";
+    setDatePreset("TODAY", false);
+    loadData();
+  }
+
+  // ==================== HELPER TANGGAL & FORMAT ====================
+  function toLocalYMD(val) {
+    if (!val) return "";
+    const str = String(val).trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+    const d = new Date(str);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
+    }
+    return str.slice(0, 10);
+  }
+
+  function formatRp(num) {
+    return "Rp " + (Number(num) || 0).toLocaleString("id-ID");
+  }
+
+  function getSupplierByCat(cat) {
+    return SUPPLIER_MAP[cat] || ("Supplier " + (cat || "Umum"));
+  }
 
   function showToast(msg) {
     const el = document.getElementById("toast");
@@ -346,18 +652,34 @@
     setTimeout(() => { el.style.display = "none"; }, 2600);
   }
 
-  function formatRp(num) {
-    return "Rp " + (Number(num) || 0).toLocaleString("id-ID");
+  function setDatePreset(mode, triggerRender = true) {
+    const now = new Date();
+    const endStr = now.toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
+    let startStr = endStr;
+
+    if (mode === "7DAYS") {
+      const past = new Date(now.getTime() - 6 * 86400000);
+      startStr = past.toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
+    } else if (mode === "MONTH") {
+      startStr = endStr.slice(0, 8) + "01";
+    }
+
+    document.getElementById("filterStart").value = startStr;
+    document.getElementById("filterEnd").value = endStr;
+    if (triggerRender) renderAll();
   }
 
-  function switchDashTab(panelId, btn) {
-    activePanel = panelId;
-    document.querySelectorAll(".dtab-panel").forEach(p => p.classList.remove("active"));
-    document.querySelectorAll(".dtab-btn").forEach(b => b.classList.remove("active"));
-    document.getElementById(panelId).classList.add("active");
-    btn.classList.add("active");
+  function isWithinRange(rawDate) {
+    const d = toLocalYMD(rawDate);
+    if (!d) return false;
+    const s = document.getElementById("filterStart").value;
+    const e = document.getElementById("filterEnd").value;
+    if (s && d < s) return false;
+    if (e && d > e) return false;
+    return true;
   }
 
+  // ==================== MUAT DATA SERVER / LOKAL ====================
   async function loadData() {
     const statusEl = document.getElementById("syncStatusText");
     if (!SCRIPT_URL) {
@@ -367,7 +689,7 @@
       db.recentLogs = JSON.parse(localStorage.getItem("kdkmp_recent_logs") || "[]");
       db.omsetLogs = JSON.parse(localStorage.getItem("kdkmp_omset_logs") || "[]");
       db.poList = JSON.parse(localStorage.getItem("kdkmp_po_list") || "[]");
-      statusEl.textContent = "Mode Sandbox Lokal (Tempel SCRIPT_URL untuk sinkronisasi Google Sheets & Drive ASR)";
+      statusEl.textContent = "Mode Sandbox Lokal (Tempel SCRIPT_URL di kode untuk sinkronisasi Google Sheets & Drive ASR)";
       populateFilters();
       renderAll();
       return;
@@ -387,7 +709,7 @@
         statusEl.textContent = "Tersinkronisasi • Update: " + new Date().toLocaleTimeString("id-ID");
         populateFilters();
         renderAll();
-        showToast("Dashboard berhasil diperbarui!");
+        showToast("Data pusat ASR berhasil diperbarui!");
       }
     } catch (err) {
       statusEl.textContent = "Gagal memuat data server: " + err.message;
@@ -397,228 +719,474 @@
   function populateFilters() {
     const kecSelect = document.getElementById("filterKec");
     const catSelect = document.getElementById("filterCat");
-    const prevKec = kecSelect.value;
-    const prevCat = catSelect.value;
+    const datalist = document.getElementById("kdkmpDatalist");
 
     const kecs = [...new Set(db.masterKdkmp.map(x => x.Kecamatan))].sort();
     const cats = [...new Set(db.masterBarang.map(x => x.Kategori))];
 
-    kecSelect.innerHTML = `<option value="ALL">Semua Kecamatan (Kab. Cianjur)</option>` +
-      kecs.map(k => `<option value="${k}">${k}</option>`).join("");
-    catSelect.innerHTML = `<option value="ALL">Semua Komoditas</option>` +
-      cats.map(c => `<option value="${c}">${c}</option>`).join("");
+    kecSelect.innerHTML = `<option value="ALL">Semua Kabupaten Cianjur</option>` +
+      kecs.map(k => `<option value="${k}">Kec. ${k}</option>`).join("");
 
-    if (kecs.includes(prevKec)) kecSelect.value = prevKec;
-    if (cats.includes(prevCat)) catSelect.value = prevCat;
+    catSelect.innerHTML = `<option value="ALL">Semua Komoditas</option>` +
+      cats.map(c => `<option value="${c}">${c} (${getSupplierByCat(c)})</option>`).join("");
+
+    datalist.innerHTML = db.masterKdkmp.map(g =>
+      `<option value="${g.Nama_KDKMP}">${g.Kecamatan} — ${g.Nama_Manager || ""}</option>`
+    ).join("");
+
+    if (navState.kecamatan !== "ALL" && kecs.includes(navState.kecamatan)) {
+      kecSelect.value = navState.kecamatan;
+    }
   }
 
+  // ==================== NAVIGASI DRILL-DOWN 3 LEVEL ====================
+  function goLevelKabupaten() {
+    navState = { level: "KABUPATEN", kecamatan: "ALL", kdkmp: "" };
+    document.getElementById("filterKec").value = "ALL";
+    document.getElementById("filterKdkmpInput").value = "";
+    renderAll();
+  }
+
+  function goLevelKecamatan(kecName) {
+    navState = { level: "KECAMATAN", kecamatan: kecName, kdkmp: "" };
+    document.getElementById("filterKec").value = kecName;
+    document.getElementById("filterKdkmpInput").value = "";
+    renderAll();
+  }
+
+  function goLevelKdkmp(kdkmpName) {
+    const found = db.masterKdkmp.find(g => g.Nama_KDKMP === kdkmpName);
+    const kecName = found ? found.Kecamatan : navState.kecamatan;
+    navState = { level: "KDKMP", kecamatan: kecName, kdkmp: kdkmpName };
+    if (kecName && kecName !== "ALL") document.getElementById("filterKec").value = kecName;
+    document.getElementById("filterKdkmpInput").value = kdkmpName;
+    renderAll();
+  }
+
+  function onFilterKecChange() {
+    const val = document.getElementById("filterKec").value;
+    if (val === "ALL") goLevelKabupaten();
+    else goLevelKecamatan(val);
+  }
+
+  function onQuickKdkmpSelect() {
+    const val = document.getElementById("filterKdkmpInput").value.trim();
+    if (!val) return;
+    const exact = db.masterKdkmp.find(g => g.Nama_KDKMP.toLowerCase() === val.toLowerCase());
+    if (exact) {
+      goLevelKdkmp(exact.Nama_KDKMP);
+    } else {
+      const partial = db.masterKdkmp.find(g => g.Nama_KDKMP.toLowerCase().includes(val.toLowerCase()));
+      if (partial) goLevelKdkmp(partial.Nama_KDKMP);
+      else showToast("Nama KDKMP tidak ditemukan di master.");
+    }
+  }
+
+  function clearKdkmpFilter() {
+    document.getElementById("filterKdkmpInput").value = "";
+    const kecVal = document.getElementById("filterKec").value;
+    if (kecVal === "ALL") goLevelKabupaten();
+    else goLevelKecamatan(kecVal);
+  }
+
+  function updateBreadcrumb() {
+    const trail = document.getElementById("breadcrumbTrail");
+    const hint = document.getElementById("levelHintText");
+
+    if (navState.level === "KABUPATEN") {
+      trail.innerHTML = `<span class="crumb-current">Kabupaten Cianjur (Semua Wilayah)</span>`;
+      hint.textContent = "Level 1: Klik baris Kecamatan untuk melihat daftar KDKMP";
+    } else if (navState.level === "KECAMATAN") {
+      trail.innerHTML = `
+        <span class="crumb-link" onclick="goLevelKabupaten()">Kabupaten Cianjur</span>
+        <span>&rsaquo;</span>
+        <span class="crumb-current">Kecamatan ${navState.kecamatan}</span>
+      `;
+      hint.textContent = "Level 2: Klik baris KDKMP untuk membedah rapor gerai & foto bukti";
+    } else {
+      trail.innerHTML = `
+        <span class="crumb-link" onclick="goLevelKabupaten()">Kabupaten Cianjur</span>
+        <span>&rsaquo;</span>
+        <span class="crumb-link" onclick="goLevelKecamatan('${navState.kecamatan}')">Kecamatan ${navState.kecamatan}</span>
+        <span>&rsaquo;</span>
+        <span class="crumb-current">${navState.kdkmp}</span>
+      `;
+      hint.textContent = "Level 3: Rapor audit lengkap & verifikasi foto bukti";
+    }
+  }
+
+  // ==================== RENDER UTAMA ====================
   function renderAll() {
-    const fDate = document.getElementById("filterTanggal").value;
-    const fKec = document.getElementById("filterKec").value;
+    updateBreadcrumb();
+
+    document.getElementById("view-kabupaten").classList.toggle("active", navState.level === "KABUPATEN");
+    document.getElementById("view-kecamatan").classList.toggle("active", navState.level === "KECAMATAN");
+    document.getElementById("view-kdkmp").classList.toggle("active", navState.level === "KDKMP");
+
     const fCat = document.getElementById("filterCat").value;
-    const q = document.getElementById("filterSearch").value.toLowerCase();
+    const onlyIssue = document.getElementById("chkOnlyIssue").checked;
 
-    // 1. RENDER STOK & AGREGAT
-    const filteredStok = db.rekapStok.filter(r => {
-      const mKec = fKec === "ALL" || r.Kecamatan === fKec;
-      const mCat = fCat === "ALL" || r.Kategori === fCat;
-      const mQ = (r.Nama_KDKMP || "").toLowerCase().includes(q) || (r.Nama_Barang || "").toLowerCase().includes(q);
-      return mKec && mCat && mQ;
+    // Scope gerai sesuai level aktif
+    let scopedGerai = db.masterKdkmp;
+    if (navState.level === "KECAMATAN") {
+      scopedGerai = db.masterKdkmp.filter(g => g.Kecamatan === navState.kecamatan);
+    } else if (navState.level === "KDKMP") {
+      scopedGerai = db.masterKdkmp.filter(g => g.Nama_KDKMP === navState.kdkmp);
+    }
+    const scopedNames = new Set(scopedGerai.map(g => g.Nama_KDKMP));
+
+    // Data terfilter periode & scope
+    const periodLogs = db.recentLogs.filter(l =>
+      scopedNames.has(l.Nama_KDKMP) && isWithinRange(l.Tanggal) && (fCat === "ALL" || l.Kategori === fCat)
+    );
+    const periodOmset = db.omsetLogs.filter(o =>
+      scopedNames.has(o.Nama_KDKMP) && isWithinRange(o.Tanggal)
+    );
+    const scopedStok = db.rekapStok.filter(s =>
+      scopedNames.has(s.Nama_KDKMP) && (fCat === "ALL" || s.Kategori === fCat)
+    );
+    const scopedPo = db.poList.filter(p =>
+      scopedNames.has(p.Nama_KDKMP) && (fCat === "ALL" || p.Kategori === fCat)
+    );
+
+    // Hitung KPI Atas
+    const laporStokSet = new Set(periodLogs.map(l => l.Nama_KDKMP));
+    const sumOmset = periodOmset.reduce((acc, r) => acc + (Number(r.Nominal_Omset) || 0), 0);
+    const sumTf = periodOmset.reduce((acc, r) => acc + (Number(r.Nominal_Transfer) || 0), 0);
+
+    let kritisTotal = 0;
+    scopedStok.forEach(s => {
+      const mb = db.masterBarang.find(b => b.Kode_Barang === s.Kode_Barang);
+      const batas = mb ? Number(mb.Batas_Kritis) : 10;
+      if ((Number(s.Stok_Akhir) || 0) <= batas) kritisTotal++;
     });
+    const activePoCount = scopedPo.filter(p => p.Status_PO === "Diajukan" || p.Status_PO === "Disetujui ASR").length;
 
-    let kritisCount = 0;
-    const aggStok = {};
-    document.getElementById("tblStok").innerHTML = filteredStok.length === 0
-      ? `<tr><td colspan="7" style="text-align:center; color:#64748b;">Belum ada data stok sesuai filter.</td></tr>`
-      : filteredStok.map(r => {
-          const qty = Number(r.Stok_Akhir) || 0;
-          if (!aggStok[r.Nama_Barang]) aggStok[r.Nama_Barang] = { kat: r.Kategori, sat: r.Satuan, total: 0 };
-          aggStok[r.Nama_Barang].total += qty;
+    document.getElementById("kpiLaporStok").textContent = `${laporStokSet.size} / ${scopedGerai.length}`;
+    document.getElementById("kpiOmset").textContent = formatRp(sumOmset);
+    document.getElementById("kpiTransfer").textContent = formatRp(sumTf);
+    document.getElementById("kpiAlertPo").textContent = `${kritisTotal} Kritis • ${activePoCount} PO`;
 
-          const masterB = db.masterBarang.find(b => b.Kode_Barang === r.Kode_Barang);
-          const batas = masterB ? Number(masterB.Batas_Kritis) : 10;
-          const isKritis = qty <= batas;
-          if (isKritis) kritisCount++;
+    // Render sesuai level aktif
+    if (navState.level === "KABUPATEN") {
+      renderLevelKabupaten(periodLogs, periodOmset, scopedStok, scopedPo, onlyIssue);
+    } else if (navState.level === "KECAMATAN") {
+      renderLevelKecamatan(scopedGerai, periodLogs, periodOmset, scopedStok, scopedPo, onlyIssue);
+    } else {
+      renderLevelKdkmp(scopedGerai[0], periodLogs, periodOmset, scopedStok, scopedPo);
+    }
+  }
 
-          return `
-            <tr>
-              <td>${r.Kecamatan}</td>
-              <td><strong>${r.Nama_KDKMP}</strong></td>
-              <td>${r.Kategori}</td>
-              <td>${r.Nama_Barang}</td>
-              <td><strong>${qty.toLocaleString("id-ID")} ${r.Satuan}</strong></td>
-              <td>${isKritis ? `<span class="tag tag-danger">Stok Kritis</span>` : `<span class="tag tag-ok">Aman</span>`}</td>
-              <td>${r.Update_Terakhir || "-"}</td>
-            </tr>
-          `;
-        }).join("");
+  // ==================== LEVEL 1: KABUPATEN ====================
+  function renderLevelKabupaten(periodLogs, periodOmset, scopedStok, scopedPo, onlyIssue) {
+    const kecList = [...new Set(db.masterKdkmp.map(g => g.Kecamatan))].sort();
+    const tbody = document.getElementById("tblKabKecamatan");
 
-    const aggStokEntries = Object.entries(aggStok);
-    document.getElementById("aggStokGrid").innerHTML = aggStokEntries.length === 0
-      ? `<div style="font-size:12px; color:#64748b;">Belum ada data stok.</div>`
-      : aggStokEntries.map(([name, info]) => `
+    const rowsHtml = kecList.map(kec => {
+      const geraiKec = db.masterKdkmp.filter(g => g.Kecamatan === kec);
+      const namesKec = new Set(geraiKec.map(g => g.Nama_KDKMP));
+
+      const logsK = periodLogs.filter(l => namesKec.has(l.Nama_KDKMP));
+      const laporCount = new Set(logsK.map(l => l.Nama_KDKMP)).size;
+      const omsetK = periodOmset.filter(o => namesKec.has(o.Nama_KDKMP));
+      const stokK = scopedStok.filter(s => namesKec.has(s.Nama_KDKMP));
+      const poK = scopedPo.filter(p => namesKec.has(p.Nama_KDKMP) && (p.Status_PO === "Diajukan" || p.Status_PO === "Disetujui ASR"));
+
+      let kritisGeraiSet = new Set();
+      stokK.forEach(s => {
+        const mb = db.masterBarang.find(b => b.Kode_Barang === s.Kode_Barang);
+        const batas = mb ? Number(mb.Batas_Kritis) : 10;
+        if ((Number(s.Stok_Akhir) || 0) <= batas) kritisGeraiSet.add(s.Nama_KDKMP);
+      });
+
+      const hasIssue = laporCount < geraiKec.length || kritisGeraiSet.size > 0 || omsetK.length < geraiKec.length;
+      if (onlyIssue && !hasIssue) return "";
+
+      // Ringkasan barang masuk periode ini
+      const inMap = {};
+      logsK.filter(l => l.Jenis_Laporan === "PENERIMAAN").forEach(l => {
+        inMap[l.Kategori] = (inMap[l.Kategori] || 0) + (Number(l.Jumlah) || 0);
+      });
+      const inSummary = Object.entries(inMap).map(([k, v]) => `${k}: +${v}`).join("<br>") || "-";
+
+      const totOmset = omsetK.reduce((a, b) => a + (Number(b.Nominal_Omset) || 0), 0);
+      const totTf = omsetK.reduce((a, b) => a + (Number(b.Nominal_Transfer) || 0), 0);
+
+      const laporBadge = laporCount === geraiKec.length
+        ? `<span class="tag tag-ok">${laporCount} / ${geraiKec.length}</span>`
+        : `<span class="tag tag-warn">${laporCount} / ${geraiKec.length}</span>`;
+
+      const kritisBadge = kritisGeraiSet.size > 0
+        ? `<span class="tag tag-danger">${kritisGeraiSet.size} Gerai</span>`
+        : `<span class="tag tag-ok">Aman</span>`;
+
+      return `
+        <tr class="clickable-row" onclick="goLevelKecamatan('${kec}')">
+          <td><strong>Kec. ${kec}</strong></td>
+          <td>${geraiKec.length} KDKMP</td>
+          <td>${laporBadge}</td>
+          <td>${kritisBadge}</td>
+          <td>${inSummary}</td>
+          <td>${poK.length > 0 ? `<span class="tag tag-purple">${poK.length} Item PO</span>` : "-"}</td>
+          <td><strong>${formatRp(totOmset)}</strong></td>
+          <td style="color:#059669;"><strong>${formatRp(totTf)}</strong></td>
+          <td class="no-print"><button class="btn btn-primary btn-xs">Buka &rarr;</button></td>
+        </tr>
+      `;
+    }).join("");
+
+    tbody.innerHTML = rowsHtml || `<tr><td colspan="9" style="text-align:center; color:#64748b;">Tidak ada kecamatan yang sesuai filter.</td></tr>`;
+
+    // Render PO per Supplier Kabupaten
+    const poFilterMode = document.getElementById("filterPoStatusKab").value;
+    const filteredPoKab = scopedPo.filter(p => {
+      if (poFilterMode === "ACTIVE") return p.Status_PO === "Diajukan" || p.Status_PO === "Disetujui ASR";
+      if (poFilterMode === "ALL") return true;
+      return p.Status_PO === poFilterMode;
+    });
+    renderPoSupplierTable("tblKabPoSupplier", filteredPoKab);
+
+    // Render Akumulasi Stok Fisik Kabupaten
+    const aggMap = {};
+    scopedStok.forEach(s => {
+      if (!aggMap[s.Nama_Barang]) aggMap[s.Nama_Barang] = { kat: s.Kategori, sat: s.Satuan, total: 0 };
+      aggMap[s.Nama_Barang].total += Number(s.Stok_Akhir) || 0;
+    });
+    const entries = Object.entries(aggMap);
+    document.getElementById("aggKabStokGrid").innerHTML = entries.length === 0
+      ? `<div style="font-size:12px; color:#64748b;">Belum ada data stok fisik tercatat.</div>`
+      : entries.map(([name, info]) => `
           <div class="agg-box">
             <div class="agg-cat">${info.kat}</div>
             <div class="agg-name">${name}</div>
             <div class="agg-qty">${info.total.toLocaleString("id-ID")} <span style="font-size:12px;">${info.sat}</span></div>
           </div>
         `).join("");
+  }
 
-    // Kepatuhan Stok Tanggal Terpilih
-    const dateStockLogs = db.recentLogs.filter(l => String(l.Tanggal).slice(0, 10) === fDate);
-    const laporStokSet = new Set(dateStockLogs.map(l => l.Nama_KDKMP));
-    const filteredGerai = db.masterKdkmp.filter(g => fKec === "ALL" || g.Kecamatan === fKec);
+  // ==================== LEVEL 2: KECAMATAN ====================
+  function renderLevelKecamatan(geraiList, periodLogs, periodOmset, scopedStok, scopedPo, onlyIssue) {
+    document.getElementById("titleKecMatrix").textContent = `Matriks Menyeluruh KDKMP — Kecamatan ${navState.kecamatan}`;
+    document.getElementById("titleKecPo").textContent = `Rekap Pengajuan PO per Supplier — Kecamatan ${navState.kecamatan}`;
 
-    document.getElementById("tblCompStok").innerHTML = filteredGerai.map(g => {
-      const logG = dateStockLogs.find(l => l.Nama_KDKMP === g.Nama_KDKMP);
+    const tbody = document.getElementById("tblKecMatrix");
+    const rowsHtml = geraiList.map(g => {
+      const gLogs = periodLogs.filter(l => l.Nama_KDKMP === g.Nama_KDKMP);
+      const gStok = scopedStok.filter(s => s.Nama_KDKMP === g.Nama_KDKMP);
+      const gOmset = periodOmset.filter(o => o.Nama_KDKMP === g.Nama_KDKMP);
+      const gPo = scopedPo.filter(p => p.Nama_KDKMP === g.Nama_KDKMP && (p.Status_PO === "Diajukan" || p.Status_PO === "Disetujui ASR"));
+
+      // Cari tanggal terakhir DO untuk gerai ini (dari seluruh log, tidak dibatasi filter tanggal agar ketahuan kapan terakhir terima kiriman)
+      const allDoLogs = db.recentLogs.filter(l => l.Nama_KDKMP === g.Nama_KDKMP && l.Jenis_Laporan === "PENERIMAAN");
+      const lastDoDate = allDoLogs.length > 0 ? toLocalYMD(allDoLogs[0].Tanggal) : "Belum pernah DO";
+
+      // Barang masuk dalam periode filter
+      const inLogs = gLogs.filter(l => l.Jenis_Laporan === "PENERIMAAN");
+      const inHtml = inLogs.length > 0
+        ? `<ul class="mini-list">${inLogs.map(i => `<li>${i.Nama_Barang}: <strong>+${i.Jumlah} ${i.Satuan}</strong></li>`).join("")}</ul>`
+        : `<span style="color:#64748b;">Tidak ada masuk</span>`;
+
+      // Stok sisa terakhir
+      let hasKritis = false;
+      const stokHtml = gStok.length > 0
+        ? `<ul class="mini-list">${gStok.map(s => {
+            const mb = db.masterBarang.find(b => b.Kode_Barang === s.Kode_Barang);
+            const batas = mb ? Number(mb.Batas_Kritis) : 10;
+            const qty = Number(s.Stok_Akhir) || 0;
+            const isK = qty <= batas;
+            if (isK) hasKritis = true;
+            return `<li style="${isK ? 'color:#dc2626; font-weight:700;' : ''}">${s.Nama_Barang}: ${qty} ${s.Satuan}${isK ? ' (Kritis)' : ''}</li>`;
+          }).join("")}</ul>`
+        : `<span style="color:#64748b;">Belum ada data stok</span>`;
+
+      // PO Aktif
+      const poHtml = gPo.length > 0
+        ? `<ul class="mini-list">${gPo.map(p => `<li>${p.Nama_Barang}: <strong>${p.Jumlah_PO} ${p.Satuan}</strong> (${p.Status_PO})</li>`).join("")}</ul>`
+        : "-";
+
+      // Omset & Transfer
+      const sumOm = gOmset.reduce((a, b) => a + (Number(b.Nominal_Omset) || 0), 0);
+      const sumTf = gOmset.reduce((a, b) => a + (Number(b.Nominal_Transfer) || 0), 0);
+      const omsetHtml = gOmset.length > 0
+        ? `Omset: <strong>${formatRp(sumOm)}</strong><br><span style="color:#059669;">TF: <strong>${formatRp(sumTf)}</strong></span>`
+        : `<span class="tag tag-warn">Belum Setor</span>`;
+
+      // Status Audit
+      const belumStok = gLogs.length === 0;
+      const belumOmset = gOmset.length === 0;
+      const isProblem = hasKritis || belumStok || belumOmset;
+      if (onlyIssue && !isProblem) return "";
+
+      let statusBadges = [];
+      if (hasKritis) statusBadges.push(`<span class="tag tag-danger">Stok Kritis</span>`);
+      if (belumStok) statusBadges.push(`<span class="tag tag-warn">Belum Lapor Stok</span>`);
+      if (belumOmset) statusBadges.push(`<span class="tag tag-warn">Belum Setor Omset</span>`);
+      if (statusBadges.length === 0) statusBadges.push(`<span class="tag tag-ok">Lengkap</span>`);
+
       return `
-        <tr>
-          <td>${g.Kecamatan}</td>
-          <td><strong>${g.Nama_KDKMP}</strong></td>
-          <td>${g.Nama_Manager || "-"}</td>
-          <td>${logG ? `<span class="tag tag-ok">Sudah Lapor</span>` : `<span class="tag tag-warn">Belum Lapor</span>`}</td>
-          <td>${logG ? logG.Waktu_Input : "-"}</td>
+        <tr class="clickable-row" onclick="goLevelKdkmp('${g.Nama_KDKMP}')">
+          <td><strong>${g.Nama_KDKMP}</strong><br><span style="color:#64748b; font-size:11px;">${g.Nama_Manager || "-"}</span></td>
+          <td>${inHtml}<div style="font-size:10px; color:#1e3a8a; margin-top:4px; font-weight:700;">DO Terakhir: ${lastDoDate}</div></td>
+          <td>${stokHtml}</td>
+          <td>${poHtml}</td>
+          <td>${omsetHtml}</td>
+          <td>${statusBadges.join("<br>")}</td>
+          <td class="no-print"><button class="btn btn-primary btn-xs">Bedah &rarr;</button></td>
         </tr>
       `;
     }).join("");
 
-    // 2. RENDER AUDIT OMSET & BUKTI FOTO
-    const filteredOmset = db.omsetLogs.filter(o => {
-      const mDate = !fDate || String(o.Tanggal).slice(0, 10) === fDate;
-      const mKec = fKec === "ALL" || o.Kecamatan === fKec;
-      const mQ = (o.Nama_KDKMP || "").toLowerCase().includes(q) || (o.Manager || "").toLowerCase().includes(q);
-      return mDate && mKec && mQ;
-    });
+    tbody.innerHTML = rowsHtml || `<tr><td colspan="7" style="text-align:center; color:#64748b;">Tidak ada gerai yang sesuai filter.</td></tr>`;
 
-    let sumOmset = 0;
-    let sumTf = 0;
-    document.getElementById("tblOmset").innerHTML = filteredOmset.length === 0
-      ? `<tr><td colspan="8" style="text-align:center; color:#64748b;">Belum ada setoran omset pada tanggal terpilih.</td></tr>`
-      : filteredOmset.map(o => {
-          const om = Number(o.Nominal_Omset) || 0;
-          const tf = Number(o.Nominal_Transfer) || 0;
-          const sel = Number(o.Selisih_Tunai) || (om - tf);
-          sumOmset += om;
-          sumTf += tf;
+    // Rekap PO per Supplier untuk Kecamatan ini
+    const activeKecPo = scopedPo.filter(p => p.Status_PO === "Diajukan" || p.Status_PO === "Disetujui ASR");
+    renderPoSupplierTable("tblKecPoSupplier", activeKecPo);
+  }
 
+  // ==================== LEVEL 3: DETAIL 1 KDKMP ====================
+  function renderLevelKdkmp(geraiObj, periodLogs, periodOmset, scopedStok, scopedPo) {
+    const namaGerai = navState.kdkmp;
+    const mgrName = geraiObj ? geraiObj.Nama_Manager : "-";
+    const kecName = geraiObj ? geraiObj.Kecamatan : navState.kecamatan;
+
+    document.getElementById("titleGeraiBarang").textContent = `Rapor Audit Barang & PO — ${namaGerai}`;
+    document.getElementById("subGeraiInfo").textContent = `Kecamatan ${kecName} • Manager: ${mgrName}`;
+    document.getElementById("titleGeraiOmset").textContent = `Riwayat Setoran Omset & Bukti Foto — ${namaGerai}`;
+    document.getElementById("titleGeraiDo").textContent = `Log Surat Jalan (DO) Masuk — ${namaGerai}`;
+
+    const fCat = document.getElementById("filterCat").value;
+    const barangList = db.masterBarang.filter(b => fCat === "ALL" || b.Kategori === fCat);
+
+    document.getElementById("tblGeraiBarang").innerHTML = barangList.map(b => {
+      const masukQty = periodLogs
+        .filter(l => l.Kode_Barang === b.Kode_Barang && l.Jenis_Laporan === "PENERIMAAN")
+        .reduce((a, c) => a + (Number(c.Jumlah) || 0), 0);
+
+      const allDoItem = db.recentLogs.filter(l => l.Nama_KDKMP === namaGerai && l.Kode_Barang === b.Kode_Barang && l.Jenis_Laporan === "PENERIMAAN");
+      const lastDoStr = allDoItem.length > 0 ? toLocalYMD(allDoItem[0].Tanggal) : "-";
+
+      const stokRec = scopedStok.find(s => s.Kode_Barang === b.Kode_Barang);
+      const stokAkhir = stokRec ? Number(stokRec.Stok_Akhir) : 0;
+      const isKritis = stokAkhir <= (Number(b.Batas_Kritis) || 10);
+
+      // Cari catatan stok sisa paling awal di periode ini untuk estimasi keluar
+      const sisaLogs = periodLogs.filter(l => l.Kode_Barang === b.Kode_Barang && l.Jenis_Laporan === "STOK_SISA");
+      let estKeluarStr = "-";
+      if (sisaLogs.length > 0) {
+        const latestSisa = Number(sisaLogs[0].Jumlah) || 0;
+        const earliestSisa = Number(sisaLogs[sisaLogs.length - 1].Jumlah) || 0;
+        const est = Math.max(0, (sisaLogs.length > 1 ? earliestSisa : latestSisa) + masukQty - latestSisa);
+        estKeluarStr = `${est} ${b.Satuan}`;
+      }
+
+      // Pengajuan PO terbaru untuk item ini
+      const itemPos = scopedPo.filter(p => p.Kode_Barang === b.Kode_Barang);
+      const latestPo = itemPos.length > 0 ? itemPos[0] : null;
+
+      const poQtyCell = latestPo
+        ? `<strong>${latestPo.Jumlah_PO} ${b.Satuan}</strong><br><span style="font-size:10px; color:#64748b;">Tgl: ${toLocalYMD(latestPo.Tanggal_Kebutuhan)}</span>`
+        : "-";
+
+      const poStatusCell = latestPo
+        ? `<select class="status-select" onchange="updatePoStatus('${latestPo.ID_PO}', this.value)">
+            <option value="Diajukan" ${latestPo.Status_PO === "Diajukan" ? "selected" : ""}>Diajukan</option>
+            <option value="Disetujui ASR" ${latestPo.Status_PO === "Disetujui ASR" ? "selected" : ""}>Disetujui ASR</option>
+            <option value="DO Terbit" ${latestPo.Status_PO === "DO Terbit" ? "selected" : ""}>DO Terbit</option>
+            <option value="Selesai" ${latestPo.Status_PO === "Selesai" ? "selected" : ""}>Selesai</option>
+          </select>`
+        : "-";
+
+      return `
+        <tr>
+          <td><strong>${getSupplierByCat(b.Kategori)}</strong><br><span style="color:#64748b; font-size:11px;">${b.Kategori}</span></td>
+          <td><strong>${b.Nama_Barang}</strong></td>
+          <td>${masukQty > 0 ? `<span class="tag tag-info">+${masukQty} ${b.Satuan}</span>` : "0"}</td>
+          <td>${lastDoStr}</td>
+          <td><span class="tag ${isKritis ? 'tag-danger' : 'tag-ok'}">${stokAkhir} ${b.Satuan}</span></td>
+          <td>${estKeluarStr}</td>
+          <td>${poQtyCell}</td>
+          <td>${poStatusCell}</td>
+        </tr>
+      `;
+    }).join("");
+
+    // Tabel Riwayat Omset Gerai
+    document.getElementById("tblGeraiOmset").innerHTML = periodOmset.length === 0
+      ? `<tr><td colspan="7" style="text-align:center; color:#64748b;">Belum ada setoran omset pada periode ini.</td></tr>`
+      : periodOmset.map(o => {
           const btnStruk = o.Link_Struk_CloseShift && o.Link_Struk_CloseShift !== "-"
-            ? `<a href="${o.Link_Struk_CloseShift}" target="_blank" class="btn btn-primary btn-xs">Lihat Struk</a>` : "-";
+            ? `<a href="${o.Link_Struk_CloseShift}" target="_blank" class="btn btn-primary btn-xs">Struk</a>` : "-";
           const btnTf = o.Link_Bukti_Transfer && o.Link_Bukti_Transfer !== "-"
             ? `<a href="${o.Link_Bukti_Transfer}" target="_blank" class="btn btn-success btn-xs">Bukti TF</a>` : "-";
-
           return `
             <tr>
-              <td>${String(o.Tanggal).slice(0, 10)}<br><span style="color:#64748b; font-size:11px;">${o.Shift || ""}</span></td>
-              <td><strong>${o.Nama_KDKMP}</strong> (${o.Kecamatan})</td>
-              <td>${o.Manager}</td>
-              <td><strong>${formatRp(om)}</strong></td>
-              <td style="color:#059669;"><strong>${formatRp(tf)}</strong></td>
-              <td>${formatRp(sel)}</td>
+              <td><strong>${toLocalYMD(o.Tanggal)}</strong><br><span style="font-size:11px; color:#64748b;">${o.Shift || ""}</span></td>
+              <td><strong>${formatRp(o.Nominal_Omset)}</strong></td>
+              <td style="color:#059669;"><strong>${formatRp(o.Nominal_Transfer)}</strong></td>
+              <td>${formatRp(o.Selisih_Tunai)}</td>
               <td>${o.Metode_Rekening || "-"}</td>
-              <td>${btnStruk} ${btnTf}</td>
+              <td>${o.Catatan || "-"}</td>
+              <td class="no-print">${btnStruk} ${btnTf}</td>
             </tr>
           `;
         }).join("");
 
-    document.getElementById("tblCompOmset").innerHTML = filteredGerai.map(g => {
-      const omG = filteredOmset.find(o => o.Nama_KDKMP === g.Nama_KDKMP);
-      return `
-        <tr>
-          <td>${g.Kecamatan}</td>
-          <td><strong>${g.Nama_KDKMP}</strong></td>
-          <td>${g.Nama_Manager || "-"}</td>
-          <td>${omG ? `<span class="tag tag-ok">Sudah Setor</span>` : `<span class="tag tag-warn">Belum Setor</span>`}</td>
-          <td>${omG ? formatRp(omG.Nominal_Transfer) : "-"}</td>
-        </tr>
-      `;
-    }).join("");
+    // Tabel Log DO Masuk Gerai
+    const doLogs = periodLogs.filter(l => l.Jenis_Laporan === "PENERIMAAN");
+    document.getElementById("tblGeraiDo").innerHTML = doLogs.length === 0
+      ? `<tr><td colspan="6" style="text-align:center; color:#64748b;">Tidak ada penerimaan barang (DO) pada periode ini.</td></tr>`
+      : doLogs.map(d => {
+          const fotoBtn = d.Link_Foto_DO && d.Link_Foto_DO !== "-"
+            ? `<a href="${d.Link_Foto_DO}" target="_blank" class="btn btn-primary btn-xs">Lihat Foto DO</a>` : "-";
+          return `
+            <tr>
+              <td>${d.Waktu_Input}</td>
+              <td>${d.Supplier || "-"}</td>
+              <td><strong>${d.No_DO || "-"}</strong></td>
+              <td>${d.Nama_Barang}</td>
+              <td><strong>+${d.Jumlah} ${d.Satuan}</strong></td>
+              <td class="no-print">${fotoBtn}</td>
+            </tr>
+          `;
+        }).join("");
+  }
 
-    // 3. RENDER REKAP & APPROVAL PO
-    const filteredPo = db.poList.filter(p => {
-      const mKec = fKec === "ALL" || p.Kecamatan === fKec;
-      const mCat = fCat === "ALL" || p.Kategori === fCat;
-      const mQ = (p.Nama_KDKMP || "").toLowerCase().includes(q) || (p.Nama_Barang || "").toLowerCase().includes(q);
-      return mKec && mCat && mQ;
+  // ==================== HELPER REKAP PO PER SUPPLIER ====================
+  function renderPoSupplierTable(tbodyId, poRecords) {
+    const tbody = document.getElementById(tbodyId);
+    if (!poRecords || poRecords.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b;">Belum ada pengajuan PO sesuai filter.</td></tr>`;
+      return;
+    }
+
+    const grouped = {};
+    poRecords.forEach(p => {
+      const key = p.Kode_Barang + "|" + p.Nama_Barang;
+      if (!grouped[key]) {
+        grouped[key] = {
+          supplier: getSupplierByCat(p.Kategori),
+          kategori: p.Kategori,
+          nama: p.Nama_Barang,
+          satuan: p.Satuan,
+          geraiSet: new Set(),
+          totalQty: 0
+        };
+      }
+      grouped[key].geraiSet.add(p.Nama_KDKMP);
+      grouped[key].totalQty += Number(p.Jumlah_PO) || 0;
     });
 
-    const aggPo = {};
-    let activePoCount = 0;
-    document.getElementById("tblPo").innerHTML = filteredPo.length === 0
-      ? `<tr><td colspan="8" style="text-align:center; color:#64748b;">Belum ada pengajuan PO sesuai filter.</td></tr>`
-      : filteredPo.map(p => {
-          const st = p.Status_PO || "Diajukan";
-          if (st === "Diajukan" || st === "Disetujui ASR") {
-            activePoCount++;
-            if (!aggPo[p.Nama_Barang]) aggPo[p.Nama_Barang] = { kat: p.Kategori, sat: p.Satuan, total: 0 };
-            aggPo[p.Nama_Barang].total += Number(p.Jumlah_PO) || 0;
-          }
-
-          return `
-            <tr>
-              <td>${String(p.Tanggal_Kebutuhan).slice(0, 10)}</td>
-              <td><strong>${p.Nama_KDKMP}</strong> (${p.Kecamatan})</td>
-              <td>${p.Kategori}</td>
-              <td><strong>${p.Nama_Barang}</strong></td>
-              <td>${p.Stok_Saat_Pengajuan} ${p.Satuan}</td>
-              <td><strong>${p.Jumlah_PO} ${p.Satuan}</strong></td>
-              <td>
-                <select class="status-select" onchange="updatePoStatus('${p.ID_PO}', this.value)">
-                  <option value="Diajukan" ${st === "Diajukan" ? "selected" : ""}>Diajukan</option>
-                  <option value="Disetujui ASR" ${st === "Disetujui ASR" ? "selected" : ""}>Disetujui ASR</option>
-                  <option value="DO Terbit" ${st === "DO Terbit" ? "selected" : ""}>DO Terbit</option>
-                  <option value="Selesai" ${st === "Selesai" ? "selected" : ""}>Selesai</option>
-                </select>
-              </td>
-              <td>${p.Catatan || "-"}</td>
-            </tr>
-          `;
-        }).join("");
-
-    const aggPoEntries = Object.entries(aggPo);
-    document.getElementById("aggPoGrid").innerHTML = aggPoEntries.length === 0
-      ? `<div style="font-size:12px; color:#64748b;">Tidak ada PO aktif yang menunggu pengadaan.</div>`
-      : aggPoEntries.map(([name, info]) => `
-          <div class="agg-box">
-            <div class="agg-cat">${info.kat}</div>
-            <div class="agg-name">${name}</div>
-            <div class="agg-qty" style="color:#6d28d9;">${info.total.toLocaleString("id-ID")} <span style="font-size:12px;">${info.sat}</span></div>
-          </div>
-        `).join("");
-
-    // 4. RENDER LOG TRANSAKSI BARANG
-    const filteredLogs = db.recentLogs.filter(l => {
-      const mKec = fKec === "ALL" || l.Kecamatan === fKec;
-      const mCat = fCat === "ALL" || l.Kategori === fCat;
-      const mQ = (l.Nama_KDKMP || "").toLowerCase().includes(q) || (l.Nama_Barang || "").toLowerCase().includes(q);
-      return mKec && mCat && mQ;
-    }).slice(0, 100);
-
-    document.getElementById("tblLogs").innerHTML = filteredLogs.length === 0
-      ? `<tr><td colspan="7" style="text-align:center; color:#64748b;">Belum ada riwayat transaksi.</td></tr>`
-      : filteredLogs.map(l => {
-          const jTag = l.Jenis_Laporan === "PENERIMAAN"
-            ? `<span class="tag tag-in">+ Penerimaan</span>`
-            : `<span class="tag tag-ok">= Stok Sisa</span>`;
-          const fotoBtn = l.Link_Foto_DO && l.Link_Foto_DO !== "-"
-            ? `<a href="${l.Link_Foto_DO}" target="_blank" class="btn btn-primary btn-xs">Foto DO</a>` : "-";
-          return `
-            <tr>
-              <td>${l.Waktu_Input}</td>
-              <td><strong>${l.Nama_KDKMP}</strong> (${l.Kecamatan})</td>
-              <td>${jTag}</td>
-              <td>${l.Supplier || "-"} ${l.No_DO && l.No_DO !== "-" ? `(${l.No_DO})` : ""}</td>
-              <td>${l.Nama_Barang}</td>
-              <td><strong>${l.Jumlah} ${l.Satuan}</strong></td>
-              <td>${fotoBtn}</td>
-            </tr>
-          `;
-        }).join("");
-
-    // UPDATE KPI ATAS
-    document.getElementById("kpiGeraiStok").textContent = `${laporStokSet.size} / ${db.masterKdkmp.length}`;
-    document.getElementById("kpiOmsetTotal").textContent = formatRp(sumOmset);
-    document.getElementById("kpiTransferTotal").textContent = formatRp(sumTf);
-    document.getElementById("kpiKritis").textContent = `${kritisCount} Kritis • ${activePoCount} PO`;
+    const sorted = Object.values(grouped).sort((a, b) => a.supplier.localeCompare(b.supplier));
+    tbody.innerHTML = sorted.map(r => `
+      <tr>
+        <td><strong>${r.supplier}</strong></td>
+        <td>${r.kategori}</td>
+        <td>${r.nama}</td>
+        <td>${r.geraiSet.size} KDKMP</td>
+        <td><strong style="font-size:13px; color:#6d28d9;">${r.totalQty.toLocaleString("id-ID")}</strong></td>
+        <td>${r.satuan}</td>
+      </tr>
+    `).join("");
   }
 
   async function updatePoStatus(idPo, statusBaru) {
@@ -636,38 +1204,95 @@
         method: "POST",
         body: JSON.stringify({ action: "UPDATE_PO_STATUS", id_po: idPo, status_baru: statusBaru })
       });
-      showToast(`Status PO berhasil diperbarui ke "${statusBaru}"!`);
+      showToast(`Status PO diperbarui ke "${statusBaru}"!`);
     } catch (err) {
       showToast("Gagal memperbarui status ke server: " + err.message);
     }
   }
 
-  function exportActiveCsv() {
-    let rowsData = [];
-    let fileName = "Export_ASR.csv";
+  // ==================== FITUR PRINT BERSIH PER REKAP ====================
+  function printSection(cardId, reportTitle) {
+    const sourceCard = document.getElementById(cardId);
+    if (!sourceCard) return;
 
-    if (activePanel === "panel-omset") {
-      rowsData = db.omsetLogs;
-      fileName = `Audit_Omset_KDKMP_${new Date().toISOString().slice(0, 10)}.csv`;
-    } else if (activePanel === "panel-po") {
-      rowsData = db.poList;
-      fileName = `Rekap_PO_KDKMP_${new Date().toISOString().slice(0, 10)}.csv`;
-    } else {
-      rowsData = db.rekapStok;
-      fileName = `Rekap_Stok_KDKMP_${new Date().toISOString().slice(0, 10)}.csv`;
-    }
+    const clone = sourceCard.cloneNode(true);
+    // Hapus header interaktif card asli & elemen .no-print
+    const origHeader = clone.querySelector(".card-header");
+    if (origHeader) origHeader.remove();
+    clone.querySelectorAll(".no-print").forEach(el => el.remove());
 
-    if (!rowsData || rowsData.length === 0) return showToast("Belum ada data pada tab ini untuk diexport.");
+    // Ubah elemen <select> di dalam tabel menjadi teks biasa agar rapi saat dicetak
+    clone.querySelectorAll("select").forEach(sel => {
+      const span = document.createElement("span");
+      span.style.fontWeight = "700";
+      span.textContent = sel.value;
+      sel.replaceWith(span);
+    });
 
-    const headers = Object.keys(rowsData[0]).filter(k => !String(rowsData[0][k]).startsWith("data:image"));
-    const csvRows = rowsData.map(r => headers.map(h => `"${String(r[h] || "").replace(/"/g, '""')}"`).join(","));
-    const csv = [headers.join(","), ...csvRows].join("\n");
+    const sDate = document.getElementById("filterStart").value;
+    const eDate = document.getElementById("filterEnd").value;
+    const periodText = sDate === eDate ? `Tanggal: ${sDate}` : `Periode: ${sDate} s/d ${eDate}`;
+    const printedAt = new Date().toLocaleString("id-ID");
 
+    const printArea = document.getElementById("printArea");
+    printArea.innerHTML = `
+      <div class="print-kop">
+        <div>
+          <h2>${reportTitle}</h2>
+          <p>Sistem Monitoring Terpadu KDKMP Kabupaten Cianjur • ${periodText}</p>
+        </div>
+        <div class="print-meta">
+          Dicetak oleh Tim ASR<br>${printedAt}
+        </div>
+      </div>
+      ${clone.innerHTML}
+    `;
+
+    setTimeout(() => {
+      window.print();
+    }, 150);
+  }
+
+  // ==================== EXPORT CSV ====================
+  function downloadCsv(headers, rows, filename) {
+    const csv = [headers.join(","), ...rows.map(r => r.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(","))].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = fileName;
+    a.download = filename;
     a.click();
+  }
+
+  function exportKecamatanCsv() {
+    const rows = [...document.querySelectorAll("#tblKabKecamatan tr")].map(tr =>
+      [...tr.querySelectorAll("td")].slice(0, 8).map(td => td.innerText.replace(/\n/g, " | "))
+    );
+    downloadCsv(["Kecamatan", "Jml_Gerai", "Lapor_Stok", "Stok_Kritis", "Barang_Masuk", "PO_Aktif", "Omset", "Transfer"], rows, `Rekap_Kecamatan_Cianjur_${new Date().toISOString().slice(0,10)}.csv`);
+  }
+
+  function exportPoSupplierCsv(kecScope) {
+    const tbodyId = kecScope === "ALL" ? "tblKabPoSupplier" : "tblKecPoSupplier";
+    const rows = [...document.querySelectorAll(`#${tbodyId} tr`)].map(tr =>
+      [...tr.querySelectorAll("td")].map(td => td.innerText.trim())
+    );
+    downloadCsv(["Supplier", "Komoditas", "Nama_Barang", "Jml_KDKMP", "Total_PO", "Satuan"], rows, `Rekap_PO_Supplier_${kecScope}_${new Date().toISOString().slice(0,10)}.csv`);
+  }
+
+  function exportKecMatrixCsv() {
+    const rows = [...document.querySelectorAll("#tblKecMatrix tr")].map(tr =>
+      [...tr.querySelectorAll("td")].slice(0, 6).map(td => td.innerText.replace(/\n/g, " | "))
+    );
+    downloadCsv(["KDKMP_Manager", "Barang_Datang", "Stok_Sisa", "PO_Aktif", "Omset_Transfer", "Status"], rows, `Matriks_Kec_${navState.kecamatan}_${new Date().toISOString().slice(0,10)}.csv`);
+  }
+
+  function exportGeraiCsv() {
+    const rows = [...document.querySelectorAll("#tblGeraiBarang tr")].map(tr =>
+      [...tr.querySelectorAll("td")].map(td => {
+        const sel = td.querySelector("select");
+        return sel ? sel.value : td.innerText.replace(/\n/g, " ");
+      })
+    );
+    downloadCsv(["Supplier_Komoditas", "Nama_Barang", "Masuk", "Tgl_DO_Terakhir", "Stok_Akhir", "Est_Keluar", "PO_Diajukan", "Status_PO"], rows, `Audit_${navState.kdkmp}_${new Date().toISOString().slice(0,10)}.csv`);
   }
 </script>
 </body>
