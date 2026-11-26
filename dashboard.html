@@ -25,6 +25,37 @@
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 40px; }
 
+    /* ==================== PIN LOCK OVERLAY ==================== */
+    #pinOverlay {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      z-index: 99999;
+      display: flex; align-items: center; justify-content: center; padding: 16px;
+    }
+    .pin-card {
+      background: #ffffff; width: 100%; max-width: 390px;
+      border-radius: 16px; padding: 26px 22px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+      text-align: center;
+    }
+    .pin-badge {
+      display: inline-block; background: #eff6ff; color: var(--primary);
+      font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 999px;
+      margin-bottom: 10px; border: 1px solid #bfdbfe;
+    }
+    .pin-title { font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0; }
+    .pin-sub { font-size: 12.5px; color: #64748b; margin: 0 0 18px 0; line-height: 1.45; }
+    .pin-input {
+      width: 100%; padding: 13px; font-size: 22px; font-weight: 800;
+      letter-spacing: 8px; text-align: center;
+      border: 2px solid var(--border); border-radius: 10px; margin-bottom: 10px;
+    }
+    .pin-input:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,235,0.16); }
+    .pin-error {
+      color: var(--danger); font-size: 12px; font-weight: 700;
+      min-height: 18px; margin-bottom: 10px;
+    }
+
     /* ==================== HEADER ==================== */
     header {
       background: linear-gradient(135deg, #0f172a, #1e3a8a);
@@ -55,6 +86,8 @@
     .btn-primary:hover { background: #1d4ed8; }
     .btn-success { background: var(--success); color: #fff; }
     .btn-success:hover { background: #047857; }
+    .btn-danger-soft { background: rgba(220, 38, 38, 0.2); color: #fecaca; border: 1px solid rgba(248, 113, 113, 0.45); }
+    .btn-danger-soft:hover { background: rgba(220, 38, 38, 0.35); color: #fff; }
     .btn-outline-light { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
     .btn-outline-light:hover { background: rgba(255,255,255,0.22); }
     .btn-outline { background: #fff; color: var(--text); border: 1px solid var(--border); }
@@ -196,6 +229,28 @@
 </head>
 <body>
 
+<!-- LAYAR KUNCI PIN ADMIN PUSAT ASR -->
+<div id="pinOverlay">
+  <div class="pin-card">
+    <span class="pin-badge">AKSES TERBATAS ADMIN ASR</span>
+    <h2 class="pin-title">Dashboard Pusat ASR Cianjur</h2>
+    <p class="pin-sub">Masukkan PIN Admin untuk membuka antrean POS, stok gerai, setoran omset & approval PO.</p>
+    <input
+      type="password"
+      inputmode="numeric"
+      maxlength="12"
+      id="pinInput"
+      class="pin-input"
+      placeholder="••••••"
+      onkeydown="if(event.key==='Enter') verifyAdminPin()"
+    />
+    <div id="pinErrorMsg" class="pin-error"></div>
+    <button type="button" class="btn btn-primary" style="width:100%; padding:12px; font-size:14px;" onclick="verifyAdminPin()">
+      Buka Dashboard ASR
+    </button>
+  </div>
+</div>
+
 <header>
   <div class="header-inner">
     <div>
@@ -206,6 +261,7 @@
       <span id="connBadge" class="badge-conn conn-sandbox">Mode Sandbox Lokal</span>
       <button type="button" class="btn btn-outline-light" onclick="refreshAllData()">Muat Ulang Data</button>
       <button type="button" class="btn btn-success" onclick="exportActiveTabCsv()">Export CSV Tab Ini</button>
+      <button type="button" class="btn btn-danger-soft" onclick="lockDashboard()">Kunci Layar</button>
     </div>
   </div>
 </header>
@@ -471,9 +527,10 @@
 
 <script>
   // =========================================================================
-  // KONFIGURASI BACKEND: Tempel URL Web App Google Apps Script (/exec) di sini
+  // KONFIGURASI KEAMANAN & BACKEND
   // =========================================================================
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMcyrtGHQ7sw2kvM2hUqqHOmxEYDXrzzOZyFXdq1uoeOvVIayE9vaH91Ufp3YidnEcCg/exec";
+  const ADMIN_PIN = "123456"; // Ubah PIN akses Admin Pusat ASR di sini
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMcyrtGHQ7sw2kvM2hUqqHOmxEYDXrzzOZyFXdq1uoeOvVIayE9vaH91Ufp3YidnEcCg/exec";    // Tempel URL Web App Google Apps Script (/exec) di sini
 
   const DEFAULT_KDKMP = [
     { Kecamatan: "Cibeber", Nama_KDKMP: "KDKMP Selagedang", Nama_Manager: "Abdurrahman Hidayatullah" },
@@ -511,13 +568,53 @@
     poList: []
   };
 
+  // ==================== KONTROL PIN ADMIN ====================
+  function initPinLock() {
+    const unlocked = sessionStorage.getItem("asr_admin_unlocked") === "true";
+    const overlay = document.getElementById("pinOverlay");
+    if (unlocked) {
+      overlay.style.display = "none";
+      return true;
+    } else {
+      overlay.style.display = "flex";
+      setTimeout(() => document.getElementById("pinInput").focus(), 100);
+      return false;
+    }
+  }
+
+  async function verifyAdminPin() {
+    const inp = document.getElementById("pinInput");
+    const errEl = document.getElementById("pinErrorMsg");
+    if (inp.value.trim() === String(ADMIN_PIN)) {
+      sessionStorage.setItem("asr_admin_unlocked", "true");
+      errEl.textContent = "";
+      inp.value = "";
+      document.getElementById("pinOverlay").style.display = "none";
+      await refreshAllData();
+    } else {
+      errEl.textContent = "PIN salah! Silakan masukkan PIN Admin ASR yang valid.";
+      inp.value = "";
+      inp.focus();
+    }
+  }
+
+  function lockDashboard() {
+    sessionStorage.removeItem("asr_admin_unlocked");
+    document.getElementById("pinErrorMsg").textContent = "";
+    document.getElementById("pinInput").value = "";
+    document.getElementById("pinOverlay").style.display = "flex";
+    setTimeout(() => document.getElementById("pinInput").focus(), 100);
+  }
+
   document.addEventListener("DOMContentLoaded", async () => {
     const badge = document.getElementById("connBadge");
     if (SCRIPT_URL) {
       badge.textContent = "Terhubung Live Google Sheets";
       badge.className = "badge-conn conn-live";
     }
-    await refreshAllData();
+    if (initPinLock()) {
+      await refreshAllData();
+    }
   });
 
   async function refreshAllData() {
