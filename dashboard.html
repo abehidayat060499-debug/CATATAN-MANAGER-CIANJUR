@@ -70,13 +70,25 @@
     .panel-title { font-size: 15.5px; font-weight: 800; color: var(--primary); margin: 0; }
     .panel-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 13px; border-radius: 8px; border: none; font-size: 12px; font-weight: 800; cursor: pointer; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 13px; border-radius: 8px; border: none; font-size: 12px; font-weight: 800; cursor: pointer; text-decoration: none; }
     .btn-primary { background: var(--accent); color: #fff; }
     .btn-success { background: var(--success); color: #fff; }
     .btn-danger { background: var(--danger); color: #fff; }
     .btn-dark { background: #0f172a; color: #fff; }
     .btn-outline { background: #fff; color: #0f172a; border: 1.5px solid #94a3b8; }
     .btn-sm { padding: 5px 9px; font-size: 11px; border-radius: 6px; }
+
+    .proof-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;
+      cursor: pointer; border: 1px solid #93c5fd; background: #eff6ff; color: #1d4ed8;
+      text-decoration: underline; white-space: nowrap;
+    }
+    .proof-link:hover { background: #dbeafe; }
+    .proof-link.tf { border-color: #6ee7b7; background: #ecfdf5; color: #047857; }
+    .proof-link.tf:hover { background: #d1fae5; }
+    .proof-link.rej { border-color: #fca5a5; background: #fef2f2; color: #b91c1c; }
+    .proof-link.rej:hover { background: #fee2e2; }
 
     .table-wrap { overflow-x: auto; border: 1px solid #cbd5e1; border-radius: 10px; }
     table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
@@ -85,7 +97,7 @@
     tr:last-child td { border-bottom: none; }
     tr.row-alert { background: #fef2f2; }
 
-    .reject-thumb { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 1.5px solid #cbd5e1; cursor: pointer; display: block; }
+    .reject-thumb { width: 58px; height: 58px; object-fit: cover; border-radius: 8px; border: 1.5px solid #cbd5e1; cursor: pointer; display: block; margin-bottom: 4px; }
     .badge { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 800; white-space: nowrap; }
     .b-ok { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
     .b-no { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
@@ -93,8 +105,11 @@
     .b-info { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
 
     #photoModal { position: fixed; inset: 0; background: rgba(15,23,42,0.82); z-index: 9995; display: none; align-items: center; justify-content: center; padding: 16px; }
-    .photo-modal-box { background: #fff; max-width: 560px; width: 100%; border-radius: 14px; padding: 14px; text-align: center; }
-    .photo-modal-box img { max-width: 100%; max-height: 72vh; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .photo-modal-box { background: #fff; max-width: 640px; width: 100%; border-radius: 14px; padding: 14px; text-align: center; max-height: 92vh; overflow-y: auto; }
+    .photo-modal-box img { max-width: 100%; max-height: 66vh; border-radius: 8px; border: 1px solid #cbd5e1; }
+    .part-switcher { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 10px; }
+    .part-pill { padding: 5px 10px; border-radius: 999px; border: 1.5px solid #cbd5e1; background: #f8fafc; font-size: 11.5px; font-weight: 800; cursor: pointer; color: #334155; }
+    .part-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
     .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #0f172a; color: #fff; padding: 11px 20px; border-radius: 999px; font-size: 13px; font-weight: 700; z-index: 10000; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.3); max-width: 92vw; text-align: center; }
   </style>
@@ -113,16 +128,23 @@
 
 <div id="photoModal" onclick="if(event.target===this) closePhotoModal()">
   <div class="photo-modal-box">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-      <strong id="photoModalTitle" style="font-size:14px;">Lampiran Bukti</strong>
-      <button type="button" class="btn btn-danger btn-sm" onclick="closePhotoModal()">Tutup</button>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:8px;">
+      <strong id="photoModalTitle" style="font-size:14px; text-align:left;">Lampiran Bukti</strong>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <a id="photoModalExternalLink" href="#" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="display:none;">Buka Tab Baru ↗</a>
+        <button type="button" class="btn btn-danger btn-sm" onclick="closePhotoModal()">Tutup</button>
+      </div>
     </div>
+    <div id="photoModalPartSwitcher" class="part-switcher" style="display:none;"></div>
     <div id="photoModalHint" style="display:none; font-size:11.5px; color:#1e3a8a; font-weight:700; margin-bottom:8px; background:#eff6ff; padding:7px 10px; border-radius:8px; border:1px solid #bfdbfe;">
       Jika file belum otomatis masuk ke Galeri HP, ketuk tombol <strong>Bagikan / Simpan ke Galeri</strong> di bawah atau tekan & tahan gambar.
     </div>
-    <img id="photoModalImg" src="" alt="Bukti Lampiran" />
+    <img id="photoModalImg" src="" alt="Bukti Lampiran" onerror="handleModalImgError()" />
+    <div id="photoModalFallbackMsg" style="display:none; padding:18px; background:#f8fafc; border:1px dashed #94a3b8; border-radius:10px; font-size:12.5px; color:#334155;">
+      Pratinjau langsung tidak dapat dimuat di browser ini. Silakan klik tombol <strong>Buka Tab Baru ↗</strong> di kanan atas untuk melihat file asli.
+    </div>
     <div id="photoModalActions" style="display:none; margin-top:12px; padding-top:10px; border-top:1px solid #e2e8f0; grid-template-columns:1fr 1fr; gap:8px;">
-      <button type="button" class="btn btn-outline btn-sm" onclick="forceDownloadLastPng()">Unduh Ulang PNG</button>
+      <button type="button" class="btn btn-outline btn-sm" onclick="forceDownloadLastPng()">Unduh Bagian Ini (PNG)</button>
       <button type="button" class="btn btn-success btn-sm" onclick="shareOrSaveLastPng()">Bagikan / Simpan ke Galeri</button>
     </div>
   </div>
@@ -298,7 +320,7 @@
             <th>Nominal Transfer</th>
             <th>Selisih</th>
             <th>Rekening Tujuan</th>
-            <th>Bukti Foto</th>
+            <th>Bukti Foto (Struk & Setor)</th>
             <th>Status & Catatan</th>
           </tr>
         </thead>
@@ -365,7 +387,7 @@
             <th>Reject</th>
             <th>Supplier</th>
             <th>Keterangan Kerusakan</th>
-            <th>Foto</th>
+            <th>Foto Bukti</th>
             <th>Status & Aksi</th>
           </tr>
         </thead>
@@ -381,7 +403,6 @@
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfCK5cs_vIUUEUfSTlUamHoyy1mxGiHu76hwbegsyA76sOFAnlFvjAY7f-P_RqdUFOjA/exec";
   const ADMIN_PIN = "123456";
 
-  // Pengaman anti-spam request ke Apps Script agar kuota tidak cepat habis
   const SYNC_COOLDOWN_MS = 15000;
   const FETCH_TIMEOUT_MS = 20000;
   let lastSyncTime = 0;
@@ -407,6 +428,122 @@
     po: [],
     rejects: []
   };
+
+  // Registry aman untuk menyimpan data gambar / URL tanpa merusak atribut onclick HTML
+  let proofRegistry = {};
+  let proofSeq = 0;
+
+  function registerProof(rawSrc, title) {
+    const clean = normalizeMediaSource(rawSrc);
+    if (!clean) return "";
+    const id = "pf_" + (++proofSeq);
+    proofRegistry[id] = {
+      src: clean.previewUrl,
+      rawUrl: clean.externalUrl,
+      isImage: clean.isImage,
+      title: title || "Lampiran Bukti"
+    };
+    return id;
+  }
+
+  function normalizeMediaSource(val) {
+    const s = String(val || "").trim();
+    if (!s || s === "-" || s === "null" || s === "undefined") return null;
+
+    // 1. Sudah berupa data:image base64
+    if (/^data:image\//i.test(s)) {
+      return { previewUrl: s, externalUrl: "", isImage: true };
+    }
+
+    // 2. String base64 mentah tanpa header data:image/...;base64,
+    if (/^(\/9j\/|iVBORw0KGgo|R0lGOD|UklGR)/.test(s) && s.length > 100) {
+      const mime = s.startsWith("iVBOR") ? "image/png" : (s.startsWith("UklGR") ? "image/webp" : "image/jpeg");
+      return { previewUrl: "data:" + mime + ";base64," + s, externalUrl: "", isImage: true };
+    }
+
+    // 3. Link Google Drive -> ubah ke URL thumbnail HD agar bisa langsung tampil di popup modal
+    const driveMatch = s.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=view&)?id=)([a-zA-Z0-9_-]+)/);
+    if (driveMatch && driveMatch[1]) {
+      const fileId = driveMatch[1];
+      return {
+        previewUrl: "https://drive.google.com/thumbnail?id=" + fileId + "&sz=w1200",
+        externalUrl: s,
+        isImage: true
+      };
+    }
+
+    // 4. URL HTTP/HTTPS umum
+    if (/^https?:\/\//i.test(s)) {
+      return { previewUrl: s, externalUrl: s, isImage: true };
+    }
+
+    return null;
+  }
+
+  function openProofById(id) {
+    const item = proofRegistry[id];
+    if (!item) return showToast("Lampiran bukti tidak ditemukan.");
+    openProofModal(item.src, item.title, item.rawUrl);
+  }
+
+  function openProofModal(src, title, externalUrl) {
+    lastExportPngParts = [];
+    lastExportPngIndex = 0;
+    document.getElementById("photoModalPartSwitcher").style.display = "none";
+    document.getElementById("photoModalHint").style.display = "none";
+    document.getElementById("photoModalActions").style.display = "none";
+    document.getElementById("photoModalFallbackMsg").style.display = "none";
+
+    const imgEl = document.getElementById("photoModalImg");
+    imgEl.style.display = "block";
+    imgEl.src = src;
+
+    const extBtn = document.getElementById("photoModalExternalLink");
+    if (externalUrl) {
+      extBtn.href = externalUrl;
+      extBtn.style.display = "inline-flex";
+    } else if (src && src.startsWith("data:image")) {
+      extBtn.href = src;
+      extBtn.style.display = "inline-flex";
+    } else {
+      extBtn.style.display = "none";
+    }
+
+    document.getElementById("photoModalTitle").textContent = title || "Lampiran Bukti";
+    document.getElementById("photoModal").style.display = "flex";
+  }
+
+  function handleModalImgError() {
+    document.getElementById("photoModalImg").style.display = "none";
+    document.getElementById("photoModalFallbackMsg").style.display = "block";
+  }
+
+  function pickFirstField(obj, keys) {
+    if (!obj) return "";
+    for (let i = 0; i < keys.length; i++) {
+      const val = obj[keys[i]];
+      if (val !== undefined && val !== null && String(val).trim() !== "" && String(val).trim() !== "-") {
+        return String(val).trim();
+      }
+    }
+    return "";
+  }
+
+  function getDoPhoto(r) {
+    return pickFirstField(r, ["Link_Foto_DO", "Foto_DO", "Foto_DO_Base64", "Link_Foto", "Bukti_DO"]);
+  }
+
+  function getStrukPhoto(r) {
+    return pickFirstField(r, ["Link_Struk_CloseShift", "Link_Foto_Struk", "Foto_Struk", "Struk_Base64", "Link_Struk"]);
+  }
+
+  function getTransferPhoto(r) {
+    return pickFirstField(r, ["Link_Bukti_Transfer", "Link_Foto_Transfer", "Foto_Transfer", "Bukti_Transfer_Base64", "Bukti_Setor"]);
+  }
+
+  function getRejectPhoto(r) {
+    return pickFirstField(r, ["Foto_Reject_Base64", "Link_Foto_Reject", "Foto_Reject", "Link_Foto", "Bukti_Reject"]);
+  }
 
   document.addEventListener("DOMContentLoaded", function() {
     const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
@@ -494,30 +631,28 @@
     badge.title = titleText || text;
   }
 
-  // Buang base64 besar saat simpan snapshot lokal agar tidak memenuhi storage browser
-  function sanitizeSnapshotForStorage(rawJson) {
-    const copy = JSON.parse(JSON.stringify(rawJson || {}));
-    const cleanArr = function(arr, fields) {
-      if (!Array.isArray(arr)) return;
-      arr.forEach(function(item) {
-        fields.forEach(function(f) {
-          if (item && typeof item[f] === "string" && item[f].length > 500 && item[f].indexOf("data:image") === 0) {
-            item[f] = "";
-          }
-        });
-      });
-    };
-    cleanArr(copy.penerimaan_logs || copy.penerimaan, ["Link_Foto_DO"]);
-    cleanArr(copy.omset_logs || copy.omset, ["Link_Struk_CloseShift", "Link_Bukti_Transfer"]);
-    cleanArr(copy.reject_logs, ["Foto_Reject_Base64"]);
-    return copy;
-  }
-
+  // Simpan snapshot ke localStorage (pertahankan foto jika muat, hanya pangkas jika melebihi kuota storage)
   function saveSnapshotCache(json) {
     try {
-      localStorage.setItem("asr_full_snapshot", JSON.stringify(sanitizeSnapshotForStorage(json)));
+      localStorage.setItem("asr_full_snapshot", JSON.stringify(json));
     } catch (e) {
-      try { localStorage.removeItem("asr_full_snapshot"); } catch (_) {}
+      try {
+        const copy = JSON.parse(JSON.stringify(json || {}));
+        const trimArr = function(arr, fields) {
+          if (!Array.isArray(arr)) return;
+          arr.forEach(function(item) {
+            fields.forEach(function(f) {
+              if (item && typeof item[f] === "string" && item[f].length > 40000 && item[f].indexOf("data:image") === 0) {
+                item[f] = "";
+              }
+            });
+          });
+        };
+        trimArr(copy.penerimaan_logs || copy.penerimaan, ["Link_Foto_DO"]);
+        trimArr(copy.omset_logs || copy.omset, ["Link_Struk_CloseShift", "Link_Bukti_Transfer"]);
+        trimArr(copy.reject_logs, ["Foto_Reject_Base64"]);
+        localStorage.setItem("asr_full_snapshot", JSON.stringify(copy));
+      } catch (_) {}
     }
   }
 
@@ -638,7 +773,7 @@
         if (isQuota) {
           showDiagBanner(
             "Peringatan Kuota Apps Script: " + errMsg +
-            " — Pastikan di doGet() Apps Script sudah memakai CacheService, tidak mengirim data base64 besar di GET, dan hindari refresh berulang."
+            " — Pastikan di doGet() Apps Script sudah memakai CacheService dan hindari refresh berulang."
           );
           showToast("Kuota Apps Script terlampaui. Menampilkan data cache.");
         } else if (forceFresh) {
@@ -660,7 +795,7 @@
     db.penerimaan = Array.isArray(json.penerimaan_logs) ? json.penerimaan_logs : (Array.isArray(json.penerimaan) ? json.penerimaan : []);
     db.omset = Array.isArray(json.omset_logs) ? json.omset_logs : (Array.isArray(json.omset) ? json.omset : []);
     db.po_list = Array.isArray(json.po_list) ? json.po_list : [];
-    db.rejects = Array.isArray(json.reject_logs) ? json.reject_logs : [];
+    db.rejects = Array.isArray(json.reject_logs) ? json.reject_logs : (Array.isArray(json.rejects) ? json.rejects : []);
   }
 
   function loadFromLocalFallback(reason) {
@@ -742,6 +877,8 @@
   }
 
   function renderAllTabs() {
+    proofRegistry = {};
+    proofSeq = 0;
     renderKepatuhanTab();
     renderMasukTab();
     renderSalesTab();
@@ -818,16 +955,16 @@
     }
     tbody.innerHTML = rows.map(function(r) {
       const isDone = r.Status_Input_POS === "Sudah Input POS";
-      const hasPhoto = r.Link_Foto_DO && r.Link_Foto_DO !== "-";
+      const doProofId = registerProof(getDoPhoto(r), "Surat Jalan DO • " + r.Nama_KDKMP + " (" + r.Nama_Barang + ")");
       return '<tr>' +
         '<td>' + normDate(r.Tanggal_Terima) + '</td>' +
         '<td><strong>' + r.Nama_KDKMP + '</strong><br><span style="font-size:11px; color:#64748b;">Kec. ' + r.Kecamatan + '</span></td>' +
         '<td><strong>' + r.Nama_Barang + '</strong></td>' +
         '<td><strong>+' + Number(r.Jumlah || 0).toLocaleString("id-ID") + ' ' + r.Satuan + '</strong></td>' +
         '<td>' + (r.Supplier || "-") + '</td>' +
-        '<td>' + (hasPhoto ? '<button class="btn btn-outline btn-sm" onclick="previewProof(\'' + r.Link_Foto_DO + '\', \'Surat Jalan ' + r.Nama_KDKMP + '\')">Lihat DO</button>' : "-") + '</td>' +
+        '<td>' + (doProofId ? '<button type="button" class="proof-link" onclick="openProofById(\'' + doProofId + '\')">Lihat Foto DO</button>' : '<span style="font-size:11px; color:#94a3b8;">Tanpa Foto</span>') + '</td>' +
         '<td><span class="badge ' + (isDone ? "b-ok" : "b-warn") + '">' + (r.Status_Input_POS || "Belum Input POS") + '</span></td>' +
-        '<td>' + (isDone ? "✓ Valid" : '<button class="btn btn-primary btn-sm" onclick="markDoPosDone(\'' + r.ID_Log + '\')">Validasi Input POS</button>') + '</td>' +
+        '<td>' + (isDone ? "✓ Valid" : '<button type="button" class="btn btn-primary btn-sm" onclick="markDoPosDone(\'' + r.ID_Log + '\')">Validasi Input POS</button>') + '</td>' +
       '</tr>';
     }).join("");
   }
@@ -863,6 +1000,15 @@
       const om = Number(r.Nominal_Omset) || 0;
       const tf = Number(r.Nominal_Transfer) || 0;
       const selisih = om - tf;
+      const strukId = registerProof(getStrukPhoto(r), "Struk Close Shift • " + r.Nama_KDKMP + " (" + normDate(r.Tanggal) + ")");
+      const tfId = registerProof(getTransferPhoto(r), "Bukti Setor / Transfer • " + r.Nama_KDKMP + " (" + formatRp(tf) + ")");
+
+      let proofHtml = '<div style="display:flex; flex-wrap:wrap; gap:5px;">';
+      if (strukId) proofHtml += '<button type="button" class="proof-link" onclick="openProofById(\'' + strukId + '\')">Struk</button>';
+      if (tfId) proofHtml += '<button type="button" class="proof-link tf" onclick="openProofById(\'' + tfId + '\')">Bukti Setor</button>';
+      if (!strukId && !tfId) proofHtml += '<span style="font-size:11px; color:#94a3b8;">Tanpa Lampiran</span>';
+      proofHtml += '</div>';
+
       return '<tr class="' + (selisih > 0 ? "row-alert" : "") + '">' +
         '<td><strong>' + normDate(r.Tanggal) + '</strong><br><span style="font-size:11px; color:#64748b;">' + (r.Shift || "-") + '</span></td>' +
         '<td><strong>' + r.Nama_KDKMP + '</strong><br><span style="font-size:11px; color:#64748b;">Kec. ' + r.Kecamatan + '</span></td>' +
@@ -870,10 +1016,7 @@
         '<td><strong style="color:#059669;">' + formatRp(tf) + '</strong></td>' +
         '<td><span class="badge ' + (selisih === 0 ? "b-ok" : "b-no") + '">' + (selisih === 0 ? "Lunas" : formatRp(selisih)) + '</span></td>' +
         '<td style="font-size:11.5px;">' + (r.Metode_Rekening || "-") + '</td>' +
-        '<td><div style="display:flex; gap:4px;">' +
-          (r.Link_Struk_CloseShift ? '<button class="btn btn-outline btn-sm" onclick="previewProof(\'' + r.Link_Struk_CloseShift + '\', \'Struk ' + r.Nama_KDKMP + '\')">Struk</button>' : "") +
-          (r.Link_Bukti_Transfer ? '<button class="btn btn-primary btn-sm" onclick="previewProof(\'' + r.Link_Bukti_Transfer + '\', \'Bukti TF ' + r.Nama_KDKMP + '\')">Bukti TF</button>' : "") +
-        '</div></td>' +
+        '<td>' + proofHtml + '</td>' +
         '<td style="font-size:11.5px; max-width:210px;">' + (r.Catatan || "-") + '</td>' +
       '</tr>';
     }).join("");
@@ -912,8 +1055,8 @@
         '<td>' + (r.Supplier || "-") + '</td>' +
         '<td><span class="badge ' + cls + '">' + st + '</span></td>' +
         '<td><div style="display:flex; gap:4px;">' +
-          (st === "Diajukan" ? '<button class="btn btn-success btn-sm" onclick="updatePoStatus(\'' + r.ID_PO + '\', \'Disetujui ASR\')">Setujui</button>' : "") +
-          (st === "Disetujui ASR" ? '<button class="btn btn-primary btn-sm" onclick="updatePoStatus(\'' + r.ID_PO + '\', \'DO Terbit\')">Terbitkan DO</button>' : "") +
+          (st === "Diajukan" ? '<button type="button" class="btn btn-success btn-sm" onclick="updatePoStatus(\'' + r.ID_PO + '\', \'Disetujui ASR\')">Setujui</button>' : "") +
+          (st === "Disetujui ASR" ? '<button type="button" class="btn btn-primary btn-sm" onclick="updatePoStatus(\'' + r.ID_PO + '\', \'DO Terbit\')">Terbitkan DO</button>' : "") +
           (st === "DO Terbit" ? '<span style="font-size:11px; color:#059669; font-weight:800;">✓ Selesai</span>' : "") +
         '</div></td>' +
       '</tr>';
@@ -955,10 +1098,14 @@
       return;
     }
     tbody.innerHTML = rows.map(function(r) {
-      const hasImg = r.Foto_Reject_Base64 && String(r.Foto_Reject_Base64).startsWith("data:image");
-      const imgCell = hasImg
-        ? '<img src="' + r.Foto_Reject_Base64 + '" class="reject-thumb" alt="Foto Reject" onclick="previewProof(\'' + r.Foto_Reject_Base64 + '\', \'Bukti Reject ' + r.Nama_KDKMP + '\')" />'
-        : '<span style="font-size:11px; color:#94a3b8;">-</span>';
+      const rejProofId = registerProof(getRejectPhoto(r), "Bukti Reject • " + r.Nama_KDKMP + " (" + r.Nama_Barang + ")");
+      const proofObj = rejProofId ? proofRegistry[rejProofId] : null;
+      let imgCell = '<span style="font-size:11px; color:#94a3b8;">Tanpa Foto</span>';
+      if (proofObj) {
+        imgCell = '<img src="' + proofObj.src + '" class="reject-thumb" alt="Foto Reject" onerror="this.style.display=\'none\'" onclick="openProofById(\'' + rejProofId + '\')" />' +
+                  '<button type="button" class="proof-link rej" onclick="openProofById(\'' + rejProofId + '\')">Lihat Foto</button>';
+      }
+
       const st = r.Status_Retur || "Menunggu Verifikasi ASR";
       const isDone = st === "Selesai Diganti";
       const qKirim = Number(r.Qty_Kirim || r.Qty_PO || 0);
@@ -975,7 +1122,7 @@
         '<td>' + imgCell + '</td>' +
         '<td>' + (isDone
           ? '<span class="badge b-ok">✓ Selesai Diganti</span>'
-          : '<span class="badge b-no" style="margin-bottom:5px;">' + st + '</span><br><button class="btn btn-primary btn-sm" onclick="markRejectDone(\'' + r.ID_Reject + '\')">Tandai Selesai Retur</button>') +
+          : '<span class="badge b-no" style="margin-bottom:5px;">' + st + '</span><br><button type="button" class="btn btn-primary btn-sm" onclick="markRejectDone(\'' + r.ID_Reject + '\')">Tandai Selesai Retur</button>') +
         '</td>' +
       '</tr>';
     }).join("");
@@ -1026,18 +1173,9 @@
     document.getElementById("kpiRejectQty").textContent = rejQty.toLocaleString("id-ID") + " unit reject";
   }
 
-  function previewProof(src, title) {
-    if (!src || src === "-") return;
-    if (src.startsWith("http")) { window.open(src, "_blank"); return; }
-    document.getElementById("photoModalHint").style.display = "none";
-    document.getElementById("photoModalActions").style.display = "none";
-    document.getElementById("photoModalTitle").textContent = title;
-    document.getElementById("photoModalImg").src = src;
-    document.getElementById("photoModal").style.display = "flex";
-  }
-
   function isBase64Image(val) {
-    return typeof val === "string" && val.startsWith("data:image");
+    const clean = normalizeMediaSource(val);
+    return !!(clean && clean.previewUrl && clean.previewUrl.startsWith("data:image"));
   }
 
   function buildExportDataset(tabKey) {
@@ -1070,7 +1208,10 @@
       const pending = rows.filter(function(r) { return (r.Status_Input_POS || "Belum Input POS") === "Belum Input POS"; }).length;
       const photos = [];
       rows.forEach(function(r, i) {
-        if (isBase64Image(r.Link_Foto_DO)) photos.push({ caption: "#" + (i + 1) + " • " + r.Nama_KDKMP, sub: r.Nama_Barang + " (+" + r.Jumlah + " " + r.Satuan + ")", src: r.Link_Foto_DO });
+        const rawDo = getDoPhoto(r);
+        if (isBase64Image(rawDo)) {
+          photos.push({ caption: "#" + (i + 1) + " • " + r.Nama_KDKMP, sub: r.Nama_Barang + " (+" + r.Jumlah + " " + r.Satuan + ")", src: normalizeMediaSource(rawDo).previewUrl });
+        }
       });
       return {
         title: "LAPORAN PENERIMAAN BARANG MASUK (DO)",
@@ -1095,7 +1236,10 @@
       const totTf = rows.reduce(function(s, r) { return s + (Number(r.Nominal_Transfer) || 0); }, 0);
       const photos = [];
       rows.forEach(function(r, i) {
-        if (isBase64Image(r.Link_Bukti_Transfer)) photos.push({ caption: "#" + (i + 1) + " • Bukti TF " + r.Nama_KDKMP, sub: "TF: " + formatRp(r.Nominal_Transfer), src: r.Link_Bukti_Transfer });
+        const rawTf = getTransferPhoto(r);
+        if (isBase64Image(rawTf)) {
+          photos.push({ caption: "#" + (i + 1) + " • Bukti TF " + r.Nama_KDKMP, sub: "TF: " + formatRp(r.Nominal_Transfer), src: normalizeMediaSource(rawTf).previewUrl });
+        }
       });
       return {
         title: "LAPORAN VALIDASI OMSET SALES & SETORAN TRANSFER",
@@ -1140,7 +1284,10 @@
     const totRej = rows.reduce(function(s, r) { return s + (Number(r.Qty_Reject) || 0); }, 0);
     const photos = [];
     rows.forEach(function(r, i) {
-      if (isBase64Image(r.Foto_Reject_Base64)) photos.push({ caption: "#" + (i + 1) + " • " + r.Nama_KDKMP, sub: r.Nama_Barang + " (Reject: " + r.Qty_Reject + ")", src: r.Foto_Reject_Base64 });
+      const rawRej = getRejectPhoto(r);
+      if (isBase64Image(rawRej)) {
+        photos.push({ caption: "#" + (i + 1) + " • " + r.Nama_KDKMP, sub: r.Nama_Barang + " (Reject: " + r.Qty_Reject + ")", src: normalizeMediaSource(rawRej).previewUrl });
+      }
     });
     return {
       title: "LAPORAN PRODUK REJECT & SELISIH PENERIMAAN",
@@ -1201,6 +1348,8 @@
     '</div>';
   }
 
+  let lastExportPngParts = [];
+  let lastExportPngIndex = 0;
   let lastExportPngUrl = "";
   let lastExportPngName = "Laporan_ASR.png";
 
@@ -1208,40 +1357,63 @@
     document.getElementById("photoModal").style.display = "none";
     document.getElementById("photoModalHint").style.display = "none";
     document.getElementById("photoModalActions").style.display = "none";
+    document.getElementById("photoModalPartSwitcher").style.display = "none";
+    document.getElementById("photoModalFallbackMsg").style.display = "none";
   }
 
-  function triggerDownloadBlobOrUrl(canvas, dataUrl, fileName) {
-    if (canvas && canvas.toBlob) {
-      canvas.toBlob(function(blob) {
-        if (blob) {
-          const blobUrl = URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.style.display = "none";
-          link.download = fileName;
-          link.href = blobUrl;
-          document.body.appendChild(link);
-          link.click();
-          setTimeout(function() {
-            if (link.parentNode) document.body.removeChild(link);
-            URL.revokeObjectURL(blobUrl);
-          }, 1500);
-        }
-      }, "image/png");
-      return;
+  function selectExportPart(idx) {
+    if (!lastExportPngParts[idx]) return;
+    lastExportPngIndex = idx;
+    const item = lastExportPngParts[idx];
+    lastExportPngUrl = item.url;
+    lastExportPngName = item.name;
+    document.getElementById("photoModalImg").style.display = "block";
+    document.getElementById("photoModalFallbackMsg").style.display = "none";
+    document.getElementById("photoModalImg").src = item.url;
+    document.getElementById("photoModalTitle").textContent = item.title;
+
+    const pills = document.querySelectorAll("#photoModalPartSwitcher .part-pill");
+    pills.forEach(function(el, i) {
+      if (i === idx) el.classList.add("active");
+      else el.classList.remove("active");
+    });
+  }
+
+  function triggerDownloadDataUrl(dataUrl, fileName) {
+    try {
+      const parts = dataUrl.split(",");
+      const mime = parts[0].match(/:(.*?);/)[1];
+      const binStr = atob(parts[1]);
+      let len = binStr.length;
+      const arr = new Uint8Array(len);
+      while (len--) arr[len] = binStr.charCodeAt(len);
+      const blob = new Blob([arr], { type: mime });
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.style.display = "none";
+      link.download = fileName;
+      link.href = blobUrl;
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(function() {
+        if (link.parentNode) document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+      }, 2000);
+    } catch (e) {
+      const link = document.createElement("a");
+      link.style.display = "none";
+      link.download = fileName;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(function() { if (link.parentNode) document.body.removeChild(link); }, 1500);
     }
-    const link = document.createElement("a");
-    link.style.display = "none";
-    link.download = fileName;
-    link.href = dataUrl;
-    document.body.appendChild(link);
-    link.click();
-    setTimeout(function() { if (link.parentNode) document.body.removeChild(link); }, 1500);
   }
 
   function forceDownloadLastPng() {
     if (!lastExportPngUrl) return;
-    triggerDownloadBlobOrUrl(null, lastExportPngUrl, lastExportPngName);
-    showToast("Mengunduh ulang file PNG...");
+    triggerDownloadDataUrl(lastExportPngUrl, lastExportPngName);
+    showToast("Mengunduh " + lastExportPngName + "...");
   }
 
   async function shareOrSaveLastPng() {
@@ -1272,10 +1444,12 @@
     const validator = document.getElementById("asrValidatorName").value.trim() || "Admin Pusat ASR";
     const isReject = tabKey === "reject";
     const tglFile = document.getElementById("fltTanggal").value || "rekap";
-    const CHUNK_SIZE = 25;
+
+    // Batas aman 20 baris per gambar agar tinggi canvas selalu di bawah batas memori browser HP
+    const CHUNK_SIZE = 20;
     const totalParts = Math.ceil(dataset.rows.length / CHUNK_SIZE);
 
-    showToast(totalParts > 1 ? ("Merender " + totalParts + " gambar terpisah untuk WhatsApp...") : "Merender gambar HD untuk WhatsApp...");
+    showToast(totalParts > 1 ? ("Merender " + totalParts + " bagian foto untuk WhatsApp...") : "Merender gambar HD untuk WhatsApp...");
 
     const stage = document.createElement("div");
     stage.style.position = "fixed";
@@ -1283,48 +1457,75 @@
     stage.style.top = "0";
     stage.style.width = "1160px";
     stage.style.background = "#ffffff";
+    stage.style.zIndex = "-1";
     document.body.appendChild(stage);
 
     try {
-      let firstDataUrl = "";
-      let firstFileName = "";
+      const renderedParts = [];
       for (let p = 0; p < totalParts; p++) {
         const sliceRows = dataset.rows.slice(p * CHUNK_SIZE, (p + 1) * CHUNK_SIZE);
         const subDataset = Object.assign({}, dataset, { rows: sliceRows });
         const partInfo = totalParts > 1 ? { part: p + 1, total: totalParts } : null;
         stage.innerHTML = buildReportCardHtml(subDataset, isReject, partInfo, validator);
+
+        // Beri jeda 1 frame agar layout browser selesai menghitung tinggi tabel sebelum dirender
+        await new Promise(function(r) { requestAnimationFrame(function() { setTimeout(r, 80); }); });
+
         const cardEl = stage.firstElementChild;
-        const canvas = await html2canvas(cardEl, { scale: 2, backgroundColor: "#ffffff", useCORS: true, allowTaint: true });
-        const suffix = totalParts > 1 ? ("_Part" + (p + 1) + "of" + totalParts) : "";
+        const canvas = await html2canvas(cardEl, {
+          scale: 1.75,
+          backgroundColor: "#ffffff",
+          useCORS: true,
+          allowTaint: true,
+          logging: false
+        });
+
+        const suffix = totalParts > 1 ? ("_Bagian" + (p + 1) + "dari" + totalParts) : "";
         const fileName = "ASR_" + tabKey.toUpperCase() + "_" + tglFile + suffix + ".png";
         const dataUrl = canvas.toDataURL("image/png");
-        if (p === 0) {
-          firstDataUrl = dataUrl;
-          firstFileName = fileName;
-        }
-        triggerDownloadBlobOrUrl(canvas, dataUrl, fileName);
-        if (totalParts > 1 && p < totalParts - 1) await new Promise(function(r) { setTimeout(r, 400); });
+
+        // Bebaskan memori canvas segera setelah dikonversi agar tidak crash saat >1 bagian
+        canvas.width = 0;
+        canvas.height = 0;
+
+        renderedParts.push({
+          url: dataUrl,
+          name: fileName,
+          label: "Bagian " + (p + 1) + "/" + totalParts,
+          title: dataset.title + (totalParts > 1 ? (" (Bagian " + (p + 1) + " dari " + totalParts + ")") : "")
+        });
       }
 
-      if (firstDataUrl) {
-        lastExportPngUrl = firstDataUrl;
-        lastExportPngName = firstFileName;
-        document.getElementById("photoModalTitle").textContent = dataset.title;
-        document.getElementById("photoModalImg").src = firstDataUrl;
+      if (renderedParts.length > 0) {
+        lastExportPngParts = renderedParts;
+        document.getElementById("photoModalExternalLink").style.display = "none";
         document.getElementById("photoModalHint").style.display = "block";
         document.getElementById("photoModalActions").style.display = "grid";
+
+        const switcherEl = document.getElementById("photoModalPartSwitcher");
+        if (renderedParts.length > 1) {
+          switcherEl.innerHTML = renderedParts.map(function(pt, i) {
+            return '<button type="button" class="part-pill ' + (i === 0 ? "active" : "") + '" onclick="selectExportPart(' + i + ')">' + pt.label + '</button>';
+          }).join("");
+          switcherEl.style.display = "flex";
+        } else {
+          switcherEl.style.display = "none";
+        }
+
+        selectExportPart(0);
         document.getElementById("photoModal").style.display = "flex";
+        triggerDownloadDataUrl(renderedParts[0].url, renderedParts[0].name);
       }
 
       if (navigator.clipboard && dataset.waCaption) {
         await navigator.clipboard.writeText(dataset.waCaption).catch(function() {});
-        showToast(totalParts > 1 ? (totalParts + " foto WA siap & caption tersalin!") : "Foto WA siap & caption tersalin!");
+        showToast(totalParts > 1 ? (totalParts + " bagian foto WA siap! Pilih bagian di popup untuk unduh/bagikan.") : "Foto WA siap & caption tersalin!");
       } else {
         showToast("Foto WA siap!");
       }
     } catch (err) {
       console.error(err);
-      showToast("Gagal export PNG: " + err.message);
+      showToast("Gagal export PNG: " + (err && err.message ? err.message : err));
     } finally {
       if (stage.parentNode) document.body.removeChild(stage);
     }
