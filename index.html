@@ -105,6 +105,9 @@
     .subview-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; background: #e2e8f0; padding: 4px; border-radius: 11px; }
     .subview-btn { padding: 9px 10px; border: none; border-radius: 8px; font-size: 12px; font-weight: 800; color: #475569; background: transparent; cursor: pointer; transition: 0.15s; }
     .subview-btn.active { background: #fff; color: var(--primary); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .subview-btn.active-success { background: #fff; color: var(--success); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .subview-btn.active-purple { background: #fff; color: var(--purple); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .subview-btn.active-danger { background: #fff; color: var(--danger); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
 
     /* EXPORT & FILTER PANEL STYLES */
     .filter-panel { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; margin-bottom: 10px; }
@@ -450,6 +453,16 @@
   <!-- TAB 2: LAPORAN SALES + RIWAYAT & EKSPOR BA                -->
   <!-- ========================================================= -->
   <section id="tab-omset" class="section">
+    <div class="subview-bar">
+      <button type="button" id="btnSalesSubInput" class="subview-btn active-success" onclick="switchSubView('sales', 'INPUT')">
+        + Input Laporan Sales
+      </button>
+      <button type="button" id="btnSalesSubHistory" class="subview-btn" onclick="switchSubView('sales', 'HISTORY')">
+        Riwayat & BA Sales (<span id="salesSubCountPill">0</span>)
+      </button>
+    </div>
+
+    <div id="salesViewInput">
     <div class="card">
       <div class="card-title">
         <span>Laporan Sales & Setoran Harian</span>
@@ -530,7 +543,10 @@
       </div>
     </div>
 
-    <!-- RIWAYAT LAPORAN SALES & EKSPOR BA -->
+    </div>
+
+    <!-- PANEL B: RIWAYAT LAPORAN SALES & EKSPOR BA -->
+    <div id="salesViewHistory" style="display:none;">
     <div class="card">
       <div class="card-title">
         <span>Riwayat & Berita Acara Laporan Sales</span>
@@ -598,12 +614,23 @@
         </table>
       </div>
     </div>
+    </div>
   </section>
 
   <!-- ========================================================= -->
   <!-- TAB 3: PERENCANAAN PO + RIWAYAT & EKSPOR BA               -->
   <!-- ========================================================= -->
   <section id="tab-po" class="section">
+    <div class="subview-bar">
+      <button type="button" id="btnPoSubInput" class="subview-btn active-purple" onclick="switchSubView('po', 'INPUT')">
+        + Buat Rencana PO
+      </button>
+      <button type="button" id="btnPoSubHistory" class="subview-btn" onclick="switchSubView('po', 'HISTORY')">
+        Riwayat & BA PO (<span id="poSubCountPill">0</span>)
+      </button>
+    </div>
+
+    <div id="poViewInput">
     <div class="card">
       <div class="card-title">Pengajuan Perencanaan PO Barang</div>
       <div class="grid-2" style="margin-bottom:10px;">
@@ -626,7 +653,9 @@
       </div>
       <div id="poItemListContainer"></div>
     </div>
+    </div>
 
+    <div id="poViewHistory" style="display:none;">
     <div class="card">
       <div class="card-title">
         <span>Riwayat & Berita Acara PO Gerai Ini</span>
@@ -684,12 +713,23 @@
         </table>
       </div>
     </div>
+    </div>
   </section>
 
   <!-- ========================================================= -->
   <!-- TAB 4: LAPORAN PRODUK REJECT + RIWAYAT & EKSPOR BA        -->
   <!-- ========================================================= -->
   <section id="tab-reject" class="section">
+    <div class="subview-bar">
+      <button type="button" id="btnRejectSubInput" class="subview-btn active-danger" onclick="switchSubView('reject', 'INPUT')">
+        + Input Produk Reject
+      </button>
+      <button type="button" id="btnRejectSubHistory" class="subview-btn" onclick="switchSubView('reject', 'HISTORY')">
+        Riwayat & BA Reject (<span id="rejectSubCountPill">0</span>)
+      </button>
+    </div>
+
+    <div id="rejectViewInput">
     <div class="card">
       <div class="card-title" style="color:var(--danger);">
         <span>Laporan Produk Reject / Rusak Kiriman</span>
@@ -757,7 +797,9 @@
         </div>
       </div>
     </div>
+    </div>
 
+    <div id="rejectViewHistory" style="display:none;">
     <div class="card">
       <div class="card-title" style="color:var(--danger);">
         <span>Riwayat & Berita Acara Produk Reject</span>
@@ -815,6 +857,7 @@
         </table>
       </div>
     </div>
+    </div>
   </section>
 
 </div>
@@ -860,6 +903,9 @@
   let state = {
     activeTab: "tab-masuk",
     doSubView: "INPUT",
+    salesSubView: "INPUT",
+    poSubView: "INPUT",
+    rejectSubView: "INPUT",
     profile: JSON.parse(localStorage.getItem("kdkmp_profile") || "null"),
     modalSelectedKec: "ALL",
     selectedSupplier: "BULOG",
@@ -1278,12 +1324,28 @@
   function selectBank(bk) { state.selectedBank = bk; renderAllPills(); }
 
   function switchDoSubView(viewMode) {
-    state.doSubView = viewMode;
-    document.getElementById("doViewInput").style.display = viewMode === "INPUT" ? "block" : "none";
-    document.getElementById("doViewHistory").style.display = viewMode === "HISTORY" ? "block" : "none";
-    document.getElementById("btnDoSubInput").classList.toggle("active", viewMode === "INPUT");
-    document.getElementById("btnDoSubHistory").classList.toggle("active", viewMode === "HISTORY");
-    if (viewMode === "HISTORY") renderMasukHistory();
+    switchSubView("do", viewMode);
+  }
+
+  function switchSubView(moduleKey, viewMode) {
+    const cfg = {
+      do: { stateKey: "doSubView", inId: "doViewInput", histId: "doViewHistory", btnIn: "btnDoSubInput", btnHist: "btnDoSubHistory", activeCls: "active", onHist: renderMasukHistory },
+      sales: { stateKey: "salesSubView", inId: "salesViewInput", histId: "salesViewHistory", btnIn: "btnSalesSubInput", btnHist: "btnSalesSubHistory", activeCls: "active-success", onHist: renderSalesHistory },
+      po: { stateKey: "poSubView", inId: "poViewInput", histId: "poViewHistory", btnIn: "btnPoSubInput", btnHist: "btnPoSubHistory", activeCls: "active-purple", onHist: renderMyPoTable },
+      reject: { stateKey: "rejectSubView", inId: "rejectViewInput", histId: "rejectViewHistory", btnIn: "btnRejectSubInput", btnHist: "btnRejectSubHistory", activeCls: "active-danger", onHist: renderMyRejectTable }
+    }[moduleKey];
+    if (!cfg) return;
+
+    state[cfg.stateKey] = viewMode;
+    document.getElementById(cfg.inId).style.display = viewMode === "INPUT" ? "block" : "none";
+    document.getElementById(cfg.histId).style.display = viewMode === "HISTORY" ? "block" : "none";
+
+    const bIn = document.getElementById(cfg.btnIn);
+    const bHist = document.getElementById(cfg.btnHist);
+    bIn.className = viewMode === "INPUT" ? `subview-btn ${cfg.activeCls}` : "subview-btn";
+    bHist.className = viewMode === "HISTORY" ? `subview-btn ${cfg.activeCls}` : "subview-btn";
+
+    if (viewMode === "HISTORY" && typeof cfg.onHist === "function") cfg.onHist();
     updateFloatingBar();
   }
 
@@ -1306,7 +1368,13 @@
     const valEl = document.getElementById("floatBarValue");
     const btnEl = document.getElementById("floatSubmitBtn");
 
-    if (state.activeTab === "tab-masuk" && state.doSubView === "HISTORY") {
+    const isHistoryActive =
+      (state.activeTab === "tab-masuk" && state.doSubView === "HISTORY") ||
+      (state.activeTab === "tab-omset" && state.salesSubView === "HISTORY") ||
+      (state.activeTab === "tab-po" && state.poSubView === "HISTORY") ||
+      (state.activeTab === "tab-reject" && state.rejectSubView === "HISTORY");
+
+    if (isHistoryActive) {
       barEl.style.display = "none";
       return;
     }
@@ -1972,6 +2040,8 @@
     const totalSelisih = totalSetor - totalWajib;
 
     if (countBadge) countBadge.textContent = `${logs.length} Laporan`;
+    const salesSubPill = document.getElementById("salesSubCountPill");
+    if (salesSubPill) salesSubPill.textContent = logs.length;
     if (elWajib) elWajib.textContent = formatRp(totalWajib);
     if (elSetor) elSetor.textContent = formatRp(totalSetor);
     if (elSelisih) {
@@ -2185,6 +2255,8 @@
     if (!tbody) return;
     const myRows = getFilteredPoLogs();
     if (countBadge) countBadge.textContent = `${myRows.length} Item PO`;
+    const poSubPill = document.getElementById("poSubCountPill");
+    if (poSubPill) poSubPill.textContent = myRows.length;
     if (myRows.length === 0) {
       tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b; padding:16px;">Belum ada riwayat pengajuan PO pada periode / supplier ini.</td></tr>`;
       return;
@@ -2384,6 +2456,8 @@
     if (!tbody) return;
     const myRows = getFilteredRejectLogs();
     if (countBadge) countBadge.textContent = `${myRows.length} Laporan`;
+    const rejSubPill = document.getElementById("rejectSubCountPill");
+    if (rejSubPill) rejSubPill.textContent = myRows.length;
     if (myRows.length === 0) {
       tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b; padding:16px;">Belum ada laporan produk reject pada periode / supplier ini.</td></tr>`;
       return;
