@@ -47,7 +47,7 @@
     .section.active { display: block; }
 
     .card { background: var(--card); border-radius: 12px; padding: 14px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 12px; }
-    .card-title { font-size: 13px; font-weight: 800; margin: 0 0 10px 0; color: var(--primary); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .card-title { font-size: 13px; font-weight: 800; margin: 0 0 10px 0; color: var(--primary); display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
 
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
@@ -65,10 +65,15 @@
     .type-pill.active-stock { border-color: var(--success); background: #ecfdf5; color: #065f46; }
     .type-pill.active-warn { border-color: var(--warning); background: #fffbeb; color: #92400e; }
 
+    /* HORIZONTAL SCROLL PILL ROW (NO WRAPPING, SMOOTH SWIPE) */
+    .pill-scroll-row { display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; padding-bottom: 6px; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+    .pill-scroll-row::-webkit-scrollbar { height: 4px; }
+    .pill-scroll-row::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
     .pill-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
-    .opt-pill { padding: 8px 12px; border-radius: 8px; border: 1.5px solid var(--border); background: #f8fafc; color: #334155; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .opt-pill { padding: 8px 13px; border-radius: 999px; border: 1.5px solid var(--border); background: #f8fafc; color: #334155; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: 0.12s; }
     .opt-pill.active { background: var(--primary); border-color: var(--primary); color: #fff; }
     .opt-pill.active-danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+    .opt-pill.active-purple { background: var(--purple); border-color: var(--purple); color: #fff; }
 
     .bank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     @media (max-width: 520px) { .bank-grid { grid-template-columns: 1fr; } }
@@ -96,14 +101,26 @@
     .qty-input { width: 68px !important; text-align: center; font-weight: 800; font-size: 15px !important; padding: 7px 4px !important; }
     .qty-input.has-value { background: #eff6ff; border-color: var(--primary-light); color: var(--primary); }
 
+    /* SUB-VIEW SWITCHER INSIDE TAB DO (INPUT vs RIWAYAT) */
+    .subview-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; background: #e2e8f0; padding: 4px; border-radius: 11px; }
+    .subview-btn { padding: 9px 10px; border: none; border-radius: 8px; font-size: 12px; font-weight: 800; color: #475569; background: transparent; cursor: pointer; transition: 0.15s; }
+    .subview-btn.active { background: #fff; color: var(--primary); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+
     /* EXPORT & FILTER PANEL STYLES */
     .filter-panel { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; margin-bottom: 10px; }
     .export-btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
     @media (max-width: 480px) { .export-btn-row { grid-template-columns: 1fr; } }
     .stat-mini-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; }
+    .stat-mini-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+    @media (max-width: 520px) { .stat-mini-grid-3 { grid-template-columns: 1fr; } }
     .stat-mini-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 8px 10px; }
     .stat-mini-lbl { font-size: 10px; font-weight: 700; color: #1e40af; text-transform: uppercase; }
-    .stat-mini-val { font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 2px; }
+    .stat-mini-val { font-size: 14px; font-weight: 800; color: #0f172a; margin-top: 2px; }
+
+    /* INTERNAL SCROLLABLE HISTORY TABLE (MAX HEIGHT SO PAGE DOESN'T STRETCH) */
+    .history-scroll-box { max-height: 360px; overflow-y: auto; overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 9px; background: #fff; -webkit-overflow-scrolling: touch; }
+    .history-scroll-box table { margin: 0; }
+    .history-scroll-box thead th { position: sticky; top: 0; z-index: 5; background: #f1f5f9; border-bottom: 1.5px solid #cbd5e1; }
 
     /* MOBILE CARD PICKER UNTUK PRODUK REJECT */
     .reject-picker-list { max-height: 290px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 2px; }
@@ -121,7 +138,7 @@
     .photo-box { border: 2px dashed #94a3b8; border-radius: 10px; padding: 10px; text-align: center; background: #f8fafc; }
     .photo-btn-row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 7px; }
     .btn-cam { background: var(--primary); color: #fff; border: none; border-radius: 8px; padding: 11px 8px; font-size: 12px; font-weight: 800; cursor: pointer; }
-    .btn-gal { background: #fff; color: #0f172a; border: 1.5px solid #94a3b8; border-radius: 8px; padding: 11px 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .btn-gal { background: #fff; color: #0f172a; border: 1.5px solid #94a3b8; border-radius: 8px; padding: 11px 8px; font-size: 12px; font-weight: 700; cursor: pointer; position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; }
     .photo-preview { max-width: 100%; max-height: 170px; border-radius: 8px; margin-top: 8px; display: none; border: 1px solid #cbd5e1; }
     .photo-info { font-size: 11px; color: #059669; font-weight: 700; margin-top: 5px; }
     .ocr-box { margin-top: 6px; padding: 8px 10px; border-radius: 8px; font-size: 11.5px; text-align: left; display: none; line-height: 1.45; }
@@ -155,6 +172,12 @@
     .success-sub { font-size: 13px; color: #475569; margin: 0 0 14px 0; line-height: 1.45; }
     .success-detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; text-align: left; font-size: 12px; color: #334155; margin-bottom: 16px; line-height: 1.5; }
 
+    /* MODAL PREVIEW FOTO LAPORAN (FALLBACK UNTUK HP / WEBVIEW) */
+    #pngPreviewModal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 10055; display: none; align-items: center; justify-content: center; padding: 14px; }
+    .png-preview-card { background: #fff; width: 100%; max-width: 520px; max-height: 90vh; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
+    .png-preview-body { padding: 12px; overflow-y: auto; text-align: center; background: #f1f5f9; flex: 1; }
+    .png-preview-body img { max-width: 100%; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+
     #cameraModal { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; flex-direction: column; justify-content: space-between; }
     .cam-header { padding: 14px 16px; background: rgba(15, 23, 42, 0.88); color: #fff; display: flex; justify-content: space-between; align-items: center; }
     .cam-viewport { position: relative; flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -180,7 +203,6 @@
     .btn-sm { padding: 8px 12px; font-size: 12px; border-radius: 8px; }
 
     .rp-hint { font-size: 12px; font-weight: 800; color: var(--primary); margin-top: 4px; }
-    .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
     th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
     th { background: #f8fafc; font-weight: 700; }
@@ -193,7 +215,7 @@
     .toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); background: #0f172a; color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 13px; font-weight: 700; z-index: 10060; display: none; box-shadow: 0 6px 18px rgba(0,0,0,0.28); }
 
     /* HIDDEN OFFSCREEN RENDER ZONE FOR PNG SNAPSHOT */
-    #pngRenderStage { position: fixed; left: -9999px; top: 0; width: 680px; background: #ffffff; color: #0f172a; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; z-index: -1; }
+    #pngRenderStage { position: fixed; left: -9999px; top: 0; width: 720px; background: #ffffff; color: #0f172a; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; z-index: -1; }
   </style>
 </head>
 <body>
@@ -222,6 +244,26 @@
     <button type="button" class="btn btn-success" style="width:100%; font-size:14px;" onclick="closeSuccessModal()">
       OK, Mengerti
     </button>
+  </div>
+</div>
+
+<!-- MODAL PREVIEW & SIMPAN FOTO BA (UNTUK HP / MOBILE BROWSER) -->
+<div id="pngPreviewModal" onclick="if(event.target===this) closePngPreviewModal()">
+  <div class="png-preview-card">
+    <div class="modal-head">
+      <strong style="font-size:14px; color:#0f172a;" id="pngPreviewTitle">Foto Berita Acara</strong>
+      <button type="button" class="btn btn-outline btn-sm" onclick="closePngPreviewModal()">Tutup</button>
+    </div>
+    <div class="png-preview-body">
+      <div style="font-size:11.5px; color:#1e3a8a; font-weight:700; margin-bottom:8px; background:#eff6ff; padding:7px 10px; border-radius:8px; border:1px solid #bfdbfe;">
+        Jika file belum otomatis masuk ke Galeri HP, ketuk tombol <strong>Bagikan / Simpan Gambar</strong> di bawah atau tekan & tahan gambar.
+      </div>
+      <img id="pngPreviewImg" alt="Preview Berita Acara" />
+    </div>
+    <div style="padding:12px 16px; border-top:1px solid #e2e8f0; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <button type="button" class="btn btn-outline btn-sm" onclick="forceDownloadFromPreview()">Unduh Ulang PNG</button>
+      <button type="button" class="btn btn-success btn-sm" onclick="shareOrSavePreviewImage()">Bagikan / Simpan ke Galeri</button>
+    </div>
   </div>
 </div>
 
@@ -259,8 +301,9 @@
   </div>
 </div>
 
-<input type="file" id="hiddenGalInput" accept="image/*" style="display:none;" onchange="onFileSelected(this)" />
-<input type="file" id="hiddenCamFallback" accept="image/*" capture="environment" style="display:none;" onchange="onFileSelected(this)" />
+<!-- INPUT FILE STANDAR UNTUK GALERI & KAMERA FALLBACK -->
+<input type="file" id="hiddenGalInput" accept="image/*" style="position:fixed; left:-9999px; top:-9999px; opacity:0;" onchange="onFileSelected(this)" />
+<input type="file" id="hiddenCamFallback" accept="image/*" capture="environment" style="position:fixed; left:-9999px; top:-9999px; opacity:0;" onchange="onFileSelected(this)" />
 
 <!-- NAVIGASI 4 MODUL OPERASIONAL MANAGER -->
 <nav class="nav-tabs">
@@ -272,144 +315,156 @@
 
 <div class="container">
 
-  <!-- TAB 1: BARANG MASUK (DO) + LOG RIWAYAT & EKSPOR FOTO/PDF -->
+  <!-- ========================================================= -->
+  <!-- TAB 1: BARANG MASUK (DO)                                  -->
+  <!-- ========================================================= -->
   <section id="tab-masuk" class="section active">
-    <div class="card">
-      <div class="card-title">
-        <span>Penerimaan Barang Masuk (DO)</span>
-        <span style="font-size:11px; color:#2563eb;">Untuk Input Mesin POS ASR</span>
-      </div>
-      <div>
-        <label>Tanggal Terima Barang</label>
-        <input type="date" id="masukTanggal" />
-      </div>
-      <div style="margin-top:10px;">
-        <label>Supplier / Sumber Kiriman (Ketuk 1x)</label>
-        <div class="pill-wrap" id="supplierPills"></div>
-      </div>
-      <div style="margin-top:10px;">
-        <label>Foto Surat Jalan / DO (Opsional)</label>
-        <div class="photo-box">
-          <div class="photo-btn-row">
-            <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoDo', true, false)">Foto Surat Jalan</button>
-            <button type="button" class="btn-gal" onclick="triggerPhotoCapture('fotoDo', false, false)">Galeri</button>
-          </div>
-          <div id="infoFotoDo" class="photo-info"></div>
-          <img id="prevFotoDo" class="photo-preview" alt="Preview Surat Jalan" />
-        </div>
-      </div>
-      <div style="margin-top:10px;">
-        <label>Catatan Bongkar / Kondisi Barang (Opsional)</label>
-        <input type="text" id="masukCatatan" placeholder="Contoh: Bongkar pagi kemasan utuh" />
-      </div>
+    <!-- SUB-VIEW TOGGLE AGAR INPUT DO & RIWAYAT TIDAK SALING MENGGANGGU -->
+    <div class="subview-bar">
+      <button type="button" id="btnDoSubInput" class="subview-btn active" onclick="switchDoSubView('INPUT')">
+        + Input Barang Masuk (DO)
+      </button>
+      <button type="button" id="btnDoSubHistory" class="subview-btn" onclick="switchDoSubView('HISTORY')">
+        Riwayat & BA DO (<span id="doSubCountPill">0</span>)
+      </button>
     </div>
 
-    <div class="card">
-      <div class="card-title">
-        <span>Jumlah Barang Diterima (Master Barang ASR)</span>
-        <span id="masukCountBadge" style="font-size:12px; color:#1e3a8a;">0 item diisi</span>
-      </div>
-      <div class="vendor-sub-banner" id="masukVendorBanner">Menampilkan produk vendor: -</div>
-      <div style="margin-bottom:8px;">
-        <input type="text" id="searchBarangMasuk" placeholder="Cari barang dari vendor terpilih..." oninput="renderMasukItemList()" />
-      </div>
-      <div id="masukItemListContainer"></div>
-    </div>
-
-    <!-- LOG RIWAYAT BARANG MASUK + EKSPOR FOTO & PDF BERITA ACARA -->
-    <div class="card">
-      <div class="card-title">
-        <span>Riwayat & Berita Acara Barang Masuk</span>
-        <span class="tag tag-info" id="masukLogCountBadge">0 DO</span>
-      </div>
-
-      <div class="filter-panel">
-        <div class="grid-2">
-          <div>
-            <label>Mode Filter Periode</label>
-            <select id="masukFilterMode" onchange="toggleMasukFilterMode()">
-              <option value="MONTH">Bulanan (Berita Acara)</option>
-              <option value="DATE">Tanggal Spesifik</option>
-            </select>
-          </div>
-          <div id="wrapMasukFilterMonth">
-            <label>Pilih Bulan</label>
-            <input type="month" id="masukFilterMonth" onchange="renderMasukHistory()" />
-          </div>
-          <div id="wrapMasukFilterDate" style="display:none;">
-            <label>Pilih Tanggal</label>
-            <input type="date" id="masukFilterDate" onchange="renderMasukHistory()" />
-          </div>
+    <!-- PANEL A: FORM INPUT DO -->
+    <div id="doViewInput">
+      <div class="card">
+        <div class="card-title">
+          <span>Penerimaan Barang Masuk (DO)</span>
+          <span style="font-size:11px; color:#2563eb;">Untuk Input Mesin POS ASR</span>
         </div>
-
+        <div>
+          <label>Tanggal Terima Barang</label>
+          <input type="date" id="masukTanggal" />
+        </div>
         <div style="margin-top:10px;">
-          <label>Filter Supplier Riwayat</label>
-          <select id="masukFilterSupplier" onchange="renderMasukHistory()">
-            <option value="ALL">Semua Supplier (Menyeluruh)</option>
-          </select>
+          <label>Supplier / Sumber Kiriman (Geser ke samping)</label>
+          <div class="pill-scroll-row" id="supplierPills"></div>
         </div>
-
-        <div class="export-btn-row">
-          <button type="button" class="btn btn-outline btn-sm" onclick="downloadMasukPng()">
-            Download 1 Foto Laporan
-          </button>
-          <button type="button" class="btn btn-primary btn-sm" onclick="printMasukBeritaAcaraPdf()">
-            Cetak PDF Berita Acara
-          </button>
+        <div style="margin-top:10px;">
+          <label>Foto Surat Jalan / DO (Opsional)</label>
+          <div class="photo-box">
+            <div class="photo-btn-row">
+              <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoDo', true, false)">Foto Surat Jalan</button>
+              <label for="hiddenGalInput" class="btn-gal" onclick="prepareGalleryCapture('fotoDo', false)">Pilih dari Galeri</label>
+            </div>
+            <div id="infoFotoDo" class="photo-info"></div>
+            <img id="prevFotoDo" class="photo-preview" alt="Preview Surat Jalan" />
+          </div>
         </div>
-      </div>
-
-      <div class="stat-mini-grid">
-        <div class="stat-mini-box">
-          <div class="stat-mini-lbl">Total Transaksi DO</div>
-          <div class="stat-mini-val" id="masukStatDoCount">0 DO</div>
-        </div>
-        <div class="stat-mini-box">
-          <div class="stat-mini-lbl">Total Unit Masuk</div>
-          <div class="stat-mini-val" id="masukStatTotalQty">0 Unit</div>
+        <div style="margin-top:10px;">
+          <label>Catatan Bongkar / Kondisi Barang (Opsional)</label>
+          <input type="text" id="masukCatatan" placeholder="Contoh: Bongkar pagi kemasan utuh" />
         </div>
       </div>
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Tanggal</th>
-              <th>Supplier</th>
-              <th>Rincian Barang</th>
-              <th>Total Qty</th>
-              <th>Foto DO</th>
-            </tr>
-          </thead>
-          <tbody id="tblMyMasukBody"></tbody>
-        </table>
+      <div class="card">
+        <div class="card-title">
+          <span>Jumlah Barang Diterima (Master Barang ASR)</span>
+          <span id="masukCountBadge" style="font-size:12px; color:#1e3a8a;">0 item diisi</span>
+        </div>
+        <div class="vendor-sub-banner" id="masukVendorBanner">Menampilkan produk vendor: -</div>
+        <div style="margin-bottom:8px;">
+          <input type="text" id="searchBarangMasuk" placeholder="Cari barang dari vendor terpilih..." oninput="renderMasukItemList()" />
+        </div>
+        <div id="masukItemListContainer"></div>
+      </div>
+    </div>
+
+    <!-- PANEL B: LOG RIWAYAT BARANG MASUK + EKSPOR FOTO & PDF BERITA ACARA -->
+    <div id="doViewHistory" style="display:none;">
+      <div class="card">
+        <div class="card-title">
+          <span>Riwayat & Berita Acara Barang Masuk</span>
+          <span class="tag tag-info" id="masukLogCountBadge">0 DO</span>
+        </div>
+
+        <div class="filter-panel">
+          <div class="grid-2">
+            <div>
+              <label>Filter Periode Laporan</label>
+              <select id="masukFilterMode" onchange="toggleFilterMode('masuk')">
+                <option value="LAST_30">30 Hari Terakhir (Default)</option>
+                <option value="DATE">Per Hari / Tanggal Tertentu</option>
+                <option value="MONTH">Per Bulan (Berjalan / Lalu)</option>
+              </select>
+            </div>
+            <div id="wrapMasukFilterMonth" style="display:none;">
+              <label>Pilih Bulan</label>
+              <input type="month" id="masukFilterMonth" onchange="renderMasukHistory()" />
+            </div>
+            <div id="wrapMasukFilterDate" style="display:none;">
+              <label>Pilih Tanggal</label>
+              <input type="date" id="masukFilterDate" onchange="renderMasukHistory()" />
+            </div>
+          </div>
+
+          <div style="margin-top:10px;">
+            <label>Filter Supplier (Geser ke samping)</label>
+            <div class="pill-scroll-row" id="masukHistSupplierPills"></div>
+          </div>
+
+          <div class="export-btn-row">
+            <button type="button" class="btn btn-outline btn-sm" onclick="exportReportPng('MASUK')">
+              Download Foto BA (PNG)
+            </button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="exportReportPdf('MASUK')">
+              Download / Cetak PDF BA
+            </button>
+          </div>
+        </div>
+
+        <div class="stat-mini-grid">
+          <div class="stat-mini-box">
+            <div class="stat-mini-lbl">Total Transaksi DO</div>
+            <div class="stat-mini-val" id="masukStatDoCount">0 DO</div>
+          </div>
+          <div class="stat-mini-box">
+            <div class="stat-mini-lbl">Total Unit Masuk</div>
+            <div class="stat-mini-val" id="masukStatTotalQty">0 Unit</div>
+          </div>
+        </div>
+
+        <div class="history-scroll-box">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Supplier</th>
+                <th>Rincian Barang</th>
+                <th>Total Qty</th>
+                <th>Foto DO</th>
+              </tr>
+            </thead>
+            <tbody id="tblMyMasukBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- TAB 2: LAPORAN SALES -->
+  <!-- ========================================================= -->
+  <!-- TAB 2: LAPORAN SALES + RIWAYAT & EKSPOR BA                -->
+  <!-- ========================================================= -->
   <section id="tab-omset" class="section">
     <div class="card">
       <div class="card-title">
-        <span>Laporan Sales & Setoran</span>
+        <span>Laporan Sales & Setoran Harian</span>
         <span style="font-size:11px; color:#059669;">Auto-Scan Struk & Bukti Transfer</span>
       </div>
 
       <div class="mode-3-group">
         <div id="modeOmsetFull" class="type-pill active-stock" onclick="setOmsetMode('FULL')">1. Closeshift + Setor Hari H</div>
-        <div id="modeOmsetTunda" class="type-pill" onclick="setOmsetMode('TUNDA_TF')">2. Closeshift Dulu (TF H+1)</div>
-        <div id="modeOmsetSusul" class="type-pill" onclick="setOmsetMode('SUSUL_TF')">3. Susul Bukti Setor (H+1)</div>
+        <div id="modeOmsetTunda" class="type-pill" onclick="setOmsetMode('TUNDA_TF')">2. Closeshift Dulu (TF Maks H+2)</div>
+        <div id="modeOmsetSusul" class="type-pill" onclick="setOmsetMode('SUSUL_TF')">3. Susul Bukti Setor (Maks H+2)</div>
       </div>
 
-      <div class="grid-2">
-        <div>
-          <label id="lblOmsetTanggal">Tanggal Operasional (Hari H)</label>
-          <input type="date" id="omsetTanggal" onchange="recheckOmsetDates()" />
-        </div>
-        <div>
-          <label>Shift Operasional (Ketuk 1x)</label>
-          <div class="pill-wrap" id="shiftPills"></div>
-        </div>
+      <div>
+        <label id="lblOmsetTanggal">Tanggal Operasional (Hari H)</label>
+        <input type="date" id="omsetTanggal" onchange="recheckOmsetDates()" />
       </div>
 
       <div id="wrapOmsetBank" style="margin-top:10px;">
@@ -423,7 +478,7 @@
           <div class="photo-box">
             <div class="photo-btn-row">
               <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoStruk', true, true)">Scan Struk Closeshift</button>
-              <button type="button" class="btn-gal" onclick="triggerPhotoCapture('fotoStruk', false, true)">Galeri</button>
+              <label for="hiddenGalInput" class="btn-gal" onclick="prepareGalleryCapture('fotoStruk', true)">Galeri</label>
             </div>
             <div id="infoFotoStruk" class="photo-info"></div>
             <div id="ocrFotoStruk" class="ocr-box"></div>
@@ -436,7 +491,7 @@
           <div class="photo-box">
             <div class="photo-btn-row">
               <button type="button" class="btn-cam" onclick="triggerPhotoCapture('fotoTransfer', true, true)">Scan Bukti Setor</button>
-              <button type="button" class="btn-gal" onclick="triggerPhotoCapture('fotoTransfer', false, true)">Galeri</button>
+              <label for="hiddenGalInput" class="btn-gal" onclick="prepareGalleryCapture('fotoTransfer', true)">Galeri</label>
             </div>
             <div id="infoFotoTransfer" class="photo-info"></div>
             <div id="ocrFotoTransfer" class="ocr-box"></div>
@@ -471,12 +526,83 @@
 
       <div style="margin-top:12px;">
         <label>Catatan / Alasan Koreksi atau Kendala Transfer (Opsional)</label>
-        <input type="text" id="omsetCatatan" placeholder="Contoh: Koreksi angka buram pada struk / transfer H+1" />
+        <input type="text" id="omsetCatatan" placeholder="Contoh: Koreksi angka buram pada struk / TF susulan maks H+2" />
+      </div>
+    </div>
+
+    <!-- RIWAYAT LAPORAN SALES & EKSPOR BA -->
+    <div class="card">
+      <div class="card-title">
+        <span>Riwayat & Berita Acara Laporan Sales</span>
+        <span class="tag tag-ok" id="salesLogCountBadge">0 Laporan</span>
+      </div>
+
+      <div class="filter-panel">
+        <div class="grid-2">
+          <div>
+            <label>Filter Periode Laporan</label>
+            <select id="salesFilterMode" onchange="toggleFilterMode('sales')">
+              <option value="LAST_30">30 Hari Terakhir (Default)</option>
+              <option value="DATE">Per Hari / Tanggal Tertentu</option>
+              <option value="MONTH">Per Bulan (Berjalan / Lalu)</option>
+            </select>
+          </div>
+          <div id="wrapSalesFilterMonth" style="display:none;">
+            <label>Pilih Bulan</label>
+            <input type="month" id="salesFilterMonth" onchange="renderSalesHistory()" />
+          </div>
+          <div id="wrapSalesFilterDate" style="display:none;">
+            <label>Pilih Tanggal</label>
+            <input type="date" id="salesFilterDate" onchange="renderSalesHistory()" />
+          </div>
+        </div>
+
+        <div class="export-btn-row">
+          <button type="button" class="btn btn-outline btn-sm" onclick="exportReportPng('SALES')">
+            Download Foto BA (PNG)
+          </button>
+          <button type="button" class="btn btn-success btn-sm" onclick="exportReportPdf('SALES')">
+            Download / Cetak PDF BA
+          </button>
+        </div>
+      </div>
+
+      <div class="stat-mini-grid-3">
+        <div class="stat-mini-box">
+          <div class="stat-mini-lbl">Wajib Disetor</div>
+          <div class="stat-mini-val" id="salesStatWajib">Rp 0</div>
+        </div>
+        <div class="stat-mini-box" style="background:#ecfdf5; border-color:#a7f3d0;">
+          <div class="stat-mini-lbl" style="color:#065f46;">Telah Disetor</div>
+          <div class="stat-mini-val" id="salesStatSetor" style="color:#065f46;">Rp 0</div>
+        </div>
+        <div class="stat-mini-box" style="background:#fef2f2; border-color:#fecaca;">
+          <div class="stat-mini-lbl" style="color:#991b1b;">Selisih</div>
+          <div class="stat-mini-val" id="salesStatSelisih" style="color:#991b1b;">Rp 0</div>
+        </div>
+      </div>
+
+      <div class="history-scroll-box">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Mode / Ket.</th>
+              <th>Wajib Setor</th>
+              <th>Telah Setor</th>
+              <th>Selisih</th>
+              <th>Bukti Foto</th>
+            </tr>
+          </thead>
+          <tbody id="tblMySalesBody"></tbody>
+        </table>
       </div>
     </div>
   </section>
 
-  <!-- TAB 3: PERENCANAAN PO -->
+  <!-- ========================================================= -->
+  <!-- TAB 3: PERENCANAAN PO + RIWAYAT & EKSPOR BA               -->
+  <!-- ========================================================= -->
   <section id="tab-po" class="section">
     <div class="card">
       <div class="card-title">Pengajuan Perencanaan PO Barang</div>
@@ -491,8 +617,8 @@
         </div>
       </div>
       <div style="margin-bottom:10px;">
-        <label>Filter Supplier (Ketuk 1x)</label>
-        <div class="pill-wrap" id="poSupplierPills"></div>
+        <label>Filter Supplier (Geser ke samping)</label>
+        <div class="pill-scroll-row" id="poSupplierPills"></div>
       </div>
       <div class="vendor-sub-banner" id="poVendorBanner">Menampilkan produk supplier: Semua Supplier</div>
       <div style="margin-bottom:8px;">
@@ -502,12 +628,52 @@
     </div>
 
     <div class="card">
-      <div class="card-title">Riwayat & Status PO Gerai Ini</div>
-      <div class="table-wrap">
+      <div class="card-title">
+        <span>Riwayat & Berita Acara PO Gerai Ini</span>
+        <span class="tag tag-info" id="poLogCountBadge">0 PO</span>
+      </div>
+
+      <div class="filter-panel">
+        <div class="grid-2">
+          <div>
+            <label>Filter Periode Laporan</label>
+            <select id="poFilterMode" onchange="toggleFilterMode('po')">
+              <option value="LAST_30">30 Hari Terakhir (Default)</option>
+              <option value="DATE">Per Hari / Tanggal Tertentu</option>
+              <option value="MONTH">Per Bulan (Berjalan / Lalu)</option>
+            </select>
+          </div>
+          <div id="wrapPoFilterMonth" style="display:none;">
+            <label>Pilih Bulan</label>
+            <input type="month" id="poFilterMonth" onchange="renderMyPoTable()" />
+          </div>
+          <div id="wrapPoFilterDate" style="display:none;">
+            <label>Pilih Tanggal</label>
+            <input type="date" id="poFilterDate" onchange="renderMyPoTable()" />
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label>Filter Supplier Riwayat (Geser ke samping)</label>
+          <div class="pill-scroll-row" id="poHistSupplierPills"></div>
+        </div>
+
+        <div class="export-btn-row">
+          <button type="button" class="btn btn-outline btn-sm" onclick="exportReportPng('PO')">
+            Download Foto BA (PNG)
+          </button>
+          <button type="button" class="btn btn-purple btn-sm" onclick="exportReportPdf('PO')">
+            Download / Cetak PDF BA
+          </button>
+        </div>
+      </div>
+
+      <div class="history-scroll-box">
         <table>
           <thead>
             <tr>
               <th>Tgl Kirim</th>
+              <th>Supplier</th>
               <th>No. PO ASR</th>
               <th>Barang</th>
               <th>Jumlah PO</th>
@@ -520,7 +686,9 @@
     </div>
   </section>
 
-  <!-- TAB 4: LAPORAN PRODUK REJECT / RETUR -->
+  <!-- ========================================================= -->
+  <!-- TAB 4: LAPORAN PRODUK REJECT + RIWAYAT & EKSPOR BA        -->
+  <!-- ========================================================= -->
   <section id="tab-reject" class="section">
     <div class="card">
       <div class="card-title" style="color:var(--danger);">
@@ -544,8 +712,8 @@
       </div>
 
       <div style="margin-top:10px;">
-        <label>Filter Supplier (Ketuk 1x)</label>
-        <div class="pill-wrap" id="rejectSupplierPills"></div>
+        <label>Filter Supplier (Geser ke samping)</label>
+        <div class="pill-scroll-row" id="rejectSupplierPills"></div>
       </div>
 
       <div style="margin-top:10px;">
@@ -582,7 +750,7 @@
         <div class="photo-box" style="border-color:#fca5a5; background:#fef2f2;">
           <div class="photo-btn-row">
             <button type="button" class="btn-cam" style="background:var(--danger);" onclick="triggerPhotoCapture('fotoReject', true, false)">Foto Barang Reject</button>
-            <button type="button" class="btn-gal" onclick="triggerPhotoCapture('fotoReject', false, false)">Pilih Galeri</button>
+            <label for="hiddenGalInput" class="btn-gal" onclick="prepareGalleryCapture('fotoReject', false)">Pilih dari Galeri</label>
           </div>
           <div id="infoFotoReject" class="photo-info" style="color:#991b1b;"></div>
           <img id="prevFotoReject" class="photo-preview" alt="Preview Barang Reject" />
@@ -591,8 +759,47 @@
     </div>
 
     <div class="card">
-      <div class="card-title" style="color:var(--danger);">Riwayat Laporan Reject Gerai Ini</div>
-      <div class="table-wrap">
+      <div class="card-title" style="color:var(--danger);">
+        <span>Riwayat & Berita Acara Produk Reject</span>
+        <span class="tag tag-err" id="rejectLogCountBadge">0 Laporan</span>
+      </div>
+
+      <div class="filter-panel">
+        <div class="grid-2">
+          <div>
+            <label>Filter Periode Laporan</label>
+            <select id="rejectFilterMode" onchange="toggleFilterMode('reject')">
+              <option value="LAST_30">30 Hari Terakhir (Default)</option>
+              <option value="DATE">Per Hari / Tanggal Tertentu</option>
+              <option value="MONTH">Per Bulan (Berjalan / Lalu)</option>
+            </select>
+          </div>
+          <div id="wrapRejectFilterMonth" style="display:none;">
+            <label>Pilih Bulan</label>
+            <input type="month" id="rejectFilterMonth" onchange="renderMyRejectTable()" />
+          </div>
+          <div id="wrapRejectFilterDate" style="display:none;">
+            <label>Pilih Tanggal</label>
+            <input type="date" id="rejectFilterDate" onchange="renderMyRejectTable()" />
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label>Filter Supplier Riwayat (Geser ke samping)</label>
+          <div class="pill-scroll-row" id="rejectHistSupplierPills"></div>
+        </div>
+
+        <div class="export-btn-row">
+          <button type="button" class="btn btn-outline btn-sm" style="border-color:var(--danger); color:var(--danger);" onclick="exportReportPng('REJECT')">
+            Download Foto BA (PNG)
+          </button>
+          <button type="button" class="btn btn-danger btn-sm" onclick="exportReportPdf('REJECT')">
+            Download / Cetak PDF BA
+          </button>
+        </div>
+      </div>
+
+      <div class="history-scroll-box">
         <table>
           <thead>
             <tr>
@@ -600,6 +807,7 @@
               <th>Supplier</th>
               <th>Produk</th>
               <th>Kirim / Aktual / Reject</th>
+              <th>Foto</th>
               <th>Status Retur</th>
             </tr>
           </thead>
@@ -612,7 +820,7 @@
 </div>
 
 <!-- BAR KIRIM MELAYANG -->
-<div class="floating-bar">
+<div class="floating-bar" id="floatingBarContainer">
   <div class="floating-inner">
     <div class="floating-summary">
       <div class="floating-lbl" id="floatBarLabel">Barang Masuk (DO)</div>
@@ -633,7 +841,6 @@
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfCK5cs_vIUUEUfSTlUamHoyy1mxGiHu76hwbegsyA76sOFAnlFvjAY7f-P_RqdUFOjA/exec";
 
   const DEFAULT_SUPPLIER_LIST = ["BULOG", "PERTAMINA", "PUPUK INDONESIA", "ID FOOD", "GONUSA"];
-  const SHIFT_LIST = ["Full Day / Tutup Gerai", "Shift 1 (Pagi)", "Shift 2 (Malam)"];
   const BANK_LIST = ["BRI — PT AGRINAS PANGAN NUSANTARA", "BNI — PT AGRINAS PANGAN NUSANTARA"];
 
   const DEFAULT_KDKMP = [
@@ -652,13 +859,16 @@
 
   let state = {
     activeTab: "tab-masuk",
+    doSubView: "INPUT",
     profile: JSON.parse(localStorage.getItem("kdkmp_profile") || "null"),
     modalSelectedKec: "ALL",
     selectedSupplier: "BULOG",
+    selectedMasukHistSupplier: "ALL",
     selectedPoSupplier: "ALL",
+    selectedPoHistSupplier: "ALL",
     selectedRejectSupplier: "ALL",
+    selectedRejectHistSupplier: "ALL",
     omsetMode: "FULL",
-    selectedShift: "Full Day / Tutup Gerai",
     selectedBank: BANK_LIST[0],
     quantitiesMasuk: {},
     poQuantities: {},
@@ -669,10 +879,13 @@
     activeRunOcr: true,
     camStream: null,
     selectedRejectItem: null,
+    lastPngDataUrl: "",
+    lastPngFilename: "Laporan_BA_KDKMP.png",
     masterKdkmp: JSON.parse(localStorage.getItem("kdkmp_master_gerai") || "null") || DEFAULT_KDKMP,
     masterBarang: JSON.parse(localStorage.getItem("kdkmp_master_barang") || "null") || DEFAULT_BARANG,
     rekapStok: JSON.parse(localStorage.getItem("kdkmp_rekap_stok") || "[]"),
     masukLogs: JSON.parse(localStorage.getItem("kdkmp_masuk_logs") || "[]"),
+    salesLogs: JSON.parse(localStorage.getItem("kdkmp_sales_logs") || "[]"),
     poList: JSON.parse(localStorage.getItem("kdkmp_po_list") || "[]"),
     rejectLogs: JSON.parse(localStorage.getItem("kdkmp_reject_logs") || "[]")
   };
@@ -684,19 +897,47 @@
     return dariSheet.length > 0 ? dariSheet : DEFAULT_SUPPLIER_LIST;
   }
 
+  // HELPER RESOLUSI SUPPLIER AKURAT (MENCEGAH GAS TERINPUT KE BULOG)
+  function resolveItemSupplier(itemObj, fallbackSup) {
+    if (!itemObj) return String(fallbackSup || "-").trim();
+    const kode = String(itemObj.kode_barang || itemObj.Kode_Barang || "").trim();
+    const nama = String(itemObj.nama_barang || itemObj.Nama_Barang || "").trim().toLowerCase();
+
+    const masterHit = (state.masterBarang || []).find(b =>
+      (kode && String(b.Kode_Barang || "").trim() === kode) ||
+      (nama && String(b.Nama_Barang || "").trim().toLowerCase() === nama)
+    );
+    if (masterHit && String(masterHit.Supplier || "").trim()) {
+      return String(masterHit.Supplier).trim();
+    }
+    if (/gas|lpg|elpiji/i.test(nama)) return "PERTAMINA";
+    if (/pupuk|urea|phonska|npk/i.test(nama)) return "PUPUK INDONESIA";
+    if (/sphp|bulog/i.test(nama)) return "BULOG";
+    if (/minyakita|gula/i.test(nama)) return "ID FOOD";
+    return String(itemObj.supplier || itemObj.Supplier || fallbackSup || "-").trim();
+  }
+
   function getTodayWib() {
     return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
+  }
+
+  function getDateDaysAgoWib(daysAgo) {
+    return new Date(Date.now() - daysAgo * 86400000).toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
     const today = getTodayWib();
     const currentMonth = today.slice(0, 7);
 
-    document.getElementById("masukTanggal").value = today;
-    document.getElementById("masukFilterMonth").value = currentMonth;
-    document.getElementById("masukFilterDate").value = today;
-    document.getElementById("omsetTanggal").value = today;
-    document.getElementById("rejTanggal").value = today;
+    ["masukTanggal", "masukFilterDate", "omsetTanggal", "salesFilterDate", "poFilterDate", "rejTanggal", "rejectFilterDate"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = today;
+    });
+
+    ["masukFilterMonth", "salesFilterMonth", "poFilterMonth", "rejectFilterMonth"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = currentMonth;
+    });
 
     const tomorrow = new Date(Date.now() + 86400000 * 2).toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
     document.getElementById("poTanggal").value = tomorrow;
@@ -720,9 +961,9 @@
     }
 
     renderAllPills();
-    populateMasukFilterSuppliers();
     renderMasukItemList();
     renderMasukHistory();
+    renderSalesHistory();
     renderPoItemList();
     renderMyPoTable();
     initRejectForm();
@@ -757,22 +998,29 @@
     throw lastErr || new Error("Koneksi ke server pusat terputus.");
   }
 
-  function mergeLogsById(localArr, serverArr) {
+  function mergeLogsById(localArr, serverArr, keyBuilder) {
     const map = new Map();
     (serverArr || []).forEach((item, idx) => {
-      const key = item.id || item.ID_DO || `${item.Tanggal || item.tanggal}_${item.Nama_KDKMP || item.nama_kdkmp}_${item.Supplier || item.supplier}_${idx}`;
+      const key = keyBuilder(item, idx);
       map.set(key, item);
     });
-    (localArr || []).forEach(item => {
-      const key = item.id || `${item.tanggal}_${item.nama_kdkmp}_${item.supplier}`;
+    (localArr || []).forEach((item, idx) => {
+      const key = keyBuilder(item, idx);
       if (map.has(key)) {
         const existing = map.get(key);
-        map.set(key, { ...existing, ...item, foto_do_base64: item.foto_do_base64 || existing.foto_do_base64 || "" });
+        map.set(key, {
+          ...existing,
+          ...item,
+          foto_do_base64: item.foto_do_base64 || existing.foto_do_base64 || existing.Foto_DO || "",
+          foto_struk_base64: item.foto_struk_base64 || existing.foto_struk_base64 || existing.Foto_Struk || "",
+          foto_transfer_base64: item.foto_transfer_base64 || existing.foto_transfer_base64 || existing.Foto_Transfer || "",
+          foto_reject_base64: item.foto_reject_base64 || existing.foto_reject_base64 || existing.Foto_Reject || ""
+        });
       } else {
         map.set(key, item);
       }
     });
-    return Array.from(map.values()).sort((a, b) => String(b.tanggal || b.Tanggal || "").localeCompare(String(a.tanggal || a.Tanggal || "")));
+    return Array.from(map.values());
   }
 
   async function syncFromServer() {
@@ -790,11 +1038,18 @@
         }
         state.rekapStok = data.rekap_stok || [];
         state.poList = data.po_list || [];
-        state.rejectLogs = data.reject_logs || [];
+        state.rejectLogs = mergeLogsById(state.rejectLogs, data.reject_logs || [], (r, i) => r.id || r.ID_Reject || `${r.Tanggal_Kejadian || r.tanggal}_${r.Nama_KDKMP || r.nama_kdkmp}_${r.Kode_Barang || r.kode_barang}_${i}`);
+
         if (Array.isArray(data.masuk_logs)) {
-          state.masukLogs = mergeLogsById(state.masukLogs, data.masuk_logs);
+          state.masukLogs = mergeLogsById(state.masukLogs, data.masuk_logs, (item, idx) => item.id || item.ID_DO || `${item.Tanggal || item.tanggal}_${item.Nama_KDKMP || item.nama_kdkmp}_${item.Supplier || item.supplier}_${idx}`);
           localStorage.setItem("kdkmp_masuk_logs", JSON.stringify(state.masukLogs));
         }
+        const serverSales = data.sales_logs || data.omset_logs || [];
+        if (Array.isArray(serverSales) && serverSales.length > 0) {
+          state.salesLogs = mergeLogsById(state.salesLogs, serverSales, (item, idx) => item.id || item.ID_Sales || `${item.Tanggal || item.tanggal}_${item.Nama_KDKMP || item.nama_kdkmp}_${item.Mode_Setoran || item.mode_setoran}_${idx}`);
+          localStorage.setItem("kdkmp_sales_logs", JSON.stringify(state.salesLogs));
+        }
+
         localStorage.setItem("kdkmp_rekap_stok", JSON.stringify(state.rekapStok));
         localStorage.setItem("kdkmp_po_list", JSON.stringify(state.poList));
         localStorage.setItem("kdkmp_reject_logs", JSON.stringify(state.rejectLogs));
@@ -813,9 +1068,9 @@
         if (state.selectedRejectSupplier !== "ALL" && !supList.includes(state.selectedRejectSupplier)) state.selectedRejectSupplier = "ALL";
 
         renderAllPills();
-        populateMasukFilterSuppliers();
         renderMasukItemList();
         renderMasukHistory();
+        renderSalesHistory();
         renderPoItemList();
         renderMyPoTable();
         initRejectForm();
@@ -867,6 +1122,48 @@
       labelRange: `${formatDateIndo(startDate)} s/d ${formatDateIndo(endDate)}`,
       isOngoing: ymStr === curYm
     };
+  }
+
+  // FILTER PERIODE DINAMIS UNTUK SEMUA TAB (30 HARI TERAKHIR, PER HARI, PER BULAN)
+  function toggleFilterMode(prefix) {
+    const mode = document.getElementById(`${prefix}FilterMode`).value;
+    document.getElementById(`wrap${prefix.charAt(0).toUpperCase() + prefix.slice(1)}FilterMonth`).style.display = mode === "MONTH" ? "block" : "none";
+    document.getElementById(`wrap${prefix.charAt(0).toUpperCase() + prefix.slice(1)}FilterDate`).style.display = mode === "DATE" ? "block" : "none";
+    if (prefix === "masuk") renderMasukHistory();
+    else if (prefix === "sales") renderSalesHistory();
+    else if (prefix === "po") renderMyPoTable();
+    else if (prefix === "reject") renderMyRejectTable();
+  }
+
+  function matchPeriodFilter(isoDateStr, prefix) {
+    const tgl = String(isoDateStr || "").slice(0, 10);
+    if (!tgl) return false;
+    const mode = document.getElementById(`${prefix}FilterMode`).value;
+    if (mode === "LAST_30") {
+      const minDate = getDateDaysAgoWib(30);
+      return tgl >= minDate;
+    } else if (mode === "MONTH") {
+      const ym = document.getElementById(`${prefix}FilterMonth`).value;
+      return ym ? tgl.startsWith(ym) : true;
+    } else if (mode === "DATE") {
+      const dt = document.getElementById(`${prefix}FilterDate`).value;
+      return dt ? tgl === dt : true;
+    }
+    return true;
+  }
+
+  function getPeriodLabel(prefix) {
+    const mode = document.getElementById(`${prefix}FilterMode`).value;
+    if (mode === "LAST_30") {
+      return `30 Hari Terakhir (${formatDateIndo(getDateDaysAgoWib(30))} s/d ${formatDateIndo(getTodayWib())})`;
+    } else if (mode === "MONTH") {
+      const ym = document.getElementById(`${prefix}FilterMonth`).value;
+      const r = getMonthRangeInfo(ym);
+      return r.labelRange + (r.isOngoing ? " (Bulan Berjalan)" : "");
+    } else if (mode === "DATE") {
+      return formatDateIndo(document.getElementById(`${prefix}FilterDate`).value);
+    }
+    return "-";
   }
 
   // GERAI MODAL
@@ -938,6 +1235,7 @@
     updateGeraiStrip();
     closeGeraiModal();
     renderMasukHistory();
+    renderSalesHistory();
     renderPoItemList();
     renderMyPoTable();
     initRejectForm();
@@ -945,44 +1243,49 @@
     showToast("Gerai aktif: " + kdkmp);
   }
 
+  // HORIZONTAL SCROLL PILLS FOR SUPPLIERS (FORM & HISTORY)
+  function renderPillRowHtml(containerId, items, activeVal, activeClass, handlerName, includeAll) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    const list = includeAll ? ["ALL", ...items] : items;
+    el.innerHTML = list.map(s => {
+      const escS = s.replace(/'/g, "\'");
+      const label = s === "ALL" ? "Semua Supplier" : s;
+      return `<button type="button" class="opt-pill ${activeVal === s ? activeClass : ''}" onclick="${handlerName}('${escS}')">${label}</button>`;
+    }).join("");
+  }
+
   function renderAllPills() {
     const supList = getDynamicSuppliers();
     if (!supList.includes(state.selectedSupplier)) state.selectedSupplier = supList[0];
 
-    document.getElementById("supplierPills").innerHTML = supList.map(s => {
-      const escS = s.replace(/'/g, "\'");
-      return `<button type="button" class="opt-pill ${state.selectedSupplier === s ? 'active' : ''}" onclick="selectSupplier('${escS}')">${s}</button>`;
-    }).join("");
+    renderPillRowHtml("supplierPills", supList, state.selectedSupplier, "active", "selectSupplier", false);
+    renderPillRowHtml("masukHistSupplierPills", supList, state.selectedMasukHistSupplier, "active", "selectMasukHistSupplier", true);
+    renderPillRowHtml("poSupplierPills", supList, state.selectedPoSupplier, "active-purple", "selectPoSupplier", true);
+    renderPillRowHtml("poHistSupplierPills", supList, state.selectedPoHistSupplier, "active-purple", "selectPoHistSupplier", true);
+    renderPillRowHtml("rejectSupplierPills", supList, state.selectedRejectSupplier, "active-danger", "selectRejectSupplier", true);
+    renderPillRowHtml("rejectHistSupplierPills", supList, state.selectedRejectHistSupplier, "active-danger", "selectRejectHistSupplier", true);
 
-    const supWithAll = ["ALL", ...supList];
-
-    const poSupEl = document.getElementById("poSupplierPills");
-    if (poSupEl) {
-      poSupEl.innerHTML = supWithAll.map(s => {
-        const escS = s.replace(/'/g, "\'");
-        const label = s === "ALL" ? "Semua Supplier" : s;
-        return `<button type="button" class="opt-pill ${state.selectedPoSupplier === s ? 'active' : ''}" onclick="selectPoSupplier('${escS}')">${label}</button>`;
-      }).join("");
-    }
-
-    const rejSupEl = document.getElementById("rejectSupplierPills");
-    if (rejSupEl) {
-      rejSupEl.innerHTML = supWithAll.map(s => {
-        const escS = s.replace(/'/g, "\'");
-        const label = s === "ALL" ? "Semua Supplier" : s;
-        return `<button type="button" class="opt-pill ${state.selectedRejectSupplier === s ? 'active-danger' : ''}" onclick="selectRejectSupplier('${escS}')">${label}</button>`;
-      }).join("");
-    }
-
-    document.getElementById("shiftPills").innerHTML = SHIFT_LIST.map(sh => `<button type="button" class="opt-pill ${state.selectedShift === sh ? 'active' : ''}" onclick="selectShift('${sh}')">${sh}</button>`).join("");
     document.getElementById("bankPills").innerHTML = BANK_LIST.map(bk => `<button type="button" class="bank-pill ${state.selectedBank === bk ? 'active' : ''}" onclick="selectBank('${bk}')">${bk}</button>`).join("");
   }
 
   function selectSupplier(s) { state.selectedSupplier = s; renderAllPills(); renderMasukItemList(); }
+  function selectMasukHistSupplier(s) { state.selectedMasukHistSupplier = s; renderAllPills(); renderMasukHistory(); }
   function selectPoSupplier(s) { state.selectedPoSupplier = s; renderAllPills(); renderPoItemList(); }
+  function selectPoHistSupplier(s) { state.selectedPoHistSupplier = s; renderAllPills(); renderMyPoTable(); }
   function selectRejectSupplier(s) { state.selectedRejectSupplier = s; renderAllPills(); renderRejectBarangOptions(); }
-  function selectShift(sh) { state.selectedShift = sh; renderAllPills(); }
+  function selectRejectHistSupplier(s) { state.selectedRejectHistSupplier = s; renderAllPills(); renderMyRejectTable(); }
   function selectBank(bk) { state.selectedBank = bk; renderAllPills(); }
+
+  function switchDoSubView(viewMode) {
+    state.doSubView = viewMode;
+    document.getElementById("doViewInput").style.display = viewMode === "INPUT" ? "block" : "none";
+    document.getElementById("doViewHistory").style.display = viewMode === "HISTORY" ? "block" : "none";
+    document.getElementById("btnDoSubInput").classList.toggle("active", viewMode === "INPUT");
+    document.getElementById("btnDoSubHistory").classList.toggle("active", viewMode === "HISTORY");
+    if (viewMode === "HISTORY") renderMasukHistory();
+    updateFloatingBar();
+  }
 
   function switchTab(tabId, btn) {
     state.activeTab = tabId;
@@ -991,15 +1294,23 @@
     document.getElementById(tabId).classList.add("active");
     btn.classList.add("active");
     if (tabId === "tab-masuk") renderMasukHistory();
+    if (tabId === "tab-omset") renderSalesHistory();
     if (tabId === "tab-po") { renderPoItemList(); renderMyPoTable(); }
     if (tabId === "tab-reject") { initRejectForm(); renderMyRejectTable(); }
     updateFloatingBar();
   }
 
   function updateFloatingBar() {
+    const barEl = document.getElementById("floatingBarContainer");
     const lblEl = document.getElementById("floatBarLabel");
     const valEl = document.getElementById("floatBarValue");
     const btnEl = document.getElementById("floatSubmitBtn");
+
+    if (state.activeTab === "tab-masuk" && state.doSubView === "HISTORY") {
+      barEl.style.display = "none";
+      return;
+    }
+    barEl.style.display = "block";
 
     if (state.activeTab === "tab-masuk") {
       const count = Object.keys(state.quantitiesMasuk).filter(k => Number(state.quantitiesMasuk[k]) > 0).length;
@@ -1011,7 +1322,7 @@
     } else if (state.activeTab === "tab-omset") {
       const omset = Number(document.getElementById("inpOmsetTotal").value) || 0;
       const tf = Number(document.getElementById("inpOmsetTransfer").value) || 0;
-      lblEl.textContent = state.omsetMode === "SUSUL_TF" ? "Susul Bukti Setor" : "Laporan Sales";
+      lblEl.textContent = state.omsetMode === "SUSUL_TF" ? "Susul Bukti Setor (Maks H+2)" : "Laporan Sales";
       valEl.textContent = state.omsetMode === "SUSUL_TF" ? formatRp(tf) : formatRp(omset);
       btnEl.className = "btn btn-success";
       btnEl.textContent = "Upload Laporan Sales";
@@ -1040,7 +1351,16 @@
     else if (state.activeTab === "tab-reject") submitRejectReport();
   }
 
-  // KAMERA & FOTO
+  // =========================================================
+  // KAMERA & GALERI (FIXED: <label for="hiddenGalInput"> MOBILE SAFE)
+  // =========================================================
+  function prepareGalleryCapture(targetKey, runOcr) {
+    state.activePhotoTarget = targetKey;
+    state.activeRunOcr = Boolean(runOcr);
+    const galInp = document.getElementById("hiddenGalInput");
+    if (galInp) galInp.value = "";
+  }
+
   async function triggerPhotoCapture(targetKey, useCamera, runOcr) {
     state.activePhotoTarget = targetKey;
     state.activeRunOcr = Boolean(runOcr);
@@ -1210,7 +1530,7 @@
 
   function parseMoneyTokensFromLine(line) {
     const cleaned = line.replace(/Rp\.?/gi, " ").replace(/IDR/gi, " ").replace(/[Oo](?=\d{2,3})/g, "0");
-    const regex = /\b\d{1,3}(?:[.,]\d{3})+(?:[.,]\d{2})?\b|\b\d{4,9}\b/g;
+    const regex = /\d{1,3}(?:[.,]\d{3})+(?:[.,]\d{2})?|\d{4,9}/g;
     const matches = cleaned.match(regex) || [];
     const nums = [];
     matches.forEach(m => {
@@ -1222,7 +1542,8 @@
   }
 
   function extractSalesFromCloseShift(rawText) {
-    const lines = String(rawText || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const lines = String(rawText || "").split(/?
+/).map(l => l.trim()).filter(Boolean);
     let kasAwal = 0, idxKasAwal = -1, grandTotal = 0, idxGrandTotal = lines.length, middleExplicitSales = 0;
     const lineItems = [];
     lines.forEach((line, idx) => {
@@ -1230,8 +1551,8 @@
       const maxNum = nums.length ? Math.max(...nums) : 0;
       lineItems.push({ idx, line, nums, maxNum });
       if (/kas\s*awal|modal\s*awal|saldo\s*awal|opening/i.test(line) && maxNum > 0) { kasAwal = maxNum; idxKasAwal = idx; }
-      else if (/grand\s*total|total\s*akhir|total\s*keseluruhan|total\s*kas|total\s*setor|^total\b/i.test(line) && maxNum > 0) { grandTotal = maxNum; idxGrandTotal = idx; }
-      else if (/omset|total\s*penjualan|penjualan|total\s*sales|net\s*sales|sales\b|pendapatan/i.test(line) && maxNum > 0) { middleExplicitSales = maxNum; }
+      else if (/grand\s*total|total\s*akhir|total\s*keseluruhan|total\s*kas|total\s*setor|^total/i.test(line) && maxNum > 0) { grandTotal = maxNum; idxGrandTotal = idx; }
+      else if (/omset|total\s*penjualan|penjualan|total\s*sales|net\s*sales|sales|pendapatan/i.test(line) && maxNum > 0) { middleExplicitSales = maxNum; }
     });
     const betweenLines = lineItems.filter(it => it.maxNum > 0 && it.idx > idxKasAwal && it.idx < idxGrandTotal && !/kas\s*awal|modal\s*awal|saldo\s*awal|tunai\s*fisik|selisih/i.test(it.line));
     let omsetSales = 0;
@@ -1248,15 +1569,16 @@
   }
 
   function extractTransferFromReceipt(rawText) {
-    const lines = String(rawText || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const lines = String(rawText || "").split(/?
+/).map(l => l.trim()).filter(Boolean);
     let nominalTransfer = 0, biayaAdmin = 0, totalDebet = 0;
     const allNums = [];
     lines.forEach(line => {
       const nums = parseMoneyTokensFromLine(line);
       const maxNum = nums.length ? Math.max(...nums) : 0;
       if (maxNum > 0) allNums.push(maxNum);
-      if (/biaya\s*admin|admin(\s*bank)?|biaya\s*transaksi|biaya\s*layanan|fee\b/i.test(line)) {
-        if (/gratis|free|\b0\b/i.test(line) && maxNum === 0) biayaAdmin = 0;
+      if (/biaya\s*admin|admin(\s*bank)?|biaya\s*transaksi|biaya\s*layanan|fee/i.test(line)) {
+        if (/gratis|free|0/i.test(line) && maxNum === 0) biayaAdmin = 0;
         else if (maxNum > 0 && maxNum <= 50000) biayaAdmin = maxNum;
       } else if (/nominal(\s*transfer)?|jumlah(\s*transfer)?|amount|nilai\s*transfer/i.test(line) && !/total/i.test(line) && maxNum > 0) nominalTransfer = maxNum;
       else if (/total(\s*debet|\s*bayar|\s*transaksi|\s*pembayaran)?/i.test(line) && maxNum > 0) totalDebet = maxNum;
@@ -1271,7 +1593,7 @@
 
   function extractDateFromReceiptText(rawText) {
     if (!rawText) return null;
-    const m2 = rawText.match(/\b(20\d{2})[\-\/\.](\d{1,2})[\-\/\.](\d{1,2})\b/);
+    const m2 = rawText.match(/(20\d{2})[\-\/\.](\d{1,2})[\-\/\.](\d{1,2})/);
     if (m2) return `${m2[1]}-${m2[2].padStart(2, "0")}-${m2[3].padStart(2, "0")}`;
     return null;
   }
@@ -1325,12 +1647,12 @@
       wrapOmset.style.display = "block"; wrapTf.style.display = "block";
       wrapStruk.style.display = "block"; wrapBoxTf.style.display = "block"; wrapBank.style.display = "block";
     } else if (mode === "TUNDA_TF") {
-      lblTgl.textContent = "Tanggal Closeshift (Hari H)";
+      lblTgl.textContent = "Tanggal Closeshift (Hari H — TF Maks H+2)";
       wrapOmset.style.display = "block"; wrapTf.style.display = "none";
       wrapStruk.style.display = "block"; wrapBoxTf.style.display = "none"; wrapBank.style.display = "none";
       document.getElementById("inpOmsetTransfer").value = "";
     } else if (mode === "SUSUL_TF") {
-      lblTgl.textContent = "Tanggal Omset yang Dilunasi (Kemarin)";
+      lblTgl.textContent = "Tanggal Omset yang Dilunasi (Maks H+2)";
       wrapOmset.style.display = "none"; wrapTf.style.display = "block";
       wrapStruk.style.display = "none"; wrapBoxTf.style.display = "block"; wrapBank.style.display = "block";
       document.getElementById("inpOmsetTotal").value = "";
@@ -1371,80 +1693,78 @@
       }
     } else if (mode === "TUNDA_TF") {
       box.className = (state.photos.fotoStruk && omset > 0) ? "match-status-box match-ok" : "match-status-box";
-      box.innerHTML = (state.photos.fotoStruk && omset > 0) ? `✓ Struk siap dilaporkan (${formatRp(omset)})` : "Scan foto Struk Closeshift terlebih dahulu.";
+      box.innerHTML = (state.photos.fotoStruk && omset > 0) ? `✓ Struk siap dilaporkan (${formatRp(omset)}). Setoran susulan maksimal H+2.` : "Scan foto Struk Closeshift terlebih dahulu.";
     } else if (mode === "SUSUL_TF") {
       box.className = (state.photos.fotoTransfer && tf > 0) ? "match-status-box match-ok" : "match-status-box";
-      box.innerHTML = (state.photos.fotoTransfer && tf > 0) ? `✓ Bukti Transfer Susulan siap diupload (${formatRp(tf)}).` : "Scan foto Bukti Transfer terlebih dahulu.";
+      box.innerHTML = (state.photos.fotoTransfer && tf > 0) ? `✓ Bukti Transfer Susulan (Maks H+2) siap diupload (${formatRp(tf)}).` : "Scan foto Bukti Transfer terlebih dahulu.";
     }
     if (state.activeTab === "tab-omset") updateFloatingBar();
   }
 
-  // TAB 1: BARANG MASUK + LOG RIWAYAT & EKSPOR PNG/PDF
-  function populateMasukFilterSuppliers() {
-    const sel = document.getElementById("masukFilterSupplier");
-    if (!sel) return;
-    const prev = sel.value || "ALL";
-    const supList = getDynamicSuppliers();
-    sel.innerHTML = `<option value="ALL">Semua Supplier (Menyeluruh)</option>` +
-      supList.map(s => `<option value="${s}">${s}</option>`).join("");
-    if (supList.includes(prev) || prev === "ALL") sel.value = prev;
-  }
-
-  function toggleMasukFilterMode() {
-    const mode = document.getElementById("masukFilterMode").value;
-    document.getElementById("wrapMasukFilterMonth").style.display = mode === "MONTH" ? "block" : "none";
-    document.getElementById("wrapMasukFilterDate").style.display = mode === "DATE" ? "block" : "none";
-    renderMasukHistory();
+  // =========================================================
+  // TAB 1: BARANG MASUK + LOG RIWAYAT
+  // =========================================================
+  function normalizeMasukItems(log) {
+    const rawSup = log.supplier || log.Supplier || "-";
+    if (Array.isArray(log.items) && log.items.length > 0) {
+      return log.items.map(it => ({
+        ...it,
+        resolved_supplier: resolveItemSupplier(it, rawSup)
+      }));
+    }
+    if (log.Nama_Barang || log.nama_barang) {
+      const single = {
+        kode_barang: log.Kode_Barang || log.kode_barang || "-",
+        nama_barang: log.Nama_Barang || log.nama_barang || "-",
+        satuan: log.Satuan || log.satuan || "Unit",
+        jumlah: Number(log.Jumlah || log.jumlah || 0)
+      };
+      single.resolved_supplier = resolveItemSupplier(single, rawSup);
+      return [single];
+    }
+    return [];
   }
 
   function getFilteredMasukLogs() {
-    const mode = document.getElementById("masukFilterMode").value;
-    const filterMonth = document.getElementById("masukFilterMonth").value;
-    const filterDate = document.getElementById("masukFilterDate").value;
-    const filterSup = document.getElementById("masukFilterSupplier").value;
+    const filterSup = state.selectedMasukHistSupplier;
     const activeGerai = state.profile.nama_kdkmp;
 
     return (state.masukLogs || []).filter(log => {
       const gerai = log.nama_kdkmp || log.Nama_KDKMP || "";
       if (gerai !== activeGerai) return false;
-
       const tgl = String(log.tanggal || log.Tanggal || "").slice(0, 10);
-      if (mode === "MONTH" && filterMonth && !tgl.startsWith(filterMonth)) return false;
-      if (mode === "DATE" && filterDate && tgl !== filterDate) return false;
+      if (!matchPeriodFilter(tgl, "masuk")) return false;
 
-      const sup = String(log.supplier || log.Supplier || "").trim();
-      if (filterSup !== "ALL" && sup !== filterSup) return false;
-
+      if (filterSup !== "ALL") {
+        const items = normalizeMasukItems(log);
+        const hasMatchingSup = items.some(it => it.resolved_supplier === filterSup) ||
+          String(log.supplier || log.Supplier || "").trim() === filterSup;
+        if (!hasMatchingSup) return false;
+      }
       return true;
-    }).sort((a, b) => String(a.tanggal || a.Tanggal || "").localeCompare(String(b.tanggal || b.Tanggal || "")));
-  }
-
-  function normalizeMasukItems(log) {
-    if (Array.isArray(log.items) && log.items.length > 0) return log.items;
-    if (log.Nama_Barang || log.nama_barang) {
-      return [{
-        kode_barang: log.Kode_Barang || log.kode_barang || "-",
-        nama_barang: log.Nama_Barang || log.nama_barang || "-",
-        satuan: log.Satuan || log.satuan || "Unit",
-        jumlah: Number(log.Jumlah || log.jumlah || 0)
-      }];
-    }
-    return [];
+    }).sort((a, b) => String(b.tanggal || b.Tanggal || "").localeCompare(String(a.tanggal || a.Tanggal || "")));
   }
 
   function renderMasukHistory() {
     const logs = getFilteredMasukLogs();
+    const filterSup = state.selectedMasukHistSupplier;
     const tbody = document.getElementById("tblMyMasukBody");
     const countBadge = document.getElementById("masukLogCountBadge");
+    const subPill = document.getElementById("doSubCountPill");
     const statDo = document.getElementById("masukStatDoCount");
     const statQty = document.getElementById("masukStatTotalQty");
 
     let totalUnits = 0;
     logs.forEach(l => {
-      normalizeMasukItems(l).forEach(it => { totalUnits += Number(it.jumlah || 0); });
+      normalizeMasukItems(l).forEach(it => {
+        if (filterSup === "ALL" || it.resolved_supplier === filterSup) {
+          totalUnits += Number(it.jumlah || 0);
+        }
+      });
     });
 
     if (countBadge) countBadge.textContent = `${logs.length} DO`;
+    if (subPill) subPill.textContent = logs.length;
     if (statDo) statDo.textContent = `${logs.length} DO`;
     if (statQty) statQty.textContent = `${totalUnits.toLocaleString("id-ID")} Unit`;
 
@@ -1454,297 +1774,22 @@
       return;
     }
 
-    tbody.innerHTML = [...logs].reverse().map(l => {
+    tbody.innerHTML = logs.map(l => {
       const tgl = String(l.tanggal || l.Tanggal || "").slice(0, 10);
-      const sup = l.supplier || l.Supplier || "-";
-      const items = normalizeMasukItems(l);
-      const itemSummary = items.map(i => `${i.nama_barang} (${Number(i.jumlah).toLocaleString("id-ID")} ${i.satuan})`).join(", ");
-      const qtySum = items.reduce((acc, i) => acc + (Number(i.jumlah) || 0), 0);
+      const allItems = normalizeMasukItems(l);
+      const shownItems = filterSup === "ALL" ? allItems : allItems.filter(it => it.resolved_supplier === filterSup);
+      const supsLabel = [...new Set(shownItems.map(i => i.resolved_supplier))].join(", ") || (l.supplier || l.Supplier || "-");
+      const itemSummary = shownItems.map(i => `${i.nama_barang} (${Number(i.jumlah).toLocaleString("id-ID")} ${i.satuan})`).join(", ");
+      const qtySum = shownItems.reduce((acc, i) => acc + (Number(i.jumlah) || 0), 0);
       const hasFoto = Boolean(l.foto_do_base64 || l.Foto_DO);
       return `<tr>
         <td>${tgl}</td>
-        <td><strong>${sup}</strong></td>
+        <td><strong>${supsLabel}</strong></td>
         <td style="white-space:normal; min-width:160px;">${itemSummary || "-"}</td>
         <td><strong>${qtySum.toLocaleString("id-ID")}</strong></td>
         <td><span class="tag ${hasFoto ? 'tag-ok' : 'tag-wait'}">${hasFoto ? 'Ada Foto' : 'Tanpa Foto'}</span></td>
       </tr>`;
     }).join("");
-  }
-
-  function summarizeMasukByProduct(logs) {
-    const map = new Map();
-    logs.forEach(l => {
-      const sup = l.supplier || l.Supplier || "-";
-      normalizeMasukItems(l).forEach(it => {
-        const key = `${sup}__${it.nama_barang}__${it.satuan}`;
-        if (!map.has(key)) {
-          map.set(key, { supplier: sup, nama_barang: it.nama_barang, satuan: it.satuan, total_qty: 0 });
-        }
-        map.get(key).total_qty += Number(it.jumlah || 0);
-      });
-    });
-    return Array.from(map.values());
-  }
-
-  async function downloadMasukPng() {
-    const logs = getFilteredMasukLogs();
-    if (logs.length === 0) return showToast("Tidak ada data riwayat pada filter ini untuk diunduh!");
-    if (typeof html2canvas === "undefined") return showToast("Library render foto belum siap, cek koneksi internet.");
-
-    const mode = document.getElementById("masukFilterMode").value;
-    const filterSup = document.getElementById("masukFilterSupplier").value;
-    const periodeLabel = mode === "MONTH"
-      ? getMonthRangeInfo(document.getElementById("masukFilterMonth").value).labelRange
-      : formatDateIndo(document.getElementById("masukFilterDate").value);
-
-    const summaryItems = summarizeMasukByProduct(logs);
-    const stage = document.getElementById("pngRenderStage");
-    stage.innerHTML = `
-      <div style="border:2px solid #1e3a8a; border-radius:14px; overflow:hidden; background:#fff;">
-        <div style="background:linear-gradient(135deg,#0f172a,#1e3a8a); color:#fff; padding:18px 20px;">
-          <div style="font-size:11px; font-weight:700; letter-spacing:1px; color:#93c5fd;">PT AGRINAS PANGAN NUSANTARA — KDKMP CIANJUR</div>
-          <div style="font-size:19px; font-weight:800; margin-top:4px;">LAPORAN RINGKASAN BARANG MASUK (DO)</div>
-          <div style="font-size:13px; margin-top:6px; color:#e2e8f0;">
-            <strong>${state.profile.nama_kdkmp}</strong> (Kec. ${state.profile.kecamatan}) • Manager: ${state.profile.manager || "-"}
-          </div>
-        </div>
-        <div style="padding:18px 20px;">
-          <div style="display:flex; justify-content:space-between; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:12px 14px; margin-bottom:14px; font-size:12.5px;">
-            <div><strong>Periode:</strong> ${periodeLabel}</div>
-            <div><strong>Supplier:</strong> ${filterSup === "ALL" ? "Semua Supplier" : filterSup}</div>
-            <div><strong>Total DO:</strong> ${logs.length}x Kiriman</div>
-          </div>
-
-          <div style="font-size:13px; font-weight:800; color:#1e3a8a; margin-bottom:8px;">REKAP TOTAL BARANG DITERIMA</div>
-          <table style="width:100%; border-collapse:collapse; font-size:12.5px; margin-bottom:16px;">
-            <thead>
-              <tr style="background:#eff6ff; color:#1e3a8a;">
-                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Supplier</th>
-                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Nama Produk</th>
-                <th style="padding:8px; border:1px solid #cbd5e1; text-align:right;">Total Masuk</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${summaryItems.map(s => `
-                <tr>
-                  <td style="padding:8px; border:1px solid #cbd5e1; font-weight:700;">${s.supplier}</td>
-                  <td style="padding:8px; border:1px solid #cbd5e1;">${s.nama_barang}</td>
-                  <td style="padding:8px; border:1px solid #cbd5e1; text-align:right; font-weight:800; color:#059669;">+${s.total_qty.toLocaleString("id-ID")} ${s.satuan}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-
-          <div style="font-size:13px; font-weight:800; color:#1e3a8a; margin-bottom:8px;">RINCIAN PENERIMAAN HARIAN</div>
-          <table style="width:100%; border-collapse:collapse; font-size:12px;">
-            <thead>
-              <tr style="background:#f1f5f9;">
-                <th style="padding:7px; border:1px solid #cbd5e1; text-align:left;">Tanggal</th>
-                <th style="padding:7px; border:1px solid #cbd5e1; text-align:left;">Supplier</th>
-                <th style="padding:7px; border:1px solid #cbd5e1; text-align:left;">Item Diterima</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${logs.map(l => {
-                const itemsTxt = normalizeMasukItems(l).map(i => `${i.nama_barang} (${i.jumlah} ${i.satuan})`).join(", ");
-                return `<tr>
-                  <td style="padding:7px; border:1px solid #cbd5e1;">${String(l.tanggal || l.Tanggal || "").slice(0, 10)}</td>
-                  <td style="padding:7px; border:1px solid #cbd5e1; font-weight:700;">${l.supplier || l.Supplier || "-"}</td>
-                  <td style="padding:7px; border:1px solid #cbd5e1;">${itemsTxt}</td>
-                </tr>`;
-              }).join("")}
-            </tbody>
-          </table>
-
-          <div style="margin-top:14px; font-size:11px; color:#64748b; display:flex; justify-content:space-between;">
-            <span>Dicetak otomatis dari Portal Manager KDKMP Cianjur</span>
-            <span>Tgl Cetak: ${formatDateIndo(getTodayWib())}</span>
-          </div>
-        </div>
-      </div>
-    `;
-
-    showToast("Menyiapkan gambar laporan...");
-    try {
-      const canvas = await html2canvas(stage, { scale: 2, backgroundColor: "#ffffff" });
-      const link = document.createElement("a");
-      const safeGerai = state.profile.nama_kdkmp.replace(/\s+/g, "_");
-      link.download = `Laporan_Barang_Masuk_${safeGerai}_${filterSup}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-      showToast("Foto laporan berhasil diunduh!");
-    } catch (e) {
-      alert("Gagal membuat foto laporan: " + e.message);
-    } finally {
-      stage.innerHTML = "";
-    }
-  }
-
-  function printMasukBeritaAcaraPdf() {
-    const mode = document.getElementById("masukFilterMode").value;
-    const filterSup = document.getElementById("masukFilterSupplier").value;
-    let periodeText = "";
-    if (mode === "MONTH") {
-      const ym = document.getElementById("masukFilterMonth").value;
-      const range = getMonthRangeInfo(ym);
-      periodeText = range.labelRange + (range.isOngoing ? " (Bulan Berjalan s/d Hari Ini)" : "");
-    } else {
-      periodeText = formatDateIndo(document.getElementById("masukFilterDate").value);
-    }
-
-    const logs = getFilteredMasukLogs();
-    if (logs.length === 0) return showToast("Tidak ada riwayat barang masuk pada periode / supplier ini!");
-
-    const summaryItems = summarizeMasukByProduct(logs);
-    const logsWithPhotos = logs.filter(l => Boolean(l.foto_do_base64 || l.Foto_DO));
-
-    const printWin = window.open("", "_blank");
-    if (!printWin) return alert("Izinkan pop-up browser untuk mencetak Berita Acara PDF.");
-
-    printWin.document.write(`
-      <!DOCTYPE html>
-      <html lang="id">
-      <head>
-        <meta charset="UTF-8" />
-        <title>Berita Acara Barang Masuk - ${state.profile.nama_kdkmp}</title>
-        <style>
-          @page { size: A4 portrait; margin: 15mm; }
-          body { font-family: Arial, Helvetica, sans-serif; color: #0f172a; font-size: 12px; line-height: 1.45; margin: 0; }
-          .kop { border-bottom: 3px double #0f172a; padding-bottom: 10px; margin-bottom: 14px; text-align: center; }
-          .kop h2 { margin: 0; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
-          .kop p { margin: 3px 0 0 0; font-size: 11px; color: #334155; }
-          .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
-          .meta-table td { padding: 4px 6px; vertical-align: top; }
-          .section-hd { font-size: 12.5px; font-weight: bold; background: #e2e8f0; padding: 6px 10px; margin: 14px 0 8px 0; border-left: 4px solid #1e3a8a; }
-          table.data { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
-          table.data th, table.data td { border: 1px solid #94a3b8; padding: 6px 8px; text-align: left; }
-          table.data th { background: #f1f5f9; font-weight: bold; }
-          .ttd-wrap { margin-top: 26px; display: flex; justify-content: space-between; page-break-inside: avoid; }
-          .ttd-box { width: 42%; text-align: center; }
-          .ttd-space { height: 64px; }
-          .page-break { page-break-before: always; }
-          .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
-          .photo-card { border: 1px solid #94a3b8; border-radius: 6px; padding: 8px; page-break-inside: avoid; text-align: center; }
-          .photo-card img { max-width: 100%; max-height: 240px; object-fit: contain; border-radius: 4px; }
-          .photo-cap { font-size: 10.5px; margin-top: 6px; text-align: left; color: #334155; }
-        </style>
-      </head>
-      <body>
-        <div class="kop">
-          <h2>BERITA ACARA PENERIMAAN BARANG MASUK (DO)</h2>
-          <p>KOPERASI DESA/KELURAHAN MERAH PUTIH (KDKMP) — PT AGRINAS PANGAN NUSANTARA</p>
-        </div>
-
-        <table class="meta-table">
-          <tr>
-            <td style="width:160px;"><strong>Nama Gerai KDKMP</strong></td>
-            <td>: ${state.profile.nama_kdkmp}</td>
-            <td style="width:140px;"><strong>Periode Laporan</strong></td>
-            <td>: ${periodeText}</td>
-          </tr>
-          <tr>
-            <td><strong>Kecamatan</strong></td>
-            <td>: ${state.profile.kecamatan}, Kab. Cianjur</td>
-            <td><strong>Filter Supplier</strong></td>
-            <td>: ${filterSup === "ALL" ? "Semua Supplier (Menyeluruh)" : filterSup}</td>
-          </tr>
-          <tr>
-            <td><strong>Manager Gerai</strong></td>
-            <td>: ${state.profile.manager || "-"}</td>
-            <td><strong>Total Kiriman DO</strong></td>
-            <td>: ${logs.length} Transaksi Penerimaan</td>
-          </tr>
-        </table>
-
-        <div class="section-hd">I. REKAPITULASI TOTAL BARANG MASUK PERIODE INI</div>
-        <table class="data">
-          <thead>
-            <tr>
-              <th style="width:36px; text-align:center;">No</th>
-              <th>Supplier</th>
-              <th>Nama Barang</th>
-              <th style="text-align:right;">Total Kuantitas Masuk</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${summaryItems.map((s, idx) => `
-              <tr>
-                <td style="text-align:center;">${idx + 1}</td>
-                <td><strong>${s.supplier}</strong></td>
-                <td>${s.nama_barang}</td>
-                <td style="text-align:right;"><strong>${s.total_qty.toLocaleString("id-ID")} ${s.satuan}</strong></td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-
-        <div class="section-hd">II. RINCIAN HASIL UPLOAD PENERIMAAN BARANG (DO)</div>
-        <table class="data">
-          <thead>
-            <tr>
-              <th style="width:36px; text-align:center;">No</th>
-              <th style="width:92px;">Tanggal</th>
-              <th style="width:120px;">Supplier</th>
-              <th>Rincian Barang Diterima</th>
-              <th>Catatan</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${logs.map((l, idx) => {
-              const itemsTxt = normalizeMasukItems(l).map(i => `• ${i.nama_barang}: ${Number(i.jumlah).toLocaleString("id-ID")} ${i.satuan}`).join("<br>");
-              return `<tr>
-                <td style="text-align:center;">${idx + 1}</td>
-                <td>${String(l.tanggal || l.Tanggal || "").slice(0, 10)}</td>
-                <td><strong>${l.supplier || l.Supplier || "-"}</strong></td>
-                <td>${itemsTxt}</td>
-                <td>${l.catatan || l.Catatan || "-"}</td>
-              </tr>`;
-            }).join("")}
-          </tbody>
-        </table>
-
-        <div class="ttd-wrap">
-          <div class="ttd-box">
-            <div>Mengetahui / Verifikasi Pusat,</div>
-            <div style="font-weight:bold;">Admin Operasional ASR Cianjur</div>
-            <div class="ttd-space"></div>
-            <div>( ........................................ )</div>
-          </div>
-          <div class="ttd-box">
-            <div>Cianjur, ${formatDateIndo(getTodayWib())}</div>
-            <div style="font-weight:bold;">Manager ${state.profile.nama_kdkmp}</div>
-            <div class="ttd-space"></div>
-            <div><strong>( ${state.profile.manager || "........................................"} )</strong></div>
-          </div>
-        </div>
-
-        ${logsWithPhotos.length > 0 ? `
-          <div class="page-break"></div>
-          <div class="section-hd">III. LAMPIRAN BUKTI DOKUMENTASI SURAT JALAN / DO</div>
-          <div class="photo-grid">
-            ${logsWithPhotos.map((l, idx) => {
-              const src = l.foto_do_base64 || l.Foto_DO;
-              const itemsShort = normalizeMasukItems(l).map(i => `${i.nama_barang} (${i.jumlah} ${i.satuan})`).join(", ");
-              return `
-                <div class="photo-card">
-                  <img src="${src}" alt="Foto DO ${idx + 1}" />
-                  <div class="photo-cap">
-                    <strong>#${idx + 1} • ${String(l.tanggal || l.Tanggal || "").slice(0, 10)} — ${l.supplier || l.Supplier || "-"}</strong><br>
-                    ${itemsShort}
-                  </div>
-                </div>
-              `;
-            }).join("")}
-          </div>
-        ` : ""}
-
-        <script>
-          window.onload = function() { setTimeout(function() { window.print(); }, 400); };
-        <\/script>
-      </body>
-      </html>
-    `);
-    printWin.document.close();
   }
 
   function renderMasukItemList() {
@@ -1774,7 +1819,7 @@
         <div class="item-row">
           <div class="item-info">
             <div class="item-name">${b.Nama_Barang}</div>
-            <div class="item-meta">${b.Kategori} • ${b.Satuan}</div>
+            <div class="item-meta">${b.Kategori} • ${b.Satuan} • <strong>${b.Supplier || state.selectedSupplier}</strong></div>
             <div class="quick-add-row">
               <button type="button" class="btn-qadd" onclick="stepMasukQty('${b.Kode_Barang}', 10)">+10</button>
               <button type="button" class="btn-qadd" onclick="stepMasukQty('${b.Kode_Barang}', 50)">+50</button>
@@ -1814,38 +1859,66 @@
   }
 
   async function submitBarangMasuk() {
-    const itemsToSend = [];
+    // KELOMPOKKAN ITEM BERDASARKAN SUPPLIER ASLI PRODUK AGAR GAS TIDAK MASUK KE BULOG
+    const itemsBySupplier = {};
     for (const [code, qty] of Object.entries(state.quantitiesMasuk)) {
       if (!qty || Number(qty) <= 0) continue;
       const master = state.masterBarang.find(b => b.Kode_Barang === code);
-      if (master) itemsToSend.push({ kode_barang: master.Kode_Barang, kategori: master.Kategori, nama_barang: master.Nama_Barang, satuan: master.Satuan, jumlah: Number(qty) });
+      if (master) {
+        const realSupplier = resolveItemSupplier(master, state.selectedSupplier);
+        if (!itemsBySupplier[realSupplier]) itemsBySupplier[realSupplier] = [];
+        itemsBySupplier[realSupplier].push({
+          kode_barang: master.Kode_Barang,
+          kategori: master.Kategori,
+          supplier: realSupplier,
+          nama_barang: master.Nama_Barang,
+          satuan: master.Satuan,
+          jumlah: Number(qty)
+        });
+      }
     }
-    if (itemsToSend.length === 0) return showToast("Isi minimal 1 barang yang diterima!");
 
-    const payload = {
-      action: "BARANG_MASUK", tanggal: document.getElementById("masukTanggal").value,
-      kecamatan: state.profile.kecamatan, nama_kdkmp: state.profile.nama_kdkmp, manager: state.profile.manager,
-      supplier: state.selectedSupplier, no_do: "-",
-      catatan: document.getElementById("masukCatatan").value.trim(), foto_do_base64: state.photos.fotoDo, items: itemsToSend
-    };
+    const supplierKeys = Object.keys(itemsBySupplier);
+    if (supplierKeys.length === 0) return showToast("Isi minimal 1 barang yang diterima!");
 
+    const tgl = document.getElementById("masukTanggal").value;
+    const cat = document.getElementById("masukCatatan").value.trim();
     const btn = document.getElementById("floatSubmitBtn");
     btn.disabled = true; btn.textContent = "Menyimpan DO...";
-    try {
-      if (SCRIPT_URL) await postToBackend(payload);
 
-      const logEntry = {
-        id: "DO-" + Date.now(),
-        tanggal: payload.tanggal,
-        kecamatan: payload.kecamatan,
-        nama_kdkmp: payload.nama_kdkmp,
-        manager: payload.manager,
-        supplier: payload.supplier,
-        catatan: payload.catatan,
-        foto_do_base64: payload.foto_do_base64,
-        items: payload.items
-      };
-      state.masukLogs.push(logEntry);
+    try {
+      const allSentDetails = [];
+      for (const supKey of supplierKeys) {
+        const groupItems = itemsBySupplier[supKey];
+        const payload = {
+          action: "BARANG_MASUK",
+          tanggal: tgl,
+          kecamatan: state.profile.kecamatan,
+          nama_kdkmp: state.profile.nama_kdkmp,
+          manager: state.profile.manager,
+          supplier: supKey,
+          no_do: "-",
+          catatan: cat,
+          foto_do_base64: state.photos.fotoDo,
+          items: groupItems
+        };
+        if (SCRIPT_URL) await postToBackend(payload);
+
+        state.masukLogs.push({
+          id: "DO-" + Date.now() + "-" + supKey.replace(/\s+/g, ""),
+          tanggal: tgl,
+          kecamatan: state.profile.kecamatan,
+          nama_kdkmp: state.profile.nama_kdkmp,
+          manager: state.profile.manager,
+          supplier: supKey,
+          catatan: cat,
+          foto_do_base64: state.photos.fotoDo,
+          items: groupItems
+        });
+
+        groupItems.forEach(i => allSentDetails.push(`• [${supKey}] ${i.nama_barang}: <strong>+${i.jumlah} ${i.satuan}</strong>`));
+      }
+
       try {
         localStorage.setItem("kdkmp_masuk_logs", JSON.stringify(state.masukLogs.slice(-120)));
       } catch (storageErr) {
@@ -1853,27 +1926,102 @@
         localStorage.setItem("kdkmp_masuk_logs", JSON.stringify(state.masukLogs));
       }
 
-      showSuccessConfirmation("Barang Masuk (DO) Tersimpan!", "Data penerimaan barang telah masuk ke sistem ASR.", [`<strong>Gerai:</strong> ${payload.nama_kdkmp}`, `<strong>Tanggal:</strong> ${payload.tanggal}`, `<strong>Supplier:</strong> ${payload.supplier}`, ...itemsToSend.map(i => `• ${i.nama_barang}: <strong>+${i.jumlah} ${i.satuan}</strong>`)]);
+      showSuccessConfirmation(
+        "Barang Masuk (DO) Tersimpan!",
+        "Data penerimaan barang telah masuk ke sistem ASR sesuai supplier resminya.",
+        [`<strong>Gerai:</strong> ${state.profile.nama_kdkmp}`, `<strong>Tanggal:</strong> ${tgl}`, `<strong>Supplier:</strong> ${supplierKeys.join(", ")}`, ...allSentDetails]
+      );
+
       state.quantitiesMasuk = {}; state.photos.fotoDo = "";
       document.getElementById("masukCatatan").value = "";
       document.getElementById("prevFotoDo").style.display = "none"; document.getElementById("infoFotoDo").textContent = "";
       renderMasukItemList();
       renderMasukHistory();
-    } catch (err) { alert("Gagal menyimpan Barang Masuk: " + err.message); }
-    finally { btn.disabled = false; updateFloatingBar(); }
+    } catch (err) {
+      alert("Gagal menyimpan Barang Masuk: " + err.message);
+    } finally {
+      btn.disabled = false; updateFloatingBar();
+    }
   }
 
-  // TAB 2: SALES
+  // =========================================================
+  // TAB 2: LAPORAN SALES + RIWAYAT
+  // =========================================================
+  function getFilteredSalesLogs() {
+    const activeGerai = state.profile.nama_kdkmp;
+    return (state.salesLogs || []).filter(log => {
+      const gerai = log.nama_kdkmp || log.Nama_KDKMP || "";
+      if (gerai !== activeGerai) return false;
+      const tgl = String(log.tanggal || log.Tanggal || "").slice(0, 10);
+      return matchPeriodFilter(tgl, "sales");
+    }).sort((a, b) => String(b.tanggal || b.Tanggal || "").localeCompare(String(a.tanggal || a.Tanggal || "")));
+  }
+
+  function renderSalesHistory() {
+    const logs = getFilteredSalesLogs();
+    const tbody = document.getElementById("tblMySalesBody");
+    const countBadge = document.getElementById("salesLogCountBadge");
+    const elWajib = document.getElementById("salesStatWajib");
+    const elSetor = document.getElementById("salesStatSetor");
+    const elSelisih = document.getElementById("salesStatSelisih");
+
+    let totalWajib = 0;
+    let totalSetor = 0;
+    logs.forEach(l => {
+      totalWajib += Number(l.nominal_omset ?? l.Nominal_Omset ?? 0);
+      totalSetor += Number(l.nominal_transfer ?? l.Nominal_Transfer ?? 0);
+    });
+    const totalSelisih = totalSetor - totalWajib;
+
+    if (countBadge) countBadge.textContent = `${logs.length} Laporan`;
+    if (elWajib) elWajib.textContent = formatRp(totalWajib);
+    if (elSetor) elSetor.textContent = formatRp(totalSetor);
+    if (elSelisih) {
+      elSelisih.textContent = (totalSelisih === 0 ? "Rp 0 (Lunas)" : (totalSelisih < 0 ? `-${formatRp(Math.abs(totalSelisih))} (Kurang)` : `+${formatRp(totalSelisih)} (Lebih)`));
+    }
+
+    if (!tbody) return;
+    if (logs.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b; padding:16px;">Belum ada riwayat laporan sales pada periode ini.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = logs.map(l => {
+      const tgl = String(l.tanggal || l.Tanggal || "").slice(0, 10);
+      const mode = l.mode_setoran || l.Mode_Setoran || "FULL";
+      const modeLbl = mode === "TUNDA_TF" ? "TF Maks H+2" : (mode === "SUSUL_TF" ? "Susul TF (Maks H+2)" : "Hari H Lunas");
+      const wajib = Number(l.nominal_omset ?? l.Nominal_Omset ?? 0);
+      const setor = Number(l.nominal_transfer ?? l.Nominal_Transfer ?? 0);
+      const sel = setor - wajib;
+      const hasFoto = Boolean(l.foto_struk_base64 || l.Foto_Struk || l.foto_transfer_base64 || l.Foto_Transfer);
+      const selColor = sel === 0 ? "#059669" : (sel < 0 ? "#dc2626" : "#2563eb");
+      return `<tr>
+        <td>${tgl}</td>
+        <td><span class="tag ${mode === 'TUNDA_TF' ? 'tag-wait' : 'tag-info'}">${modeLbl}</span></td>
+        <td>${formatRp(wajib)}</td>
+        <td><strong>${formatRp(setor)}</strong></td>
+        <td style="color:${selColor}; font-weight:800;">${sel === 0 ? "Rp 0" : formatRp(sel)}</td>
+        <td><span class="tag ${hasFoto ? 'tag-ok' : 'tag-wait'}">${hasFoto ? 'Ada Bukti' : 'Tanpa Foto'}</span></td>
+      </tr>`;
+    }).join("");
+  }
+
   async function submitOmsetReport() {
     if (!isSalesReadyToUpload()) return showToast("Pastikan foto lengkap dan nominal sesuai!");
     const mode = state.omsetMode;
     const omset = mode === "SUSUL_TF" ? 0 : (Number(document.getElementById("inpOmsetTotal").value) || 0);
     const tf = mode === "TUNDA_TF" ? 0 : (Number(document.getElementById("inpOmsetTransfer").value) || 0);
     const payload = {
-      action: "SETOR_OMSET", mode_setoran: mode, tanggal: document.getElementById("omsetTanggal").value,
-      shift: state.selectedShift, kecamatan: state.profile.kecamatan, nama_kdkmp: state.profile.nama_kdkmp,
-      manager: state.profile.manager, nominal_omset: omset, nominal_transfer: tf,
-      metode_rekening: mode === "TUNDA_TF" ? "Menyusul (H+1)" : state.selectedBank,
+      action: "SETOR_OMSET",
+      mode_setoran: mode,
+      tanggal: document.getElementById("omsetTanggal").value,
+      shift: "Harian (Non-Shift)",
+      kecamatan: state.profile.kecamatan,
+      nama_kdkmp: state.profile.nama_kdkmp,
+      manager: state.profile.manager,
+      nominal_omset: omset,
+      nominal_transfer: tf,
+      metode_rekening: mode === "TUNDA_TF" ? "Menyusul (Maks H+2)" : state.selectedBank,
       foto_struk_base64: mode === "SUSUL_TF" ? "" : state.photos.fotoStruk,
       foto_transfer_base64: mode === "TUNDA_TF" ? "" : state.photos.fotoTransfer,
       catatan: document.getElementById("omsetCatatan").value.trim()
@@ -1882,16 +2030,33 @@
     btn.disabled = true; btn.textContent = "Mengunggah Laporan...";
     try {
       if (SCRIPT_URL) await postToBackend(payload);
+
+      state.salesLogs.push({
+        id: "SLS-" + Date.now(),
+        ...payload
+      });
+      try {
+        localStorage.setItem("kdkmp_sales_logs", JSON.stringify(state.salesLogs.slice(-120)));
+      } catch (e) {
+        state.salesLogs = state.salesLogs.slice(-40).map((it, idx) => idx < state.salesLogs.length - 10 ? { ...it, foto_struk_base64: "", foto_transfer_base64: "" } : it);
+        localStorage.setItem("kdkmp_sales_logs", JSON.stringify(state.salesLogs));
+      }
+
       showSuccessConfirmation("Laporan Sales Berhasil Diupload!", "Bukti foto dan nominal sales telah tersimpan.", [`<strong>Gerai:</strong> ${payload.nama_kdkmp}`, `<strong>Tanggal:</strong> ${payload.tanggal}`, `<strong>Omset / TF:</strong> ${formatRp(omset)} / ${formatRp(tf)}`]);
       state.photos.fotoStruk = ""; state.photos.fotoTransfer = "";
       document.getElementById("prevFotoStruk").style.display = "none"; document.getElementById("prevFotoTransfer").style.display = "none";
+      document.getElementById("infoFotoStruk").textContent = ""; document.getElementById("infoFotoTransfer").textContent = "";
+      document.getElementById("ocrFotoStruk").style.display = "none"; document.getElementById("ocrFotoTransfer").style.display = "none";
       document.getElementById("inpOmsetTotal").value = ""; document.getElementById("inpOmsetTransfer").value = ""; document.getElementById("omsetCatatan").value = "";
       lockInputAfterScan("omset"); lockInputAfterScan("transfer"); evaluateSalesMatch();
+      renderSalesHistory();
     } catch (err) { alert("Gagal mengunggah Laporan Sales: " + err.message); }
     finally { btn.disabled = false; updateFloatingBar(); }
   }
 
-  // TAB 3: PERENCANAAN PO
+  // =========================================================
+  // TAB 3: PERENCANAAN PO + RIWAYAT
+  // =========================================================
   function renderPoItemList() {
     const container = document.getElementById("poItemListContainer");
     if (!container) return;
@@ -1964,10 +2129,11 @@
       const master = state.masterBarang.find(b => b.Kode_Barang === code);
       if (master) {
         const stokRec = state.rekapStok.find(s => s.Nama_KDKMP === state.profile.nama_kdkmp && s.Kode_Barang === code);
+        const realSup = resolveItemSupplier(master, "-");
         itemsToSend.push({
           kode_barang: master.Kode_Barang,
           kategori: master.Kategori,
-          supplier: master.Supplier || "-",
+          supplier: realSup,
           nama_barang: master.Nama_Barang,
           satuan: master.Satuan,
           stok_saat_ini: stokRec ? (Number(stokRec.Stok_Akhir) || 0) : 0,
@@ -1981,30 +2147,62 @@
     btn.disabled = true; btn.textContent = "Mengirim PO...";
     try {
       if (SCRIPT_URL) await postToBackend(payload);
+      itemsToSend.forEach(it => {
+        state.poList.unshift({
+          Tanggal_Kebutuhan: payload.tanggal_kebutuhan,
+          Nama_KDKMP: payload.nama_kdkmp,
+          Supplier: it.supplier,
+          No_PO_ASR: "-",
+          Kode_Barang: it.kode_barang,
+          Nama_Barang: it.nama_barang,
+          Satuan: it.satuan,
+          Jumlah_PO: it.jumlah_po,
+          Status_PO: "Diajukan",
+          Catatan: payload.catatan
+        });
+      });
+      localStorage.setItem("kdkmp_po_list", JSON.stringify(state.poList));
       showSuccessConfirmation("Pengajuan PO Terkirim!", "Rencana kebutuhan barang telah masuk ke antrean approval pusat ASR.", [`<strong>Gerai:</strong> ${payload.nama_kdkmp}`, `<strong>Target Kirim:</strong> ${payload.tanggal_kebutuhan}`, ...itemsToSend.map(i => `• [${i.supplier}] ${i.nama_barang}: <strong>${i.jumlah_po} ${i.satuan}</strong>`)]);
       state.poQuantities = {}; document.getElementById("poCatatan").value = "";
-      renderPoItemList(); syncFromServer();
+      renderPoItemList(); renderMyPoTable(); syncFromServer();
     } catch (err) { alert("Gagal mengirim Pengajuan PO: " + err.message); }
     finally { btn.disabled = false; updateFloatingBar(); }
   }
 
+  function getFilteredPoLogs() {
+    const filterSup = state.selectedPoHistSupplier;
+    return (state.poList || []).filter(p => {
+      if (p.Nama_KDKMP !== state.profile.nama_kdkmp) return false;
+      const tgl = String(p.Tanggal_Kebutuhan || "").slice(0, 10);
+      if (!matchPeriodFilter(tgl, "po")) return false;
+      const sup = resolveItemSupplier(p, p.Supplier || "-");
+      if (filterSup !== "ALL" && sup !== filterSup) return false;
+      return true;
+    }).sort((a, b) => String(b.Tanggal_Kebutuhan || "").localeCompare(String(a.Tanggal_Kebutuhan || "")));
+  }
+
   function renderMyPoTable() {
     const tbody = document.getElementById("tblMyPoBody");
+    const countBadge = document.getElementById("poLogCountBadge");
     if (!tbody) return;
-    const myRows = state.poList.filter(p => p.Nama_KDKMP === state.profile.nama_kdkmp).slice(0, 20);
+    const myRows = getFilteredPoLogs();
+    if (countBadge) countBadge.textContent = `${myRows.length} Item PO`;
     if (myRows.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b; padding:16px;">Belum ada riwayat pengajuan PO untuk gerai ini.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b; padding:16px;">Belum ada riwayat pengajuan PO pada periode / supplier ini.</td></tr>`;
       return;
     }
     tbody.innerHTML = myRows.map(p => {
       const st = p.Status_PO || "Diajukan";
+      const sup = resolveItemSupplier(p, p.Supplier || "-");
       const noPo = (p.No_PO_ASR && p.No_PO_ASR !== "-") ? p.No_PO_ASR : "-";
       const badgeCls = st === "Selesai" || st === "Disetujui ASR" ? "tag-ok" : (st === "DO Terbit" ? "tag-info" : "tag-wait");
-      return `<tr><td>${String(p.Tanggal_Kebutuhan || "").slice(0, 10)}</td><td><strong>${noPo}</strong></td><td>${p.Nama_Barang}</td><td><strong>${Number(p.Jumlah_PO || 0).toLocaleString("id-ID")} ${p.Satuan}</strong></td><td><span class="tag ${badgeCls}">${st}</span></td></tr>`;
+      return `<tr><td>${String(p.Tanggal_Kebutuhan || "").slice(0, 10)}</td><td><strong>${sup}</strong></td><td><strong>${noPo}</strong></td><td>${p.Nama_Barang}</td><td><strong>${Number(p.Jumlah_PO || 0).toLocaleString("id-ID")} ${p.Satuan}</strong></td><td><span class="tag ${badgeCls}">${st}</span></td></tr>`;
     }).join("");
   }
 
-  // TAB 4: LAPORAN PRODUK REJECT
+  // =========================================================
+  // TAB 4: LAPORAN PRODUK REJECT + RIWAYAT
+  // =========================================================
   function initRejectForm() {
     updateGeraiStrip();
     renderRejectBarangOptions();
@@ -2065,12 +2263,12 @@
     }
     state.selectedRejectItem = {
       no_po: "-",
-      supplier: brg.Supplier || "-",
+      supplier: resolveItemSupplier(brg, "-"),
       kode_barang: brg.Kode_Barang,
       nama_barang: brg.Nama_Barang,
       satuan: brg.Satuan
     };
-    infoBox.innerHTML = `Terpilih: <strong>${brg.Nama_Barang}</strong> (${brg.Satuan}) • Supplier: <strong>${brg.Supplier || "-"}</strong>`;
+    infoBox.innerHTML = `Terpilih: <strong>${brg.Nama_Barang}</strong> (${brg.Satuan}) • Supplier: <strong>${state.selectedRejectItem.supplier}</strong>`;
     if (reRenderCards) renderRejectBarangOptions();
     calcRejectQty();
   }
@@ -2120,6 +2318,25 @@
     try {
       if (SCRIPT_URL) await postToBackend(payload);
 
+      state.rejectLogs.unshift({
+        id: "REJ-" + Date.now(),
+        Tanggal_Kejadian: payload.tanggal,
+        Nama_KDKMP: payload.nama_kdkmp,
+        Supplier: payload.supplier,
+        Kode_Barang: payload.kode_barang,
+        Nama_Barang: payload.nama_barang,
+        Satuan: payload.satuan,
+        Qty_PO: qtyPo,
+        Qty_Aktual: qtyAktual,
+        Qty_Reject: qtyReject,
+        Keterangan: ket,
+        Status_Retur: "Menunggu Verifikasi ASR",
+        foto_reject_base64: payload.foto_reject_base64
+      });
+      try {
+        localStorage.setItem("kdkmp_reject_logs", JSON.stringify(state.rejectLogs.slice(-100)));
+      } catch (e) {}
+
       showSuccessConfirmation(
         "Laporan Produk Reject Terkirim!",
         "Data dan foto bukti barang reject telah masuk ke Dashboard Pusat ASR.",
@@ -2141,6 +2358,7 @@
       document.getElementById("prevFotoReject").style.display = "none";
       document.getElementById("infoFotoReject").textContent = "";
       calcRejectQty();
+      renderMyRejectTable();
       syncFromServer();
     } catch (err) {
       alert("Gagal mengirim Laporan Reject: " + err.message);
@@ -2150,25 +2368,723 @@
     }
   }
 
+  function getFilteredRejectLogs() {
+    const filterSup = state.selectedRejectHistSupplier;
+    return (state.rejectLogs || []).filter(r => {
+      if ((r.Nama_KDKMP || r.nama_kdkmp) !== state.profile.nama_kdkmp) return false;
+      const tgl = String(r.Tanggal_Kejadian || r.tanggal || "").slice(0, 10);
+      if (!matchPeriodFilter(tgl, "reject")) return false;
+      const sup = resolveItemSupplier(r, r.Supplier || r.supplier || "-");
+      if (filterSup !== "ALL" && sup !== filterSup) return false;
+      return true;
+    }).sort((a, b) => String(b.Tanggal_Kejadian || b.tanggal || "").localeCompare(String(a.Tanggal_Kejadian || a.tanggal || "")));
+  }
+
   function renderMyRejectTable() {
     const tbody = document.getElementById("tblMyRejectBody");
+    const countBadge = document.getElementById("rejectLogCountBadge");
     if (!tbody) return;
-    const myRows = state.rejectLogs.filter(r => r.Nama_KDKMP === state.profile.nama_kdkmp).slice(0, 20);
+    const myRows = getFilteredRejectLogs();
+    if (countBadge) countBadge.textContent = `${myRows.length} Laporan`;
     if (myRows.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b; padding:16px;">Belum ada laporan produk reject untuk gerai ini.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b; padding:16px;">Belum ada laporan produk reject pada periode / supplier ini.</td></tr>`;
       return;
     }
     tbody.innerHTML = myRows.map(r => {
       const st = r.Status_Retur || "Menunggu Verifikasi ASR";
+      const sup = resolveItemSupplier(r, r.Supplier || r.supplier || "-");
+      const hasFoto = Boolean(r.foto_reject_base64 || r.Foto_Reject);
       const badgeCls = st === "Selesai Diganti" ? "tag-ok" : "tag-err";
       return `<tr>
-        <td>${String(r.Tanggal_Kejadian || "").slice(0, 10)}</td>
-        <td><strong>${r.Supplier || "-"}</strong></td>
+        <td>${String(r.Tanggal_Kejadian || r.tanggal || "").slice(0, 10)}</td>
+        <td><strong>${sup}</strong></td>
         <td>${r.Nama_Barang}</td>
         <td>${r.Qty_PO} / ${r.Qty_Aktual} / <strong style="color:#dc2626;">${r.Qty_Reject} ${r.Satuan}</strong></td>
+        <td><span class="tag ${hasFoto ? 'tag-ok' : 'tag-wait'}">${hasFoto ? 'Ada Foto' : 'Tanpa Foto'}</span></td>
         <td><span class="tag ${badgeCls}">${st}</span></td>
       </tr>`;
     }).join("");
+  }
+
+  // =========================================================
+  // UNIFIED BERITA ACARA BUILDER (SUB-TABEL SUPPLIER, KALKULASI TOTAL, & LAMPIRAN FOTO PROPORSIONAL)
+  // =========================================================
+  function buildBeritaAcaraInnerHtml(moduleType, isForPng) {
+    const gerai = state.profile.nama_kdkmp;
+    const kec = state.profile.kecamatan;
+    const mgr = state.profile.manager || "-";
+    const tglCetak = formatDateIndo(getTodayWib());
+
+    if (moduleType === "MASUK") {
+      const logs = getFilteredMasukLogs();
+      if (logs.length === 0) return null;
+      const filterSup = state.selectedMasukHistSupplier;
+      const periodeLabel = getPeriodLabel("masuk");
+
+      // Kumpulkan baris item per supplier
+      const groupedBySup = {};
+      let grandTotalUnits = 0;
+      const photoCards = [];
+
+      logs.forEach(l => {
+        const tgl = String(l.tanggal || l.Tanggal || "").slice(0, 10);
+        const items = normalizeMasukItems(l).filter(it => filterSup === "ALL" || it.resolved_supplier === filterSup);
+        if (items.length === 0) return;
+
+        items.forEach(it => {
+          const s = it.resolved_supplier || "-";
+          if (!groupedBySup[s]) groupedBySup[s] = [];
+          groupedBySup[s].push({
+            tanggal: tgl,
+            nama_barang: it.nama_barang,
+            satuan: it.satuan,
+            jumlah: Number(it.jumlah || 0),
+            catatan: l.catatan || l.Catatan || "-"
+          });
+          grandTotalUnits += Number(it.jumlah || 0);
+        });
+
+        const src = l.foto_do_base64 || l.Foto_DO;
+        if (src) {
+          const itemsShort = items.map(i => `${i.nama_barang} (${i.jumlah} ${i.satuan})`).join(", ");
+          const supsStr = [...new Set(items.map(i => i.resolved_supplier))].join(", ");
+          photoCards.push({
+            src,
+            title: `${formatDateIndo(tgl)} • Supplier: ${supsStr}`,
+            desc: itemsShort
+          });
+        }
+      });
+
+      const supKeys = Object.keys(groupedBySup).sort();
+      const useSubTables = filterSup === "ALL";
+
+      let tablesHtml = "";
+      if (useSubTables) {
+        tablesHtml = supKeys.map((supName, sIdx) => {
+          const rows = groupedBySup[supName];
+          const subTotal = rows.reduce((a, b) => a + b.jumlah, 0);
+          return `
+            <div style="margin-top:14px; border:1px solid #94a3b8; border-radius:6px; overflow:hidden; page-break-inside:avoid;">
+              <div style="background:#1e3a8a; color:#fff; padding:7px 10px; display:flex; justify-content:space-between; align-items:center; font-size:11.5px;">
+                <strong>SUB-TABEL ${sIdx + 1}: SUPPLIER ${supName}</strong>
+                <span>Total Supplier Ini: <strong>${subTotal.toLocaleString("id-ID")} Unit</strong> (${rows.length} Baris)</span>
+              </div>
+              <table style="width:100%; border-collapse:collapse; font-size:11px;">
+                <thead>
+                  <tr style="background:#eff6ff; color:#1e3a8a;">
+                    <th style="border:1px solid #cbd5e1; padding:6px; width:32px; text-align:center;">No</th>
+                    <th style="border:1px solid #cbd5e1; padding:6px; width:88px;">Tanggal</th>
+                    <th style="border:1px solid #cbd5e1; padding:6px;">Nama Barang</th>
+                    <th style="border:1px solid #cbd5e1; padding:6px; text-align:right;">Qty Masuk</th>
+                    <th style="border:1px solid #cbd5e1; padding:6px;">Catatan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows.map((r, idx) => `
+                    <tr>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px; text-align:center;">${idx + 1}</td>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px;">${r.tanggal}</td>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px;">${r.nama_barang}</td>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px; text-align:right; font-weight:bold;">${r.jumlah.toLocaleString("id-ID")} ${r.satuan}</td>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px;">${r.catatan}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }).join("");
+      } else {
+        const rows = groupedBySup[filterSup] || [];
+        tablesHtml = `
+          <table style="width:100%; border-collapse:collapse; font-size:11.5px; margin-top:10px;">
+            <thead>
+              <tr style="background:#eff6ff; color:#1e3a8a;">
+                <th style="border:1px solid #94a3b8; padding:6px; width:34px; text-align:center;">No</th>
+                <th style="border:1px solid #94a3b8; padding:6px; width:92px;">Tanggal</th>
+                <th style="border:1px solid #94a3b8; padding:6px;">Nama Barang</th>
+                <th style="border:1px solid #94a3b8; padding:6px; text-align:right;">Qty Masuk</th>
+                <th style="border:1px solid #94a3b8; padding:6px;">Catatan</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map((r, idx) => `
+                <tr>
+                  <td style="border:1px solid #94a3b8; padding:6px; text-align:center;">${idx + 1}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px;">${r.tanggal}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px;">${r.nama_barang}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px; text-align:right; font-weight:bold;">${r.jumlah.toLocaleString("id-ID")} ${r.satuan}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px;">${r.catatan}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        `;
+      }
+
+      return {
+        filenameBase: `BA_Barang_Masuk_${gerai.replace(/\s+/g, "_")}_${filterSup}`,
+        title: "BERITA ACARA PENERIMAAN BARANG MASUK (DO)",
+        accentColor: "#1e3a8a",
+        periodeLabel,
+        filterLabel: filterSup === "ALL" ? "Semua Supplier (Sub-Tabel per Supplier)" : `Supplier: ${filterSup}`,
+        summaryBoxes: [
+          { label: "Total Kiriman DO", value: `${logs.length} Transaksi` },
+          { label: "Jumlah Supplier", value: `${supKeys.length} Supplier` },
+          { label: "Grand Total Kuantitas Masuk", value: `${grandTotalUnits.toLocaleString("id-ID")} Unit` }
+        ],
+        tablesHtml,
+        photoCards,
+        photoSectionTitle: "LAMPIRAN BUKTI DOKUMENTASI SURAT JALAN / DO"
+      };
+    }
+
+    if (moduleType === "SALES") {
+      const logs = getFilteredSalesLogs();
+      if (logs.length === 0) return null;
+      const periodeLabel = getPeriodLabel("sales");
+
+      let totalWajib = 0;
+      let totalSetor = 0;
+      const photoCards = [];
+
+      logs.forEach(l => {
+        const wajib = Number(l.nominal_omset ?? l.Nominal_Omset ?? 0);
+        const setor = Number(l.nominal_transfer ?? l.Nominal_Transfer ?? 0);
+        totalWajib += wajib;
+        totalSetor += setor;
+
+        const tgl = String(l.tanggal || l.Tanggal || "").slice(0, 10);
+        const fotoStruk = l.foto_struk_base64 || l.Foto_Struk;
+        const fotoTf = l.foto_transfer_base64 || l.Foto_Transfer;
+        if (fotoStruk) {
+          photoCards.push({
+            src: fotoStruk,
+            title: `${formatDateIndo(tgl)} • Struk Closeshift`,
+            desc: `Omset Wajib Setor: ${formatRp(wajib)}`
+          });
+        }
+        if (fotoTf) {
+          photoCards.push({
+            src: fotoTf,
+            title: `${formatDateIndo(tgl)} • Bukti Transfer Setoran`,
+            desc: `Nominal Ditransfer: ${formatRp(setor)} (${l.metode_rekening || l.Metode_Rekening || "-"})`
+          });
+        }
+      });
+
+      const totalSelisih = totalSetor - totalWajib;
+      const statusSelisihText = totalSelisih === 0
+        ? "Rp 0 (Sesuai / Lunas)"
+        : (totalSelisih < 0 ? `Kurang Setor ${formatRp(Math.abs(totalSelisih))}` : `Lebih Setor ${formatRp(totalSelisih)}`);
+
+      const tablesHtml = `
+        <table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:10px;">
+          <thead>
+            <tr style="background:#ecfdf5; color:#065f46;">
+              <th style="border:1px solid #94a3b8; padding:6px; width:30px; text-align:center;">No</th>
+              <th style="border:1px solid #94a3b8; padding:6px; width:84px;">Tanggal</th>
+              <th style="border:1px solid #94a3b8; padding:6px;">Jenis / Keterangan</th>
+              <th style="border:1px solid #94a3b8; padding:6px; text-align:right;">Harus Disetor</th>
+              <th style="border:1px solid #94a3b8; padding:6px; text-align:right;">Telah Disetor</th>
+              <th style="border:1px solid #94a3b8; padding:6px; text-align:right;">Selisih</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${logs.map((l, idx) => {
+              const tgl = String(l.tanggal || l.Tanggal || "").slice(0, 10);
+              const mode = l.mode_setoran || l.Mode_Setoran || "FULL";
+              const modeLbl = mode === "TUNDA_TF" ? "Closeshift (TF Maks H+2)" : (mode === "SUSUL_TF" ? "Susul Bukti TF (Maks H+2)" : "Hari H Lunas");
+              const wajib = Number(l.nominal_omset ?? l.Nominal_Omset ?? 0);
+              const setor = Number(l.nominal_transfer ?? l.Nominal_Transfer ?? 0);
+              const sel = setor - wajib;
+              const cat = l.catatan || l.Catatan ? ` • ${l.catatan || l.Catatan}` : "";
+              return `
+                <tr>
+                  <td style="border:1px solid #94a3b8; padding:6px; text-align:center;">${idx + 1}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px;">${tgl}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px;">${modeLbl}${cat}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px; text-align:right;">${formatRp(wajib)}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px; text-align:right; font-weight:bold;">${formatRp(setor)}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px; text-align:right; font-weight:bold; color:${sel < 0 ? '#dc2626' : '#059669'};">${sel === 0 ? "Rp 0" : formatRp(sel)}</td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+      `;
+
+      return {
+        filenameBase: `BA_Laporan_Sales_${gerai.replace(/\s+/g, "_")}`,
+        title: "BERITA ACARA LAPORAN SALES & SETORAN HARIAN",
+        accentColor: "#059669",
+        periodeLabel,
+        filterLabel: `Rekap Setoran Harian (${logs.length} Laporan)`,
+        summaryBoxes: [
+          { label: "Total Uang Harus Disetor", value: formatRp(totalWajib) },
+          { label: "Total Uang Telah Disetor", value: formatRp(totalSetor) },
+          { label: "Selisih Setoran Periode", value: statusSelisihText }
+        ],
+        tablesHtml,
+        photoCards,
+        photoSectionTitle: "LAMPIRAN BUKTI STRUK CLOSESHIFT & BUKTI TRANSFER"
+      };
+    }
+
+    if (moduleType === "PO") {
+      const logs = getFilteredPoLogs();
+      if (logs.length === 0) return null;
+      const filterSup = state.selectedPoHistSupplier;
+      const periodeLabel = getPeriodLabel("po");
+
+      const groupedBySup = {};
+      let grandTotalPo = 0;
+      logs.forEach(p => {
+        const s = resolveItemSupplier(p, p.Supplier || "-");
+        if (!groupedBySup[s]) groupedBySup[s] = [];
+        groupedBySup[s].push(p);
+        grandTotalPo += Number(p.Jumlah_PO || 0);
+      });
+
+      const supKeys = Object.keys(groupedBySup).sort();
+      const useSubTables = filterSup === "ALL";
+
+      let tablesHtml = "";
+      if (useSubTables) {
+        tablesHtml = supKeys.map((supName, sIdx) => {
+          const rows = groupedBySup[supName];
+          const subTotal = rows.reduce((a, b) => a + Number(b.Jumlah_PO || 0), 0);
+          return `
+            <div style="margin-top:14px; border:1px solid #94a3b8; border-radius:6px; overflow:hidden; page-break-inside:avoid;">
+              <div style="background:#6d28d9; color:#fff; padding:7px 10px; display:flex; justify-content:space-between; align-items:center; font-size:11.5px;">
+                <strong>SUB-TABEL ${sIdx + 1}: SUPPLIER ${supName}</strong>
+                <span>Total Pengajuan PO: <strong>${subTotal.toLocaleString("id-ID")} Unit</strong> (${rows.length} Item)</span>
+              </div>
+              <table style="width:100%; border-collapse:collapse; font-size:11px;">
+                <thead>
+                  <tr style="background:#f5f3ff; color:#5b21b6;">
+                    <th style="border:1px solid #cbd5e1; padding:6px; width:30px; text-align:center;">No</th>
+                    <th style="border:1px solid #cbd5e1; padding:6px; width:84px;">Tgl Kirim</th>
+                    <th style="border:1px solid #cbd5e1; padding:6px;">No. PO ASR</th>
+                    <th style="border:1px solid #cbd5e1; padding:6px;">Nama Barang</th>
+                    <th style="border:1px solid #cbd5e1; padding:6px; text-align:right;">Jumlah PO</th>
+                    <th style="border:1px solid #cbd5e1; padding:6px;">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows.map((r, idx) => `
+                    <tr>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px; text-align:center;">${idx + 1}</td>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px;">${String(r.Tanggal_Kebutuhan || "").slice(0, 10)}</td>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px; font-weight:bold;">${r.No_PO_ASR || "-"}</td>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px;">${r.Nama_Barang}</td>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px; text-align:right; font-weight:bold;">${Number(r.Jumlah_PO || 0).toLocaleString("id-ID")} ${r.Satuan}</td>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px;">${r.Status_PO || "Diajukan"}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }).join("");
+      } else {
+        const rows = groupedBySup[filterSup] || [];
+        tablesHtml = `
+          <table style="width:100%; border-collapse:collapse; font-size:11.5px; margin-top:10px;">
+            <thead>
+              <tr style="background:#f5f3ff; color:#5b21b6;">
+                <th style="border:1px solid #94a3b8; padding:6px; width:32px; text-align:center;">No</th>
+                <th style="border:1px solid #94a3b8; padding:6px; width:88px;">Tgl Kirim</th>
+                <th style="border:1px solid #94a3b8; padding:6px;">No. PO ASR</th>
+                <th style="border:1px solid #94a3b8; padding:6px;">Nama Barang</th>
+                <th style="border:1px solid #94a3b8; padding:6px; text-align:right;">Jumlah PO</th>
+                <th style="border:1px solid #94a3b8; padding:6px;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map((r, idx) => `
+                <tr>
+                  <td style="border:1px solid #94a3b8; padding:6px; text-align:center;">${idx + 1}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px;">${String(r.Tanggal_Kebutuhan || "").slice(0, 10)}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px; font-weight:bold;">${r.No_PO_ASR || "-"}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px;">${r.Nama_Barang}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px; text-align:right; font-weight:bold;">${Number(r.Jumlah_PO || 0).toLocaleString("id-ID")} ${r.Satuan}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px;">${r.Status_PO || "Diajukan"}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        `;
+      }
+
+      return {
+        filenameBase: `BA_Pengajuan_PO_${gerai.replace(/\s+/g, "_")}_${filterSup}`,
+        title: "BERITA ACARA PENGAJUAN PERENCANAAN PO",
+        accentColor: "#6d28d9",
+        periodeLabel,
+        filterLabel: filterSup === "ALL" ? "Semua Supplier (Sub-Tabel per Supplier)" : `Supplier: ${filterSup}`,
+        summaryBoxes: [
+          { label: "Total Baris Pengajuan PO", value: `${logs.length} Item` },
+          { label: "Jumlah Supplier", value: `${supKeys.length} Supplier` },
+          { label: "Grand Total Kuantitas PO", value: `${grandTotalPo.toLocaleString("id-ID")} Unit` }
+        ],
+        tablesHtml,
+        photoCards: [],
+        photoSectionTitle: ""
+      };
+    }
+
+    if (moduleType === "REJECT") {
+      const logs = getFilteredRejectLogs();
+      if (logs.length === 0) return null;
+      const filterSup = state.selectedRejectHistSupplier;
+      const periodeLabel = getPeriodLabel("reject");
+
+      const groupedBySup = {};
+      let grandTotalReject = 0;
+      const photoCards = [];
+
+      logs.forEach(r => {
+        const s = resolveItemSupplier(r, r.Supplier || r.supplier || "-");
+        if (!groupedBySup[s]) groupedBySup[s] = [];
+        groupedBySup[s].push(r);
+        grandTotalReject += Number(r.Qty_Reject || 0);
+
+        const src = r.foto_reject_base64 || r.Foto_Reject;
+        const tgl = String(r.Tanggal_Kejadian || r.tanggal || "").slice(0, 10);
+        if (src) {
+          photoCards.push({
+            src,
+            title: `${formatDateIndo(tgl)} • Supplier: ${s}`,
+            desc: `${r.Nama_Barang} — Reject: ${r.Qty_Reject} ${r.Satuan} (${r.Keterangan || "-"})`
+          });
+        }
+      });
+
+      const supKeys = Object.keys(groupedBySup).sort();
+      const useSubTables = filterSup === "ALL";
+
+      let tablesHtml = "";
+      if (useSubTables) {
+        tablesHtml = supKeys.map((supName, sIdx) => {
+          const rows = groupedBySup[supName];
+          const subTotal = rows.reduce((a, b) => a + Number(b.Qty_Reject || 0), 0);
+          return `
+            <div style="margin-top:14px; border:1px solid #94a3b8; border-radius:6px; overflow:hidden; page-break-inside:avoid;">
+              <div style="background:#dc2626; color:#fff; padding:7px 10px; display:flex; justify-content:space-between; align-items:center; font-size:11.5px;">
+                <strong>SUB-TABEL ${sIdx + 1}: SUPPLIER ${supName}</strong>
+                <span>Total Reject Supplier Ini: <strong>${subTotal.toLocaleString("id-ID")} Unit</strong> (${rows.length} Kasus)</span>
+              </div>
+              <table style="width:100%; border-collapse:collapse; font-size:11px;">
+                <thead>
+                  <tr style="background:#fef2f2; color:#991b1b;">
+                    <th style="border:1px solid #cbd5e1; padding:6px; width:30px; text-align:center;">No</th>
+                    <th style="border:1px solid #cbd5e1; padding:6px; width:84px;">Tanggal</th>
+                    <th style="border:1px solid #cbd5e1; padding:6px;">Nama Produk</th>
+                    <th style="border:1px solid #cbd5e1; padding:6px; text-align:right;">DO / Aktual / Reject</th>
+                    <th style="border:1px solid #cbd5e1; padding:6px;">Keterangan Kerusakan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows.map((r, idx) => `
+                    <tr>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px; text-align:center;">${idx + 1}</td>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px;">${String(r.Tanggal_Kejadian || r.tanggal || "").slice(0, 10)}</td>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px; font-weight:bold;">${r.Nama_Barang}</td>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px; text-align:right;">${r.Qty_PO} / ${r.Qty_Aktual} / <strong style="color:#dc2626;">${r.Qty_Reject} ${r.Satuan}</strong></td>
+                      <td style="border:1px solid #cbd5e1; padding:5px 6px;">${r.Keterangan || "-"}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }).join("");
+      } else {
+        const rows = groupedBySup[filterSup] || [];
+        tablesHtml = `
+          <table style="width:100%; border-collapse:collapse; font-size:11.5px; margin-top:10px;">
+            <thead>
+              <tr style="background:#fef2f2; color:#991b1b;">
+                <th style="border:1px solid #94a3b8; padding:6px; width:32px; text-align:center;">No</th>
+                <th style="border:1px solid #94a3b8; padding:6px; width:88px;">Tanggal</th>
+                <th style="border:1px solid #94a3b8; padding:6px;">Nama Produk</th>
+                <th style="border:1px solid #94a3b8; padding:6px; text-align:right;">DO / Aktual / Reject</th>
+                <th style="border:1px solid #94a3b8; padding:6px;">Keterangan Kerusakan</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map((r, idx) => `
+                <tr>
+                  <td style="border:1px solid #94a3b8; padding:6px; text-align:center;">${idx + 1}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px;">${String(r.Tanggal_Kejadian || r.tanggal || "").slice(0, 10)}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px; font-weight:bold;">${r.Nama_Barang}</td>
+                  <td style="border:1px solid #94a3b8; padding:6px; text-align:right;">${r.Qty_PO} / ${r.Qty_Aktual} / <strong style="color:#dc2626;">${r.Qty_Reject} ${r.Satuan}</strong></td>
+                  <td style="border:1px solid #94a3b8; padding:6px;">${r.Keterangan || "-"}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        `;
+      }
+
+      return {
+        filenameBase: `BA_Produk_Reject_${gerai.replace(/\s+/g, "_")}_${filterSup}`,
+        title: "BERITA ACARA PRODUK REJECT / RUSAK KIRIMAN",
+        accentColor: "#dc2626",
+        periodeLabel,
+        filterLabel: filterSup === "ALL" ? "Semua Supplier (Sub-Tabel per Supplier)" : `Supplier: ${filterSup}`,
+        summaryBoxes: [
+          { label: "Total Laporan Reject", value: `${logs.length} Kasus` },
+          { label: "Jumlah Supplier", value: `${supKeys.length} Supplier` },
+          { label: "Grand Total Barang Reject", value: `${grandTotalReject.toLocaleString("id-ID")} Unit` }
+        ],
+        tablesHtml,
+        photoCards,
+        photoSectionTitle: "LAMPIRAN BUKTI FOTO DOKUMENTASI BARANG REJECT"
+      };
+    }
+    return null;
+  }
+
+  function renderPhotoGridHtml(photoCards, sectionTitle, accentColor, isForPng) {
+    if (!photoCards || photoCards.length === 0) return "";
+    const maxImgH = isForPng ? "170px" : "210px";
+    return `
+      <div style="margin-top:16px; ${isForPng ? '' : 'page-break-before: always;'}">
+        <div style="font-size:12px; font-weight:800; background:#f1f5f9; color:#0f172a; padding:6px 10px; border-left:4px solid ${accentColor}; margin-bottom:10px;">
+          ${sectionTitle} (${photoCards.length} Dokumentasi)
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          ${photoCards.map((p, idx) => `
+            <div style="border:1px solid #94a3b8; border-radius:8px; padding:8px; background:#fff; page-break-inside:avoid; text-align:center;">
+              <div style="width:100%; height:${maxImgH}; display:flex; align-items:center; justify-content:center; background:#f8fafc; border-radius:6px; overflow:hidden;">
+                <img src="${p.src}" alt="Bukti ${idx + 1}" style="max-width:100%; max-height:${maxImgH}; width:auto; height:auto; object-fit:contain;" />
+              </div>
+              <div style="margin-top:6px; text-align:left; font-size:10.5px; line-height:1.35; color:#1e293b;">
+                <strong>#${idx + 1} • ${p.title}</strong><br>
+                <span style="color:#475569;">${p.desc}</span>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  // =========================================================
+  // EXPORT FOTO PNG (MOBILE-READY BLOB + MODAL FALLBACK GALERI HP)
+  // =========================================================
+  async function exportReportPng(moduleType) {
+    const ba = buildBeritaAcaraInnerHtml(moduleType, true);
+    if (!ba) return showToast("Tidak ada data riwayat pada periode / filter ini!");
+    if (typeof html2canvas === "undefined") return showToast("Library render foto belum siap, cek koneksi internet.");
+
+    const stage = document.getElementById("pngRenderStage");
+    stage.innerHTML = `
+      <div style="border:2px solid ${ba.accentColor}; border-radius:14px; overflow:hidden; background:#fff;">
+        <div style="background:linear-gradient(135deg,#0f172a,${ba.accentColor}); color:#fff; padding:16px 20px;">
+          <div style="font-size:10.5px; font-weight:700; letter-spacing:0.8px; opacity:0.88;">PT AGRINAS PANGAN NUSANTARA — KDKMP CIANJUR</div>
+          <div style="font-size:17px; font-weight:800; margin-top:3px;">${ba.title}</div>
+          <div style="font-size:12px; margin-top:5px; opacity:0.95;">
+            <strong>${state.profile.nama_kdkmp}</strong> (Kec. ${state.profile.kecamatan}) • Manager: ${state.profile.manager || "-"}
+          </div>
+        </div>
+        <div style="padding:16px 20px;">
+          <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:9px; padding:10px 12px; margin-bottom:12px; font-size:11.5px;">
+            <div><strong>Periode:</strong> ${ba.periodeLabel}</div>
+            <div><strong>Filter:</strong> ${ba.filterLabel}</div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:12px;">
+            ${ba.summaryBoxes.map(sb => `
+              <div style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:8px; padding:8px 10px;">
+                <div style="font-size:10px; font-weight:700; color:#475569; text-transform:uppercase;">${sb.label}</div>
+                <div style="font-size:13px; font-weight:800; color:#0f172a; margin-top:2px;">${sb.value}</div>
+              </div>
+            `).join("")}
+          </div>
+
+          ${ba.tablesHtml}
+          ${renderPhotoGridHtml(ba.photoCards, ba.photoSectionTitle, ba.accentColor, true)}
+
+          <div style="margin-top:16px; padding-top:10px; border-top:1px solid #e2e8f0; font-size:10.5px; color:#64748b; display:flex; justify-content:space-between;">
+            <span>Portal Operasional Manager KDKMP Cianjur</span>
+            <span>Dicetak: ${formatDateIndo(getTodayWib())}</span>
+          </div>
+        </div>
+      </div>
+    `;
+
+    showToast("Membuat foto Berita Acara...");
+    try {
+      const canvas = await html2canvas(stage, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: "#ffffff" });
+      const dataUrl = canvas.toDataURL("image/png");
+      const filename = `${ba.filenameBase}_${getTodayWib()}.png`;
+
+      state.lastPngDataUrl = dataUrl;
+      state.lastPngFilename = filename;
+
+      // 1. Coba auto-download via Blob URL
+      canvas.toBlob(blob => {
+        if (blob) {
+          const blobUrl = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.style.display = "none";
+          a.href = blobUrl;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(blobUrl);
+          }, 1500);
+        }
+      }, "image/png");
+
+      // 2. Selalu buka modal preview HP agar user bisa langsung Simpan/Bagikan ke Galeri jika WebView memblokir <a download>
+      document.getElementById("pngPreviewTitle").textContent = ba.title;
+      document.getElementById("pngPreviewImg").src = dataUrl;
+      document.getElementById("pngPreviewModal").style.display = "flex";
+      showToast("Foto Berita Acara siap!");
+    } catch (e) {
+      alert("Gagal membuat foto laporan: " + e.message);
+    } finally {
+      stage.innerHTML = "";
+    }
+  }
+
+  function closePngPreviewModal() {
+    document.getElementById("pngPreviewModal").style.display = "none";
+  }
+
+  function forceDownloadFromPreview() {
+    if (!state.lastPngDataUrl) return;
+    const a = document.createElement("a");
+    a.href = state.lastPngDataUrl;
+    a.download = state.lastPngFilename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast("Mengunduh file PNG...");
+  }
+
+  async function shareOrSavePreviewImage() {
+    if (!state.lastPngDataUrl) return;
+    try {
+      const res = await fetch(state.lastPngDataUrl);
+      const blob = await res.blob();
+      const file = new File([blob], state.lastPngFilename, { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: state.lastPngFilename,
+          text: "Berita Acara Operasional KDKMP Cianjur"
+        });
+        return;
+      }
+    } catch (err) {
+      console.warn("Web Share tidak didukung:", err);
+    }
+    forceDownloadFromPreview();
+  }
+
+  // =========================================================
+  // EXPORT PDF BERITA ACARA RESMI (A4 PORTRAIT + SUB-TABEL + KALKULASI + FOTO)
+  // =========================================================
+  function exportReportPdf(moduleType) {
+    const ba = buildBeritaAcaraInnerHtml(moduleType, false);
+    if (!ba) return showToast("Tidak ada data riwayat pada periode / filter ini!");
+
+    const printWin = window.open("", "_blank");
+    if (!printWin) return alert("Izinkan pop-up browser untuk mencetak / menyimpan PDF Berita Acara.");
+
+    printWin.document.write(`
+      <!DOCTYPE html>
+      <html lang="id">
+      <head>
+        <meta charset="UTF-8" />
+        <title>${ba.title} - ${state.profile.nama_kdkmp}</title>
+        <style>
+          @page { size: A4 portrait; margin: 14mm; }
+          body { font-family: Arial, Helvetica, sans-serif; color: #0f172a; font-size: 11.5px; line-height: 1.42; margin: 0; }
+          .kop { border-bottom: 3px double #0f172a; padding-bottom: 10px; margin-bottom: 12px; text-align: center; }
+          .kop h2 { margin: 0; font-size: 15.5px; text-transform: uppercase; letter-spacing: 0.4px; color: ${ba.accentColor}; }
+          .kop p { margin: 3px 0 0 0; font-size: 10.5px; color: #334155; }
+          .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 11.5px; }
+          .meta-table td { padding: 3px 5px; vertical-align: top; }
+          .sum-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+          .sum-box { border: 1.5px solid #94a3b8; border-radius: 6px; padding: 8px 10px; background: #f8fafc; }
+          .sum-lbl { font-size: 9.5px; font-weight: bold; color: #475569; text-transform: uppercase; }
+          .sum-val { font-size: 13px; font-weight: bold; color: #0f172a; margin-top: 2px; }
+          .ttd-wrap { margin-top: 26px; display: flex; justify-content: space-between; page-break-inside: avoid; }
+          .ttd-box { width: 42%; text-align: center; }
+          .ttd-space { height: 60px; }
+        </style>
+      </head>
+      <body>
+        <div class="kop">
+          <h2>${ba.title}</h2>
+          <p>KOPERASI DESA/KELURAHAN MERAH PUTIH (KDKMP) — PT AGRINAS PANGAN NUSANTARA</p>
+        </div>
+
+        <table class="meta-table">
+          <tr>
+            <td style="width:145px;"><strong>Nama Gerai KDKMP</strong></td>
+            <td>: ${state.profile.nama_kdkmp}</td>
+            <td style="width:125px;"><strong>Periode Laporan</strong></td>
+            <td>: ${ba.periodeLabel}</td>
+          </tr>
+          <tr>
+            <td><strong>Kecamatan</strong></td>
+            <td>: ${state.profile.kecamatan}, Kab. Cianjur</td>
+            <td><strong>Filter Data</strong></td>
+            <td>: ${ba.filterLabel}</td>
+          </tr>
+          <tr>
+            <td><strong>Manager Gerai</strong></td>
+            <td>: ${state.profile.manager || "-"}</td>
+            <td><strong>Tanggal Cetak</strong></td>
+            <td>: ${formatDateIndo(getTodayWib())}</td>
+          </tr>
+        </table>
+
+        <div class="sum-grid">
+          ${ba.summaryBoxes.map(sb => `
+            <div class="sum-box">
+              <div class="sum-lbl">${sb.label}</div>
+              <div class="sum-val">${sb.value}</div>
+            </div>
+          `).join("")}
+        </div>
+
+        ${ba.tablesHtml}
+
+        <div class="ttd-wrap">
+          <div class="ttd-box">
+            <div>Mengetahui / Verifikasi Pusat,</div>
+            <div style="font-weight:bold;">Admin Operasional ASR Cianjur</div>
+            <div class="ttd-space"></div>
+            <div>( ........................................ )</div>
+          </div>
+          <div class="ttd-box">
+            <div>Cianjur, ${formatDateIndo(getTodayWib())}</div>
+            <div style="font-weight:bold;">Manager ${state.profile.nama_kdkmp}</div>
+            <div class="ttd-space"></div>
+            <div><strong>( ${state.profile.manager || "........................................"} )</strong></div>
+          </div>
+        </div>
+
+        ${renderPhotoGridHtml(ba.photoCards, ba.photoSectionTitle, ba.accentColor, false)}
+
+        <script>
+          window.onload = function() { setTimeout(function() { window.print(); }, 450); };
+        <\/script>
+      </body>
+      </html>
+    `);
+    printWin.document.close();
   }
 </script>
 </body>
