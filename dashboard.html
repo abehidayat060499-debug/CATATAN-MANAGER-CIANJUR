@@ -37,7 +37,6 @@
 
     .wrap { max-width: 1280px; margin: 0 auto; padding: 12px 14px 44px; }
 
-    /* Filter ringkas: 1 baris di desktop, rapi di HP */
     .filter-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 12px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
     @media (max-width: 960px) { .filter-card { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 520px) { .filter-card { grid-template-columns: 1fr; } }
@@ -45,7 +44,6 @@
     .field label { font-size: 10.5px; font-weight: 800; color: #475569; text-transform: uppercase; }
     .field input, .field select { height: 38px; padding: 0 10px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--text); background: #fff; width: 100%; }
 
-    /* KPI ringkas 6 kotak */
     .kpi-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 12px; }
     @media (max-width: 1024px) { .kpi-row { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 560px) { .kpi-row { grid-template-columns: repeat(2, 1fr); } }
@@ -55,7 +53,6 @@
     .kpi-v { font-size: 17px; font-weight: 800; margin-top: 3px; }
     .kpi-s { font-size: 11px; color: #475569; margin-top: 2px; }
 
-    /* Tab & Panel */
     .tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; }
     .tab { padding: 8px 12px; border-radius: 9px; border: 1.5px solid var(--border); background: #fff; color: #334155; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap; }
     .tab.active { background: var(--blue); border-color: var(--blue); color: #fff; }
@@ -100,16 +97,6 @@
 </head>
 <body>
 
-<div id="pinGate">
-  <div class="pin-card">
-    <div style="font-size:10.5px; font-weight:800; color:#1d4ed8;">PT AGRINAS PANGAN NUSANTARA</div>
-    <h2 style="margin:6px 0 4px; font-size:18px;">Dashboard Pusat ASR</h2>
-    <p style="margin:0; font-size:12px; color:#64748b;">Masukkan PIN Admin Operasional</p>
-    <input type="password" id="pinInput" class="pin-input" maxlength="6" inputmode="numeric" placeholder="••••••" onkeyup="if(event.key==='Enter') checkPin()" />
-    <button type="button" class="btn btn-blue" style="width:100%; padding:11px; font-size:13px;" onclick="checkPin()">Masuk</button>
-  </div>
-</div>
-
 <div id="photoModal" onclick="if(event.target===this) this.style.display='none'">
   <div class="modal-card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -133,7 +120,6 @@
 </div>
 
 <div class="wrap">
-  <!-- Filter Dropdown Ringkas (tidak makan tinggi layar) -->
   <div class="filter-card">
     <div class="field">
       <label>Tanggal</label>
@@ -207,7 +193,6 @@
     <button class="tab tab-reject" data-tab="tab-reject" onclick="openTab('tab-reject', this)">7. Barang Reject</button>
   </div>
 
-  <!-- Tab 1 -->
   <div id="tab-kepatuhan" class="panel active">
     <div class="panel-top">
       <h3 class="panel-title">Matriks Kepatuhan Harian Gerai</h3>
@@ -234,7 +219,6 @@
     </div>
   </div>
 
-  <!-- Tab 2 -->
   <div id="tab-masuk" class="panel">
     <div class="panel-top">
       <h3 class="panel-title">Log Barang Masuk (DO) & Validasi POS</h3>
@@ -261,7 +245,6 @@
     </div>
   </div>
 
-  <!-- Tab 3 -->
   <div id="tab-sales" class="panel">
     <div class="panel-top">
       <h3 class="panel-title">Validasi Sales & Bukti Setoran</h3>
@@ -283,7 +266,6 @@
     </div>
   </div>
 
-  <!-- Tab 4 -->
   <div id="tab-stok" class="panel">
     <div class="panel-top">
       <h3 class="panel-title">Log Stok Sisa Sore Hari</h3>
@@ -302,7 +284,6 @@
     </div>
   </div>
 
-  <!-- Tab 5 -->
   <div id="tab-rekap" class="panel">
     <div class="panel-top">
       <h3 class="panel-title">Rekap Posisi Stok Terkini</h3>
@@ -329,7 +310,6 @@
     </div>
   </div>
 
-  <!-- Tab 6 -->
   <div id="tab-po" class="panel">
     <div class="panel-top">
       <h3 class="panel-title">Approval Pengajuan PO</h3>
@@ -357,7 +337,6 @@
     </div>
   </div>
 
-  <!-- Tab 7 -->
   <div id="tab-reject" class="panel">
     <div class="panel-top">
       <h3 class="panel-title" style="color:var(--red);">Laporan Produk Reject</h3>
@@ -403,22 +382,8 @@
 
   document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("fltTanggal").value = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
-    if (sessionStorage.getItem("asr_unlocked") === "1") {
-      document.getElementById("pinGate").style.display = "none";
-      loadAllData(false);
-    }
+    loadAllData(false);
   });
-
-  function checkPin() {
-    if (document.getElementById("pinInput").value.trim() === ADMIN_PIN) {
-      sessionStorage.setItem("asr_unlocked", "1");
-      document.getElementById("pinGate").style.display = "none";
-      loadAllData(false);
-    } else {
-      showToast("PIN Admin salah!");
-      document.getElementById("pinInput").value = "";
-    }
-  }
 
   function showToast(msg) {
     const el = document.getElementById("toast");
@@ -657,9 +622,9 @@
         '<td><strong>' + r.Nama_Barang + '</strong></td>' +
         '<td><strong>+' + Number(r.Jumlah || 0).toLocaleString("id-ID") + ' ' + r.Satuan + '</strong></td>' +
         '<td>' + (r.Supplier || "-") + '</td>' +
-        '<td>' + (hasPhoto ? '<button class="btn btn-light btn-xs" onclick="previewProof('' + r.Link_Foto_DO + '', 'DO ' + r.Nama_KDKMP + '')">Foto DO</button>' : "-") + '</td>' +
+        '<td>' + (hasPhoto ? '<button class="btn btn-light btn-xs" onclick="previewProof(\'' + r.Link_Foto_DO + '\', \'DO ' + r.Nama_KDKMP + '\')">Foto DO</button>' : "-") + '</td>' +
         '<td><span class="pill ' + (done ? "p-ok" : "p-warn") + '">' + (r.Status_Input_POS || "Belum Input POS") + '</span></td>' +
-        '<td>' + (done ? "✓" : '<button class="btn btn-blue btn-xs" onclick="markDoPosDone('' + r.ID_Log + '')">Validasi POS</button>') + '</td>' +
+        '<td>' + (done ? "✓" : '<button class="btn btn-blue btn-xs" onclick="markDoPosDone(\'' + r.ID_Log + '\')">Validasi POS</button>') + '</td>' +
       '</tr>';
     }).join("");
   }
@@ -697,8 +662,8 @@
         '<td><span class="pill ' + (sel === 0 ? "p-ok" : "p-no") + '">' + (sel === 0 ? "Lunas" : formatRp(sel)) + '</span></td>' +
         '<td>' + (r.Metode_Rekening || "-") + '</td>' +
         '<td><div style="display:flex;gap:4px;">' +
-          (r.Link_Struk_CloseShift ? '<button class="btn btn-light btn-xs" onclick="previewProof('' + r.Link_Struk_CloseShift + '', 'Struk ' + r.Nama_KDKMP + '')">Struk</button>' : "") +
-          (r.Link_Bukti_Transfer ? '<button class="btn btn-blue btn-xs" onclick="previewProof('' + r.Link_Bukti_Transfer + '', 'Bukti TF ' + r.Nama_KDKMP + '')">TF</button>' : "") +
+          (r.Link_Struk_CloseShift ? '<button class="btn btn-light btn-xs" onclick="previewProof(\'' + r.Link_Struk_CloseShift + '\', \'Struk ' + r.Nama_KDKMP + '\')">Struk</button>' : "") +
+          (r.Link_Bukti_Transfer ? '<button class="btn btn-blue btn-xs" onclick="previewProof(\'' + r.Link_Bukti_Transfer + '\', \'Bukti TF ' + r.Nama_KDKMP + '\')">TF</button>' : "") +
         '</div></td>' +
         '<td>' + (r.Catatan || "-") + '</td>' +
       '</tr>';
@@ -784,8 +749,8 @@
         '<td>' + (r.Supplier || "-") + '</td>' +
         '<td><span class="pill ' + cls + '">' + st + '</span></td>' +
         '<td><div style="display:flex;gap:4px;">' +
-          (st === "Diajukan" ? '<button class="btn btn-green btn-xs" onclick="updatePoStatus('' + r.ID_PO + '', 'Disetujui ASR')">Setujui</button>' : "") +
-          (st === "Disetujui ASR" ? '<button class="btn btn-blue btn-xs" onclick="updatePoStatus('' + r.ID_PO + '', 'DO Terbit')">Terbitkan DO</button>' : "") +
+          (st === "Diajukan" ? '<button class="btn btn-green btn-xs" onclick="updatePoStatus(\'' + r.ID_PO + '\', \'Disetujui ASR\')">Setujui</button>' : "") +
+          (st === "Disetujui ASR" ? '<button class="btn btn-blue btn-xs" onclick="updatePoStatus(\'' + r.ID_PO + '\', \'DO Terbit\')">Terbitkan DO</button>' : "") +
           (st === "DO Terbit" ? '<span style="font-size:11px;color:#059669;font-weight:800;">✓</span>' : "") +
         '</div></td>' +
       '</tr>';
@@ -822,7 +787,7 @@
     }
     tbody.innerHTML = rows.map(function(r) {
       const hasImg = r.Foto_Reject_Base64 && String(r.Foto_Reject_Base64).startsWith("data:image");
-      const imgCell = hasImg ? '<img src="' + r.Foto_Reject_Base64 + '" class="thumb" onclick="previewProof('' + r.Foto_Reject_Base64 + '', 'Reject ' + r.Nama_KDKMP + '')" />' : "-";
+      const imgCell = hasImg ? '<img src="' + r.Foto_Reject_Base64 + '" class="thumb" onclick="previewProof(\'' + r.Foto_Reject_Base64 + '\', \'Reject ' + r.Nama_KDKMP + '\')" />' : "-";
       const st = r.Status_Retur || "Menunggu Verifikasi ASR";
       const done = st === "Selesai Diganti";
       const qKirim = Number(r.Qty_Kirim || r.Qty_PO || 0);
@@ -839,7 +804,7 @@
         '<td>' + imgCell + '</td>' +
         '<td>' + (done
           ? '<span class="pill p-ok">✓ Selesai Diganti</span>'
-          : '<span class="pill p-no" style="margin-bottom:4px;">' + st + '</span><br><button class="btn btn-blue btn-xs" onclick="markRejectDone('' + r.ID_Reject + '')">Selesai Retur</button>') +
+          : '<span class="pill p-no" style="margin-bottom:4px;">' + st + '</span><br><button class="btn btn-blue btn-xs" onclick="markRejectDone(\'' + r.ID_Reject + '\')">Selesai Retur</button>') +
         '</td>' +
       '</tr>';
     }).join("");
@@ -901,9 +866,7 @@
         summary: ["Total: " + rows.length, "Lengkap: " + lengkap, "Belum: " + (rows.length - lengkap)],
         headers: ["No", "Kecamatan", "Gerai KDKMP", "Manager", "DO", "Sales", "Stok", "PO", "Status"],
         rows: rows.map(function(r, i) { return [i + 1, r.Kecamatan, r.Nama_KDKMP, r.Manager, r.hasDo ? "SUDAH" : "BELUM", r.hasSales ? "SUDAH" : "BELUM", r.hasStok ? "SUDAH" : "BELUM", r.hasPo ? "SUDAH" : "BELUM", r.score + "/4"]; }),
-        waCaption: "*REKAP KEPATUHAN KDKMP*
-" + periodeLabel + " (" + kecLabel + ")
-Lengkap: " + lengkap + "/" + rows.length
+        waCaption: "*REKAP KEPATUHAN KDKMP*\n" + periodeLabel + " (" + kecLabel + ")\nLengkap: " + lengkap + "/" + rows.length
       };
     }
     if (tabKey === "masuk") {
@@ -914,9 +877,7 @@ Lengkap: " + lengkap + "/" + rows.length
         summary: ["Total: " + rows.length + " DO", "Belum POS: " + pending],
         headers: ["No", "Tanggal", "Gerai KDKMP", "Barang", "Jumlah", "Supplier", "Status POS"],
         rows: rows.map(function(r, i) { return [i + 1, normDate(r.Tanggal_Terima), r.Nama_KDKMP, r.Nama_Barang, "+" + Number(r.Jumlah || 0).toLocaleString("id-ID") + " " + r.Satuan, r.Supplier || "-", r.Status_Input_POS || "Belum Input POS"]; }),
-        waCaption: "*BARANG MASUK (DO) KDKMP*
-" + periodeLabel + "
-Total: " + rows.length + " (" + pending + " belum POS)"
+        waCaption: "*BARANG MASUK (DO) KDKMP*\n" + periodeLabel + "\nTotal: " + rows.length + " (" + pending + " belum POS)"
       };
     }
     if (tabKey === "sales") {
@@ -931,9 +892,7 @@ Total: " + rows.length + " (" + pending + " belum POS)"
           const o = Number(r.Nominal_Omset) || 0, t = Number(r.Nominal_Transfer) || 0;
           return [i + 1, normDate(r.Tanggal), r.Nama_KDKMP, r.Shift || "-", formatRp(o), formatRp(t), o - t === 0 ? "Lunas" : formatRp(o - t), r.Metode_Rekening || "-"];
         }),
-        waCaption: "*SALES & SETORAN KDKMP*
-" + periodeLabel + "
-Omset: " + formatRp(om) + " | TF: " + formatRp(tf)
+        waCaption: "*SALES & SETORAN KDKMP*\n" + periodeLabel + "\nOmset: " + formatRp(om) + " | TF: " + formatRp(tf)
       };
     }
     if (tabKey === "stok") {
@@ -943,9 +902,7 @@ Omset: " + formatRp(om) + " | TF: " + formatRp(tf)
         summary: ["Total: " + rows.length + " Baris"],
         headers: ["No", "Tanggal", "Gerai KDKMP", "Barang", "Stok Sisa", "Keterangan"],
         rows: rows.map(function(r, i) { return [i + 1, normDate(r.Tanggal), r.Nama_KDKMP, r.Nama_Barang, Number(r.Stok_Sisa || 0).toLocaleString("id-ID") + " " + r.Satuan, r.Keterangan || "-"]; }),
-        waCaption: "*STOK SISA KDKMP*
-" + periodeLabel + "
-Total: " + rows.length + " baris"
+        waCaption: "*STOK SISA KDKMP*\n" + periodeLabel + "\nTotal: " + rows.length + " baris"
       };
     }
     if (tabKey === "rekap") {
@@ -959,9 +916,7 @@ Total: " + rows.length + " baris"
           const n = Number(r.Stok_Saat_Ini) || 0, m = Number(r.Min_Stok) || 5;
           return [i + 1, r.Kecamatan, r.Nama_KDKMP, r.Nama_Barang, n.toLocaleString("id-ID") + " " + r.Satuan, m.toLocaleString("id-ID") + " " + r.Satuan, n <= m ? "Menipis" : "Aman"];
         }),
-        waCaption: "*REKAP STOK KDKMP*
-" + kecLabel + "
-Total: " + rows.length + " (" + low + " menipis)"
+        waCaption: "*REKAP STOK KDKMP*\n" + kecLabel + "\nTotal: " + rows.length + " (" + low + " menipis)"
       };
     }
     if (tabKey === "po") {
@@ -972,9 +927,7 @@ Total: " + rows.length + " (" + low + " menipis)"
         summary: ["Total: " + rows.length + " PO", "Menunggu: " + pending],
         headers: ["No", "Target", "Gerai KDKMP", "Barang", "Jumlah PO", "Supplier", "Status"],
         rows: rows.map(function(r, i) { return [i + 1, normDate(r.Tanggal_Kebutuhan), r.Nama_KDKMP, r.Nama_Barang, Number(r.Jumlah_PO || 0).toLocaleString("id-ID") + " " + r.Satuan, r.Supplier || "-", r.Status_PO || "Diajukan"]; }),
-        waCaption: "*PENGAJUAN PO KDKMP*
-" + periodeLabel + "
-Total: " + rows.length + " (" + pending + " menunggu)"
+        waCaption: "*PENGAJUAN PO KDKMP*\n" + periodeLabel + "\nTotal: " + rows.length + " (" + pending + " menunggu)"
       };
     }
     const rows = viewCache.rejects;
@@ -984,9 +937,7 @@ Total: " + rows.length + " (" + pending + " menunggu)"
       summary: ["Kasus: " + rows.length, "Total Reject: " + tot.toLocaleString("id-ID")],
       headers: ["No", "Tanggal", "Gerai KDKMP", "Produk", "Kirim", "Aktual", "Reject", "Supplier", "Keterangan", "Status"],
       rows: rows.map(function(r, i) { return [i + 1, normDate(r.Tanggal_Kejadian), r.Nama_KDKMP, r.Nama_Barang, Number(r.Qty_Kirim || r.Qty_PO || 0), Number(r.Qty_Aktual || 0), Number(r.Qty_Reject || 0) + " " + r.Satuan, r.Supplier || "-", r.Keterangan || "-", r.Status_Retur || "Menunggu Verifikasi ASR"]; }),
-      waCaption: "*BARANG REJECT KDKMP*
-" + periodeLabel + "
-Total: " + rows.length + " kasus (" + tot + " unit)"
+      waCaption: "*BARANG REJECT KDKMP*\n" + periodeLabel + "\nTotal: " + rows.length + " kasus (" + tot + " unit)"
     };
   }
 
@@ -999,7 +950,7 @@ Total: " + rows.length + " kasus (" + tot + " unit)"
         return '<td style="padding:7px 9px;font-size:11.5px;border:1px solid #cbd5e1;">' + String(c || "-") + '</td>';
       }).join("") + '</tr>';
     }).join("");
-    return '<div style="width:1100px;background:#fff;color:#0f172a;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">' +
+    return '<div style="width:1100px;background:#fff;color:#0f172a;padding:20px;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif;">' +
       '<div style="font-size:18px;font-weight:800;">' + dataset.title + '</div>' +
       '<div style="font-size:12px;color:#475569;margin:4px 0 12px;">' + dataset.subtitle + ' • ' + dataset.summary.join(" | ") + ' • ' + getWibNow() + '</div>' +
       '<table style="width:100%;border-collapse:collapse;margin-bottom:10px;"><thead><tr>' + th + '</tr></thead><tbody>' + tr + '</tbody></table>' +
