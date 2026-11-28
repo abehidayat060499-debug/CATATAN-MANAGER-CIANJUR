@@ -65,7 +65,7 @@
     .type-pill.active-stock { border-color: var(--success); background: #ecfdf5; color: #065f46; }
     .type-pill.active-warn { border-color: var(--warning); background: #fffbeb; color: #92400e; }
 
-    /* HORIZONTAL SCROLL PILL ROW */
+    /* HORIZONTAL SCROLL PILL ROW (NO WRAPPING, SMOOTH SWIPE) */
     .pill-scroll-row { display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; padding-bottom: 6px; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
     .pill-scroll-row::-webkit-scrollbar { height: 4px; }
     .pill-scroll-row::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
@@ -101,7 +101,7 @@
     .qty-input { width: 68px !important; text-align: center; font-weight: 800; font-size: 15px !important; padding: 7px 4px !important; }
     .qty-input.has-value { background: #eff6ff; border-color: var(--primary-light); color: var(--primary); }
 
-    /* SUB-VIEW SWITCHER */
+    /* SUB-VIEW SWITCHER INSIDE TAB DO (INPUT vs RIWAYAT) */
     .subview-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; background: #e2e8f0; padding: 4px; border-radius: 11px; }
     .subview-btn { padding: 9px 10px; border: none; border-radius: 8px; font-size: 12px; font-weight: 800; color: #475569; background: transparent; cursor: pointer; transition: 0.15s; }
     .subview-btn.active { background: #fff; color: var(--primary); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
@@ -120,13 +120,7 @@
     .stat-mini-lbl { font-size: 10px; font-weight: 700; color: #1e40af; text-transform: uppercase; }
     .stat-mini-val { font-size: 14px; font-weight: 800; color: #0f172a; margin-top: 2px; }
 
-    /* TOMBOL HAPUS RIWAYAT */
-    .btn-del-row { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; }
-    .btn-del-row:active { background: #dc2626; color: #fff; }
-    .btn-clear-all { width: 100%; margin-top: 8px; background: #fff1f2; color: #be123c; border: 1.5px solid #fda4af; border-radius: 8px; padding: 8px 12px; font-size: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
-    .btn-clear-all:active { background: #e11d48; color: #fff; }
-
-    /* INTERNAL SCROLLABLE HISTORY TABLE */
+    /* INTERNAL SCROLLABLE HISTORY TABLE (MAX HEIGHT SO PAGE DOESN'T STRETCH) */
     .history-scroll-box { max-height: 360px; overflow-y: auto; overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 9px; background: #fff; -webkit-overflow-scrolling: touch; }
     .history-scroll-box table { margin: 0; }
     .history-scroll-box thead th { position: sticky; top: 0; z-index: 5; background: #f1f5f9; border-bottom: 1.5px solid #cbd5e1; }
@@ -181,12 +175,7 @@
     .success-sub { font-size: 13px; color: #475569; margin: 0 0 14px 0; line-height: 1.45; }
     .success-detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; text-align: left; font-size: 12px; color: #334155; margin-bottom: 16px; line-height: 1.5; }
 
-    /* MODAL KONFIRMASI HAPUS RIWAYAT */
-    #confirmDeleteModal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); z-index: 10058; display: none; align-items: center; justify-content: center; padding: 16px; }
-    .del-card { background: #fff; width: 100%; max-width: 400px; border-radius: 16px; padding: 22px 18px; text-align: center; box-shadow: 0 20px 45px rgba(0,0,0,0.35); animation: popIn 0.16s ease-out; }
-    .del-icon { width: 54px; height: 54px; border-radius: 999px; background: #fee2e2; color: #dc2626; display: inline-flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; margin-bottom: 10px; border: 2px solid #fca5a5; }
-
-    /* MODAL PREVIEW FOTO LAPORAN */
+    /* MODAL PREVIEW FOTO LAPORAN (FALLBACK UNTUK HP / WEBVIEW) */
     #pngPreviewModal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 10055; display: none; align-items: center; justify-content: center; padding: 14px; }
     .png-preview-card { background: #fff; width: 100%; max-width: 520px; max-height: 90vh; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; }
     .png-preview-body { padding: 12px; overflow-y: auto; text-align: center; background: #f1f5f9; flex: 1; }
@@ -261,20 +250,7 @@
   </div>
 </div>
 
-<!-- MODAL KONFIRMASI HAPUS RIWAYAT -->
-<div id="confirmDeleteModal" onclick="if(event.target===this) closeDeleteModal()">
-  <div class="del-card">
-    <div class="del-icon">🗑</div>
-    <h3 class="success-title" id="delModalTitle">Hapus Riwayat?</h3>
-    <p class="success-sub" id="delModalSub">Data yang dihapus tidak dapat dikembalikan.</p>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px;">
-      <button type="button" class="btn btn-outline btn-sm" onclick="closeDeleteModal()">Batal</button>
-      <button type="button" class="btn btn-danger btn-sm" id="btnConfirmDeleteExec" onclick="executePendingDelete()">Ya, Hapus</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL PREVIEW & SIMPAN FOTO BA -->
+<!-- MODAL PREVIEW & SIMPAN FOTO BA (UNTUK HP / MOBILE BROWSER) -->
 <div id="pngPreviewModal" onclick="if(event.target===this) closePngPreviewModal()">
   <div class="png-preview-card">
     <div class="modal-head">
@@ -346,6 +322,7 @@
   <!-- TAB 1: BARANG MASUK (DO)                                  -->
   <!-- ========================================================= -->
   <section id="tab-masuk" class="section active">
+    <!-- SUB-VIEW TOGGLE AGAR INPUT DO & RIWAYAT TIDAK SALING MENGGANGGU -->
     <div class="subview-bar">
       <button type="button" id="btnDoSubInput" class="subview-btn active" onclick="switchDoSubView('INPUT')">
         + Input Barang Masuk (DO)
@@ -400,7 +377,7 @@
       </div>
     </div>
 
-    <!-- PANEL B: LOG RIWAYAT BARANG MASUK + HAPUS RIWAYAT + EKSPOR BA -->
+    <!-- PANEL B: LOG RIWAYAT BARANG MASUK + EKSPOR FOTO & PDF BERITA ACARA -->
     <div id="doViewHistory" style="display:none;">
       <div class="card">
         <div class="card-title">
@@ -441,9 +418,6 @@
               Download / Cetak PDF BA
             </button>
           </div>
-          <button type="button" class="btn-clear-all" onclick="promptClearAllHistory('MASUK')">
-            🗑 Hapus Semua Riwayat DO (Periode Ini)
-          </button>
         </div>
 
         <div class="stat-mini-grid">
@@ -466,7 +440,6 @@
                 <th>Rincian Barang</th>
                 <th>Total Qty</th>
                 <th>Foto DO</th>
-                <th>Aksi</th>
               </tr>
             </thead>
             <tbody id="tblMyMasukBody"></tbody>
@@ -477,7 +450,7 @@
   </section>
 
   <!-- ========================================================= -->
-  <!-- TAB 2: LAPORAN SALES + RIWAYAT & HAPUS RIWAYAT            -->
+  <!-- TAB 2: LAPORAN SALES + RIWAYAT & EKSPOR BA                -->
   <!-- ========================================================= -->
   <section id="tab-omset" class="section">
     <div class="subview-bar">
@@ -569,9 +542,10 @@
         <input type="text" id="omsetCatatan" placeholder="Contoh: Koreksi angka buram pada struk / TF susulan maks H+2" />
       </div>
     </div>
+
     </div>
 
-    <!-- PANEL B: RIWAYAT LAPORAN SALES & HAPUS RIWAYAT -->
+    <!-- PANEL B: RIWAYAT LAPORAN SALES & EKSPOR BA -->
     <div id="salesViewHistory" style="display:none;">
     <div class="card">
       <div class="card-title">
@@ -607,9 +581,6 @@
             Download / Cetak PDF BA
           </button>
         </div>
-        <button type="button" class="btn-clear-all" onclick="promptClearAllHistory('SALES')">
-          🗑 Hapus Semua Riwayat Sales (Periode Ini)
-        </button>
       </div>
 
       <div class="stat-mini-grid-3">
@@ -637,7 +608,6 @@
               <th>Telah Setor</th>
               <th>Selisih</th>
               <th>Bukti Foto</th>
-              <th>Aksi</th>
             </tr>
           </thead>
           <tbody id="tblMySalesBody"></tbody>
@@ -648,7 +618,7 @@
   </section>
 
   <!-- ========================================================= -->
-  <!-- TAB 3: PERENCANAAN PO + RIWAYAT & HAPUS RIWAYAT           -->
+  <!-- TAB 3: PERENCANAAN PO + RIWAYAT & EKSPOR BA               -->
   <!-- ========================================================= -->
   <section id="tab-po" class="section">
     <div class="subview-bar">
@@ -725,9 +695,6 @@
             Download / Cetak PDF BA
           </button>
         </div>
-        <button type="button" class="btn-clear-all" onclick="promptClearAllHistory('PO')">
-          🗑 Hapus Semua Riwayat PO (Periode Ini)
-        </button>
       </div>
 
       <div class="history-scroll-box">
@@ -740,7 +707,6 @@
               <th>Barang</th>
               <th>Jumlah PO</th>
               <th>Status ASR</th>
-              <th>Aksi</th>
             </tr>
           </thead>
           <tbody id="tblMyPoBody"></tbody>
@@ -751,7 +717,7 @@
   </section>
 
   <!-- ========================================================= -->
-  <!-- TAB 4: LAPORAN PRODUK REJECT + RIWAYAT & HAPUS RIWAYAT    -->
+  <!-- TAB 4: LAPORAN PRODUK REJECT + RIWAYAT & EKSPOR BA        -->
   <!-- ========================================================= -->
   <section id="tab-reject" class="section">
     <div class="subview-bar">
@@ -873,9 +839,6 @@
             Download / Cetak PDF BA
           </button>
         </div>
-        <button type="button" class="btn-clear-all" onclick="promptClearAllHistory('REJECT')">
-          🗑 Hapus Semua Riwayat Reject (Periode Ini)
-        </button>
       </div>
 
       <div class="history-scroll-box">
@@ -888,7 +851,6 @@
               <th>Kirim / Aktual / Reject</th>
               <th>Foto</th>
               <th>Status Retur</th>
-              <th>Aksi</th>
             </tr>
           </thead>
           <tbody id="tblMyRejectBody"></tbody>
@@ -938,13 +900,26 @@
     { Kode_Barang: "IDF-01", Kategori: "Produk ID FOOD", Nama_Barang: "Gula Pasir Kristal Putih 1 Kg", Satuan: "Kg", Supplier: "ID FOOD" }
   ];
 
+  function safeLoadStorage(key, fallbackVal) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return fallbackVal;
+      const parsed = JSON.parse(raw);
+      return parsed !== null && parsed !== undefined ? parsed : fallbackVal;
+    } catch (e) {
+      console.warn("Reset storage rusak untuk key:", key, e);
+      try { localStorage.removeItem(key); } catch (_) {}
+      return fallbackVal;
+    }
+  }
+
   let state = {
     activeTab: "tab-masuk",
     doSubView: "INPUT",
     salesSubView: "INPUT",
     poSubView: "INPUT",
     rejectSubView: "INPUT",
-    profile: JSON.parse(localStorage.getItem("kdkmp_profile") || "null"),
+    profile: safeLoadStorage("kdkmp_profile", null),
     modalSelectedKec: "ALL",
     selectedSupplier: "BULOG",
     selectedMasukHistSupplier: "ALL",
@@ -963,17 +938,15 @@
     activeRunOcr: true,
     camStream: null,
     selectedRejectItem: null,
-    pendingDeleteAction: null,
     lastPngDataUrl: "",
     lastPngFilename: "Laporan_BA_KDKMP.png",
-    masterKdkmp: JSON.parse(localStorage.getItem("kdkmp_master_gerai") || "null") || DEFAULT_KDKMP,
-    masterBarang: JSON.parse(localStorage.getItem("kdkmp_master_barang") || "null") || DEFAULT_BARANG,
-    rekapStok: JSON.parse(localStorage.getItem("kdkmp_rekap_stok") || "[]"),
-    masukLogs: JSON.parse(localStorage.getItem("kdkmp_masuk_logs") || "[]"),
-    salesLogs: JSON.parse(localStorage.getItem("kdkmp_sales_logs") || "[]"),
-    poList: JSON.parse(localStorage.getItem("kdkmp_po_list") || "[]"),
-    rejectLogs: JSON.parse(localStorage.getItem("kdkmp_reject_logs") || "[]"),
-    deletedIds: JSON.parse(localStorage.getItem("kdkmp_deleted_ids") || "[]")
+    masterKdkmp: safeLoadStorage("kdkmp_master_gerai", DEFAULT_KDKMP),
+    masterBarang: safeLoadStorage("kdkmp_master_barang", DEFAULT_BARANG),
+    rekapStok: safeLoadStorage("kdkmp_rekap_stok", []),
+    masukLogs: safeLoadStorage("kdkmp_masuk_logs", []),
+    salesLogs: safeLoadStorage("kdkmp_sales_logs", []),
+    poList: safeLoadStorage("kdkmp_po_list", []),
+    rejectLogs: safeLoadStorage("kdkmp_reject_logs", [])
   };
 
   function getDynamicSuppliers() {
@@ -983,6 +956,7 @@
     return dariSheet.length > 0 ? dariSheet : DEFAULT_SUPPLIER_LIST;
   }
 
+  // HELPER RESOLUSI SUPPLIER AKURAT (MENCEGAH GAS TERINPUT KE BULOG)
   function resolveItemSupplier(itemObj, fallbackSup) {
     if (!itemObj) return String(fallbackSup || "-").trim();
     const kode = String(itemObj.kode_barang || itemObj.Kode_Barang || "").trim();
@@ -1000,29 +974,6 @@
     if (/sphp|bulog/i.test(nama)) return "BULOG";
     if (/minyakita|gula/i.test(nama)) return "ID FOOD";
     return String(itemObj.supplier || itemObj.Supplier || fallbackSup || "-").trim();
-  }
-
-  function getRecordUid(moduleType, item, idx = 0) {
-    if (moduleType === "MASUK") {
-      return item.id || item.ID_DO || `DO_${String(item.tanggal || item.Tanggal || "").slice(0,10)}_${item.nama_kdkmp || item.Nama_KDKMP || ""}_${item.supplier || item.Supplier || ""}_${idx}`;
-    }
-    if (moduleType === "SALES") {
-      return item.id || item.ID_Sales || `SLS_${String(item.tanggal || item.Tanggal || "").slice(0,10)}_${item.nama_kdkmp || item.Nama_KDKMP || ""}_${item.mode_setoran || item.Mode_Setoran || ""}_${item.nominal_omset || item.Nominal_Omset || 0}_${idx}`;
-    }
-    if (moduleType === "PO") {
-      return item.id || item.ID_PO || `PO_${String(item.Tanggal_Kebutuhan || "").slice(0,10)}_${item.Nama_KDKMP || ""}_${item.Kode_Barang || ""}_${item.Jumlah_PO || 0}_${idx}`;
-    }
-    if (moduleType === "REJECT") {
-      return item.id || item.ID_Reject || `REJ_${String(item.Tanggal_Kejadian || item.tanggal || "").slice(0,10)}_${item.Nama_KDKMP || item.nama_kdkmp || ""}_${item.Kode_Barang || item.kode_barang || ""}_${item.Qty_Reject || 0}_${idx}`;
-    }
-    return `ITEM_${idx}`;
-  }
-
-  function rememberDeletedIds(uids) {
-    const set = new Set(state.deletedIds || []);
-    uids.forEach(u => set.add(u));
-    state.deletedIds = Array.from(set).slice(-500);
-    localStorage.setItem("kdkmp_deleted_ids", JSON.stringify(state.deletedIds));
   }
 
   function getTodayWib() {
@@ -1052,11 +1003,14 @@
 
     const badge = document.getElementById("connBadge");
     if (SCRIPT_URL) {
-      badge.textContent = "Terhubung Pusat ASR";
-      badge.className = "badge-status status-live";
+      badge.textContent = "Menyambung ASR...";
+      badge.className = "badge-status status-sandbox";
     }
 
-    if (!state.profile) {
+    if (!Array.isArray(state.masterKdkmp) || state.masterKdkmp.length === 0) state.masterKdkmp = DEFAULT_KDKMP;
+    if (!Array.isArray(state.masterBarang) || state.masterBarang.length === 0) state.masterBarang = DEFAULT_BARANG;
+
+    if (!state.profile || !state.profile.nama_kdkmp) {
       state.profile = {
         kecamatan: state.masterKdkmp[0].Kecamatan,
         nama_kdkmp: state.masterKdkmp[0].Nama_KDKMP,
@@ -1106,16 +1060,14 @@
     throw lastErr || new Error("Koneksi ke server pusat terputus.");
   }
 
-  function mergeLogsById(moduleType, localArr, serverArr) {
-    const deletedSet = new Set(state.deletedIds || []);
+  function mergeLogsById(localArr, serverArr, keyBuilder) {
     const map = new Map();
     (serverArr || []).forEach((item, idx) => {
-      const key = getRecordUid(moduleType, item, idx);
-      if (!deletedSet.has(key)) map.set(key, item);
+      const key = keyBuilder(item, idx);
+      map.set(key, item);
     });
     (localArr || []).forEach((item, idx) => {
-      const key = getRecordUid(moduleType, item, idx);
-      if (deletedSet.has(key)) return;
+      const key = keyBuilder(item, idx);
       if (map.has(key)) {
         const existing = map.get(key);
         map.set(key, {
@@ -1134,10 +1086,27 @@
   }
 
   async function syncFromServer() {
+    const badge = document.getElementById("connBadge");
     try {
-      const res = await fetch(SCRIPT_URL, { redirect: "follow" });
-      const data = await res.json();
+      const sep = SCRIPT_URL.includes("?") ? "&" : "?";
+      const res = await fetch(SCRIPT_URL + sep + "_ts=" + Date.now(), {
+        method: "GET",
+        mode: "cors",
+        redirect: "follow"
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const rawText = await res.text();
+      let data;
+      try {
+        data = JSON.parse(rawText);
+      } catch (parseErr) {
+        throw new Error("Respon server bukan JSON (cek izin Deploy Apps Script: Anyone / Siapa saja)");
+      }
       if (data.status === "success") {
+        if (badge) {
+          badge.textContent = "Terhubung Pusat ASR";
+          badge.className = "badge-status status-live";
+        }
         if (data.master_kdkmp && data.master_kdkmp.length) {
           state.masterKdkmp = data.master_kdkmp;
           localStorage.setItem("kdkmp_master_gerai", JSON.stringify(state.masterKdkmp));
@@ -1147,17 +1116,16 @@
           localStorage.setItem("kdkmp_master_barang", JSON.stringify(state.masterBarang));
         }
         state.rekapStok = data.rekap_stok || [];
-        const deletedSet = new Set(state.deletedIds || []);
-        state.poList = (data.po_list || []).filter((p, i) => !deletedSet.has(getRecordUid("PO", p, i)));
-        state.rejectLogs = mergeLogsById("REJECT", state.rejectLogs, data.reject_logs || []);
+        state.poList = data.po_list || [];
+        state.rejectLogs = mergeLogsById(state.rejectLogs, data.reject_logs || [], (r, i) => r.id || r.ID_Reject || `${r.Tanggal_Kejadian || r.tanggal}_${r.Nama_KDKMP || r.nama_kdkmp}_${r.Kode_Barang || r.kode_barang}_${i}`);
 
         if (Array.isArray(data.masuk_logs)) {
-          state.masukLogs = mergeLogsById("MASUK", state.masukLogs, data.masuk_logs);
+          state.masukLogs = mergeLogsById(state.masukLogs, data.masuk_logs, (item, idx) => item.id || item.ID_DO || `${item.Tanggal || item.tanggal}_${item.Nama_KDKMP || item.nama_kdkmp}_${item.Supplier || item.supplier}_${idx}`);
           localStorage.setItem("kdkmp_masuk_logs", JSON.stringify(state.masukLogs));
         }
         const serverSales = data.sales_logs || data.omset_logs || [];
         if (Array.isArray(serverSales) && serverSales.length > 0) {
-          state.salesLogs = mergeLogsById("SALES", state.salesLogs, serverSales);
+          state.salesLogs = mergeLogsById(state.salesLogs, serverSales, (item, idx) => item.id || item.ID_Sales || `${item.Tanggal || item.tanggal}_${item.Nama_KDKMP || item.nama_kdkmp}_${item.Mode_Setoran || item.mode_setoran}_${idx}`);
           localStorage.setItem("kdkmp_sales_logs", JSON.stringify(state.salesLogs));
         }
 
@@ -1188,101 +1156,12 @@
         renderMyRejectTable();
       }
     } catch (e) {
-      console.warn("Memakai cache lokal:", e);
-    }
-  }
-
-  // =========================================================
-  // HAPUS RIWAYAT (PER ITEM & HAPUS SEMUA PER MODUL)
-  // =========================================================
-  function promptDeleteSingleHistory(moduleType, uid, labelDesc) {
-    state.pendingDeleteAction = { type: "SINGLE", moduleType, uid, labelDesc };
-    document.getElementById("delModalTitle").textContent = "Hapus 1 Baris Riwayat?";
-    document.getElementById("delModalSub").innerHTML = `Anda yakin ingin menghapus riwayat:<br><strong>${labelDesc}</strong>?`;
-    document.getElementById("confirmDeleteModal").style.display = "flex";
-  }
-
-  function promptClearAllHistory(moduleType) {
-    const labelMap = {
-      MASUK: "Barang Masuk (DO)",
-      SALES: "Laporan Sales",
-      PO: "Pengajuan PO",
-      REJECT: "Produk Reject"
-    };
-    const countMap = {
-      MASUK: getFilteredMasukLogs().length,
-      SALES: getFilteredSalesLogs().length,
-      PO: getFilteredPoLogs().length,
-      REJECT: getFilteredRejectLogs().length
-    };
-    const total = countMap[moduleType] || 0;
-    if (total === 0) return showToast("Tidak ada data riwayat untuk dihapus.");
-
-    state.pendingDeleteAction = { type: "ALL", moduleType };
-    document.getElementById("delModalTitle").textContent = `Hapus Semua Riwayat ${labelMap[moduleType]}?`;
-    document.getElementById("delModalSub").innerHTML = `Sebanyak <strong>${total} data</strong> pada gerai <strong>${state.profile.nama_kdkmp}</strong> (sesuai filter periode aktif) akan dihapus.`;
-    document.getElementById("confirmDeleteModal").style.display = "flex";
-  }
-
-  function closeDeleteModal() {
-    document.getElementById("confirmDeleteModal").style.display = "none";
-    state.pendingDeleteAction = null;
-  }
-
-  async function executePendingDelete() {
-    const act = state.pendingDeleteAction;
-    if (!act) return;
-    const btn = document.getElementById("btnConfirmDeleteExec");
-    btn.disabled = true;
-    btn.textContent = "Menghapus...";
-
-    try {
-      const targetUids = [];
-
-      if (act.type === "SINGLE") {
-        targetUids.push(act.uid);
-      } else if (act.type === "ALL") {
-        if (act.moduleType === "MASUK") getFilteredMasukLogs().forEach((it, i) => targetUids.push(getRecordUid("MASUK", it, i)));
-        if (act.moduleType === "SALES") getFilteredSalesLogs().forEach((it, i) => targetUids.push(getRecordUid("SALES", it, i)));
-        if (act.moduleType === "PO") getFilteredPoLogs().forEach((it, i) => targetUids.push(getRecordUid("PO", it, i)));
-        if (act.moduleType === "REJECT") getFilteredRejectLogs().forEach((it, i) => targetUids.push(getRecordUid("REJECT", it, i)));
+      console.error("Gagal sinkronisasi Apps Script:", e);
+      if (badge) {
+        badge.textContent = "Offline / Gagal Konek";
+        badge.className = "badge-status status-sandbox";
+        badge.title = e.message || "Gagal terhubung ke Apps Script";
       }
-
-      if (act.moduleType === "MASUK") {
-        state.masukLogs = state.masukLogs.filter((it, i) => !targetUids.includes(getRecordUid("MASUK", it, i)));
-        localStorage.setItem("kdkmp_masuk_logs", JSON.stringify(state.masukLogs));
-        renderMasukHistory();
-      } else if (act.moduleType === "SALES") {
-        state.salesLogs = state.salesLogs.filter((it, i) => !targetUids.includes(getRecordUid("SALES", it, i)));
-        localStorage.setItem("kdkmp_sales_logs", JSON.stringify(state.salesLogs));
-        renderSalesHistory();
-      } else if (act.moduleType === "PO") {
-        state.poList = state.poList.filter((it, i) => !targetUids.includes(getRecordUid("PO", it, i)));
-        localStorage.setItem("kdkmp_po_list", JSON.stringify(state.poList));
-        renderMyPoTable();
-      } else if (act.moduleType === "REJECT") {
-        state.rejectLogs = state.rejectLogs.filter((it, i) => !targetUids.includes(getRecordUid("REJECT", it, i)));
-        localStorage.setItem("kdkmp_reject_logs", JSON.stringify(state.rejectLogs));
-        renderMyRejectTable();
-      }
-
-      rememberDeletedIds(targetUids);
-
-      if (SCRIPT_URL) {
-        postToBackend({
-          action: act.type === "ALL" ? "HAPUS_SEMUA_RIWAYAT" : "HAPUS_RIWAYAT",
-          modul: act.moduleType,
-          nama_kdkmp: state.profile.nama_kdkmp,
-          kecamatan: state.profile.kecamatan,
-          ids: targetUids
-        }).catch(err => console.warn("Sinkron hapus server:", err));
-      }
-
-      closeDeleteModal();
-      showToast(`${targetUids.length} riwayat berhasil dihapus!`);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Ya, Hapus";
     }
   }
 
@@ -1329,6 +1208,7 @@
     };
   }
 
+  // FILTER PERIODE DINAMIS UNTUK SEMUA TAB (30 HARI TERAKHIR, PER HARI, PER BULAN)
   function toggleFilterMode(prefix) {
     const mode = document.getElementById(`${prefix}FilterMode`).value;
     document.getElementById(`wrap${prefix.charAt(0).toUpperCase() + prefix.slice(1)}FilterMonth`).style.display = mode === "MONTH" ? "block" : "none";
@@ -1418,8 +1298,8 @@
 
     container.innerHTML = list.map(g => {
       const isSelected = g.Nama_KDKMP === state.profile.nama_kdkmp ? "selected" : "";
-      const escKec = String(g.Kecamatan || "").replace(/'/g, "\'");
-      const escKdkmp = String(g.Nama_KDKMP || "").replace(/'/g, "\'");
+      const escKec = String(g.Kecamatan || "").replace(/'/g, "\\'");
+      const escKdkmp = String(g.Nama_KDKMP || "").replace(/'/g, "\\'");
       return `
         <div class="gerai-option ${isSelected}" onclick="selectGeraiFromModal('${escKec}', '${escKdkmp}')">
           <div>
@@ -1447,13 +1327,13 @@
     showToast("Gerai aktif: " + kdkmp);
   }
 
-  // HORIZONTAL SCROLL PILLS FOR SUPPLIERS
+  // HORIZONTAL SCROLL PILLS FOR SUPPLIERS (FORM & HISTORY)
   function renderPillRowHtml(containerId, items, activeVal, activeClass, handlerName, includeAll) {
     const el = document.getElementById(containerId);
     if (!el) return;
     const list = includeAll ? ["ALL", ...items] : items;
     el.innerHTML = list.map(s => {
-      const escS = s.replace(/'/g, "\'");
+      const escS = s.replace(/'/g, "\\'");
       const label = s === "ALL" ? "Semua Supplier" : s;
       return `<button type="button" class="opt-pill ${activeVal === s ? activeClass : ''}" onclick="${handlerName}('${escS}')">${label}</button>`;
     }).join("");
@@ -1578,7 +1458,7 @@
   }
 
   // =========================================================
-  // KAMERA & GALERI
+  // KAMERA & GALERI (FIXED: <label for="hiddenGalInput"> MOBILE SAFE)
   // =========================================================
   function prepareGalleryCapture(targetKey, runOcr) {
     state.activePhotoTarget = targetKey;
@@ -1756,7 +1636,7 @@
 
   function parseMoneyTokensFromLine(line) {
     const cleaned = line.replace(/Rp\.?/gi, " ").replace(/IDR/gi, " ").replace(/[Oo](?=\d{2,3})/g, "0");
-    const regex = /\d{1,3}(?:[.,]\d{3})+(?:[.,]\d{2})?|\d{4,9}/g;
+    const regex = /\b\d{1,3}(?:[.,]\d{3})+(?:[.,]\d{2})?\b|\b\d{4,9}\b/g;
     const matches = cleaned.match(regex) || [];
     const nums = [];
     matches.forEach(m => {
@@ -1768,8 +1648,7 @@
   }
 
   function extractSalesFromCloseShift(rawText) {
-    const lines = String(rawText || "").split(/?
-/).map(l => l.trim()).filter(Boolean);
+    const lines = String(rawText || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     let kasAwal = 0, idxKasAwal = -1, grandTotal = 0, idxGrandTotal = lines.length, middleExplicitSales = 0;
     const lineItems = [];
     lines.forEach((line, idx) => {
@@ -1777,8 +1656,8 @@
       const maxNum = nums.length ? Math.max(...nums) : 0;
       lineItems.push({ idx, line, nums, maxNum });
       if (/kas\s*awal|modal\s*awal|saldo\s*awal|opening/i.test(line) && maxNum > 0) { kasAwal = maxNum; idxKasAwal = idx; }
-      else if (/grand\s*total|total\s*akhir|total\s*keseluruhan|total\s*kas|total\s*setor|^total/i.test(line) && maxNum > 0) { grandTotal = maxNum; idxGrandTotal = idx; }
-      else if (/omset|total\s*penjualan|penjualan|total\s*sales|net\s*sales|sales|pendapatan/i.test(line) && maxNum > 0) { middleExplicitSales = maxNum; }
+      else if (/grand\s*total|total\s*akhir|total\s*keseluruhan|total\s*kas|total\s*setor|^total\b/i.test(line) && maxNum > 0) { grandTotal = maxNum; idxGrandTotal = idx; }
+      else if (/omset|total\s*penjualan|penjualan|total\s*sales|net\s*sales|sales\b|pendapatan/i.test(line) && maxNum > 0) { middleExplicitSales = maxNum; }
     });
     const betweenLines = lineItems.filter(it => it.maxNum > 0 && it.idx > idxKasAwal && it.idx < idxGrandTotal && !/kas\s*awal|modal\s*awal|saldo\s*awal|tunai\s*fisik|selisih/i.test(it.line));
     let omsetSales = 0;
@@ -1795,16 +1674,15 @@
   }
 
   function extractTransferFromReceipt(rawText) {
-    const lines = String(rawText || "").split(/?
-/).map(l => l.trim()).filter(Boolean);
+    const lines = String(rawText || "").split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     let nominalTransfer = 0, biayaAdmin = 0, totalDebet = 0;
     const allNums = [];
     lines.forEach(line => {
       const nums = parseMoneyTokensFromLine(line);
       const maxNum = nums.length ? Math.max(...nums) : 0;
       if (maxNum > 0) allNums.push(maxNum);
-      if (/biaya\s*admin|admin(\s*bank)?|biaya\s*transaksi|biaya\s*layanan|fee/i.test(line)) {
-        if (/gratis|free|0/i.test(line) && maxNum === 0) biayaAdmin = 0;
+      if (/biaya\s*admin|admin(\s*bank)?|biaya\s*transaksi|biaya\s*layanan|fee\b/i.test(line)) {
+        if (/gratis|free|\b0\b/i.test(line) && maxNum === 0) biayaAdmin = 0;
         else if (maxNum > 0 && maxNum <= 50000) biayaAdmin = maxNum;
       } else if (/nominal(\s*transfer)?|jumlah(\s*transfer)?|amount|nilai\s*transfer/i.test(line) && !/total/i.test(line) && maxNum > 0) nominalTransfer = maxNum;
       else if (/total(\s*debet|\s*bayar|\s*transaksi|\s*pembayaran)?/i.test(line) && maxNum > 0) totalDebet = maxNum;
@@ -1819,7 +1697,7 @@
 
   function extractDateFromReceiptText(rawText) {
     if (!rawText) return null;
-    const m2 = rawText.match(/(20\d{2})[\-\/\.](\d{1,2})[\-\/\.](\d{1,2})/);
+    const m2 = rawText.match(/\b(20\d{2})[\-\/\.](\d{1,2})[\-\/\.](\d{1,2})\b/);
     if (m2) return `${m2[1]}-${m2[2].padStart(2, "0")}-${m2[3].padStart(2, "0")}`;
     return null;
   }
@@ -1996,13 +1874,11 @@
 
     if (!tbody) return;
     if (logs.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b; padding:16px;">Belum ada riwayat barang masuk pada periode / supplier ini.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b; padding:16px;">Belum ada riwayat barang masuk pada periode / supplier ini.</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = logs.map((l, idx) => {
-      const uid = getRecordUid("MASUK", l, idx);
-      const escUid = String(uid).replace(/'/g, "\'");
+    tbody.innerHTML = logs.map(l => {
       const tgl = String(l.tanggal || l.Tanggal || "").slice(0, 10);
       const allItems = normalizeMasukItems(l);
       const shownItems = filterSup === "ALL" ? allItems : allItems.filter(it => it.resolved_supplier === filterSup);
@@ -2010,14 +1886,12 @@
       const itemSummary = shownItems.map(i => `${i.nama_barang} (${Number(i.jumlah).toLocaleString("id-ID")} ${i.satuan})`).join(", ");
       const qtySum = shownItems.reduce((acc, i) => acc + (Number(i.jumlah) || 0), 0);
       const hasFoto = Boolean(l.foto_do_base64 || l.Foto_DO);
-      const escDesc = `${tgl} • ${supsLabel} (${qtySum} unit)`.replace(/'/g, "\'");
       return `<tr>
         <td>${tgl}</td>
         <td><strong>${supsLabel}</strong></td>
         <td style="white-space:normal; min-width:160px;">${itemSummary || "-"}</td>
         <td><strong>${qtySum.toLocaleString("id-ID")}</strong></td>
         <td><span class="tag ${hasFoto ? 'tag-ok' : 'tag-wait'}">${hasFoto ? 'Ada Foto' : 'Tanpa Foto'}</span></td>
-        <td><button type="button" class="btn-del-row" onclick="promptDeleteSingleHistory('MASUK', '${escUid}', '${escDesc}')">🗑 Hapus</button></td>
       </tr>`;
     }).join("");
   }
@@ -2089,6 +1963,7 @@
   }
 
   async function submitBarangMasuk() {
+    // KELOMPOKKAN ITEM BERDASARKAN SUPPLIER ASLI PRODUK AGAR GAS TIDAK MASUK KE BULOG
     const itemsBySupplier = {};
     for (const [code, qty] of Object.entries(state.quantitiesMasuk)) {
       if (!qty || Number(qty) <= 0) continue;
@@ -2213,13 +2088,11 @@
 
     if (!tbody) return;
     if (logs.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#64748b; padding:16px;">Belum ada riwayat laporan sales pada periode ini.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b; padding:16px;">Belum ada riwayat laporan sales pada periode ini.</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = logs.map((l, idx) => {
-      const uid = getRecordUid("SALES", l, idx);
-      const escUid = String(uid).replace(/'/g, "\'");
+    tbody.innerHTML = logs.map(l => {
       const tgl = String(l.tanggal || l.Tanggal || "").slice(0, 10);
       const mode = l.mode_setoran || l.Mode_Setoran || "FULL";
       const modeLbl = mode === "TUNDA_TF" ? "TF Maks H+2" : (mode === "SUSUL_TF" ? "Susul TF (Maks H+2)" : "Hari H Lunas");
@@ -2228,7 +2101,6 @@
       const sel = setor - wajib;
       const hasFoto = Boolean(l.foto_struk_base64 || l.Foto_Struk || l.foto_transfer_base64 || l.Foto_Transfer);
       const selColor = sel === 0 ? "#059669" : (sel < 0 ? "#dc2626" : "#2563eb");
-      const escDesc = `${tgl} • ${modeLbl} (${formatRp(setor || wajib)})`.replace(/'/g, "\'");
       return `<tr>
         <td>${tgl}</td>
         <td><span class="tag ${mode === 'TUNDA_TF' ? 'tag-wait' : 'tag-info'}">${modeLbl}</span></td>
@@ -2236,7 +2108,6 @@
         <td><strong>${formatRp(setor)}</strong></td>
         <td style="color:${selColor}; font-weight:800;">${sel === 0 ? "Rp 0" : formatRp(sel)}</td>
         <td><span class="tag ${hasFoto ? 'tag-ok' : 'tag-wait'}">${hasFoto ? 'Ada Bukti' : 'Tanpa Foto'}</span></td>
-        <td><button type="button" class="btn-del-row" onclick="promptDeleteSingleHistory('SALES', '${escUid}', '${escDesc}')">🗑 Hapus</button></td>
       </tr>`;
     }).join("");
   }
@@ -2382,9 +2253,8 @@
     btn.disabled = true; btn.textContent = "Mengirim PO...";
     try {
       if (SCRIPT_URL) await postToBackend(payload);
-      itemsToSend.forEach((it, idx) => {
+      itemsToSend.forEach(it => {
         state.poList.unshift({
-          id: "PO-" + Date.now() + "-" + idx,
           Tanggal_Kebutuhan: payload.tanggal_kebutuhan,
           Nama_KDKMP: payload.nama_kdkmp,
           Supplier: it.supplier,
@@ -2426,27 +2296,15 @@
     const poSubPill = document.getElementById("poSubCountPill");
     if (poSubPill) poSubPill.textContent = myRows.length;
     if (myRows.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#64748b; padding:16px;">Belum ada riwayat pengajuan PO pada periode / supplier ini.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b; padding:16px;">Belum ada riwayat pengajuan PO pada periode / supplier ini.</td></tr>`;
       return;
     }
-    tbody.innerHTML = myRows.map((p, idx) => {
-      const uid = getRecordUid("PO", p, idx);
-      const escUid = String(uid).replace(/'/g, "\'");
-      const tgl = String(p.Tanggal_Kebutuhan || "").slice(0, 10);
+    tbody.innerHTML = myRows.map(p => {
       const st = p.Status_PO || "Diajukan";
       const sup = resolveItemSupplier(p, p.Supplier || "-");
       const noPo = (p.No_PO_ASR && p.No_PO_ASR !== "-") ? p.No_PO_ASR : "-";
       const badgeCls = st === "Selesai" || st === "Disetujui ASR" ? "tag-ok" : (st === "DO Terbit" ? "tag-info" : "tag-wait");
-      const escDesc = `${tgl} • ${p.Nama_Barang} (${p.Jumlah_PO} ${p.Satuan})`.replace(/'/g, "\'");
-      return `<tr>
-        <td>${tgl}</td>
-        <td><strong>${sup}</strong></td>
-        <td><strong>${noPo}</strong></td>
-        <td>${p.Nama_Barang}</td>
-        <td><strong>${Number(p.Jumlah_PO || 0).toLocaleString("id-ID")} ${p.Satuan}</strong></td>
-        <td><span class="tag ${badgeCls}">${st}</span></td>
-        <td><button type="button" class="btn-del-row" onclick="promptDeleteSingleHistory('PO', '${escUid}', '${escDesc}')">🗑 Hapus</button></td>
-      </tr>`;
+      return `<tr><td>${String(p.Tanggal_Kebutuhan || "").slice(0, 10)}</td><td><strong>${sup}</strong></td><td><strong>${noPo}</strong></td><td>${p.Nama_Barang}</td><td><strong>${Number(p.Jumlah_PO || 0).toLocaleString("id-ID")} ${p.Satuan}</strong></td><td><span class="tag ${badgeCls}">${st}</span></td></tr>`;
     }).join("");
   }
 
@@ -2490,7 +2348,7 @@
 
     listContainer.innerHTML = filtered.map(b => {
       const isSelected = b.Kode_Barang === activeCode;
-      const escCode = String(b.Kode_Barang || "").replace(/'/g, "\'");
+      const escCode = String(b.Kode_Barang || "").replace(/'/g, "\\'");
       return `
         <div class="reject-prod-card ${isSelected ? 'selected' : ''}" onclick="selectRejectBarangCard('${escCode}', true)">
           <div class="reject-prod-info">
@@ -2639,37 +2497,33 @@
     const rejSubPill = document.getElementById("rejectSubCountPill");
     if (rejSubPill) rejSubPill.textContent = myRows.length;
     if (myRows.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#64748b; padding:16px;">Belum ada laporan produk reject pada periode / supplier ini.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b; padding:16px;">Belum ada laporan produk reject pada periode / supplier ini.</td></tr>`;
       return;
     }
-    tbody.innerHTML = myRows.map((r, idx) => {
-      const uid = getRecordUid("REJECT", r, idx);
-      const escUid = String(uid).replace(/'/g, "\'");
-      const tgl = String(r.Tanggal_Kejadian || r.tanggal || "").slice(0, 10);
+    tbody.innerHTML = myRows.map(r => {
       const st = r.Status_Retur || "Menunggu Verifikasi ASR";
       const sup = resolveItemSupplier(r, r.Supplier || r.supplier || "-");
       const hasFoto = Boolean(r.foto_reject_base64 || r.Foto_Reject);
       const badgeCls = st === "Selesai Diganti" ? "tag-ok" : "tag-err";
-      const escDesc = `${tgl} • ${r.Nama_Barang} (Reject ${r.Qty_Reject} ${r.Satuan})`.replace(/'/g, "\'");
       return `<tr>
-        <td>${tgl}</td>
+        <td>${String(r.Tanggal_Kejadian || r.tanggal || "").slice(0, 10)}</td>
         <td><strong>${sup}</strong></td>
         <td>${r.Nama_Barang}</td>
         <td>${r.Qty_PO} / ${r.Qty_Aktual} / <strong style="color:#dc2626;">${r.Qty_Reject} ${r.Satuan}</strong></td>
         <td><span class="tag ${hasFoto ? 'tag-ok' : 'tag-wait'}">${hasFoto ? 'Ada Foto' : 'Tanpa Foto'}</span></td>
         <td><span class="tag ${badgeCls}">${st}</span></td>
-        <td><button type="button" class="btn-del-row" onclick="promptDeleteSingleHistory('REJECT', '${escUid}', '${escDesc}')">🗑 Hapus</button></td>
       </tr>`;
     }).join("");
   }
 
   // =========================================================
-  // UNIFIED BERITA ACARA BUILDER
+  // UNIFIED BERITA ACARA BUILDER (SUB-TABEL SUPPLIER, KALKULASI TOTAL, & LAMPIRAN FOTO PROPORSIONAL)
   // =========================================================
   function buildBeritaAcaraInnerHtml(moduleType, isForPng) {
     const gerai = state.profile.nama_kdkmp;
     const kec = state.profile.kecamatan;
     const mgr = state.profile.manager || "-";
+    const tglCetak = formatDateIndo(getTodayWib());
 
     if (moduleType === "MASUK") {
       const logs = getFilteredMasukLogs();
@@ -2677,6 +2531,7 @@
       const filterSup = state.selectedMasukHistSupplier;
       const periodeLabel = getPeriodLabel("masuk");
 
+      // Kumpulkan baris item per supplier
       const groupedBySup = {};
       let grandTotalUnits = 0;
       const photoCards = [];
@@ -3129,7 +2984,7 @@
   }
 
   // =========================================================
-  // EXPORT FOTO PNG
+  // EXPORT FOTO PNG (MOBILE-READY BLOB + MODAL FALLBACK GALERI HP)
   // =========================================================
   async function exportReportPng(moduleType) {
     const ba = buildBeritaAcaraInnerHtml(moduleType, true);
@@ -3181,6 +3036,7 @@
       state.lastPngDataUrl = dataUrl;
       state.lastPngFilename = filename;
 
+      // 1. Coba auto-download via Blob URL
       canvas.toBlob(blob => {
         if (blob) {
           const blobUrl = URL.createObjectURL(blob);
@@ -3197,6 +3053,7 @@
         }
       }, "image/png");
 
+      // 2. Selalu buka modal preview HP agar user bisa langsung Simpan/Bagikan ke Galeri jika WebView memblokir <a download>
       document.getElementById("pngPreviewTitle").textContent = ba.title;
       document.getElementById("pngPreviewImg").src = dataUrl;
       document.getElementById("pngPreviewModal").style.display = "flex";
@@ -3244,7 +3101,7 @@
   }
 
   // =========================================================
-  // EXPORT PDF BERITA ACARA RESMI
+  // EXPORT PDF BERITA ACARA RESMI (A4 PORTRAIT + SUB-TABEL + KALKULASI + FOTO)
   // =========================================================
   function exportReportPdf(moduleType) {
     const ba = buildBeritaAcaraInnerHtml(moduleType, false);
